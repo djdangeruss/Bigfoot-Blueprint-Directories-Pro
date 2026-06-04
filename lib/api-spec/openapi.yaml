@@ -1,0 +1,1269 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Directory Master API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: storage
+    description: Object storage
+  - name: health
+    description: Health operations
+  - name: setup
+    description: Installation and setup wizard
+  - name: auth
+    description: Authentication
+  - name: entries
+    description: Directory entries
+  - name: categories
+    description: Directory categories
+  - name: settings
+    description: Directory settings
+  - name: users
+    description: User management
+  - name: import
+    description: CSV import and Gemini processing
+  - name: public
+    description: Public directory browsing
+  - name: contacts
+    description: Claim listing form submissions
+
+paths:
+  /contacts:
+    post:
+      operationId: createContact
+      tags: [contacts]
+      summary: Submit a claim listing form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactSubmitBody"
+      responses:
+        "201":
+          description: Contact submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: listContacts
+      tags: [contacts]
+      summary: List all contact submissions (admin)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Contact list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactListResponse"
+
+  /contacts/{id}:
+    delete:
+      operationId: deleteContact
+      tags: [contacts]
+      summary: Delete a contact submission (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a presigned upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUploadUrlBody"
+      responses:
+        "200":
+          description: Presigned upload URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestUploadUrlResponse"
+
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Serve a stored object
+      parameters:
+        - in: path
+          name: objectPath
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /setup/status:
+    get:
+      operationId: getSetupStatus
+      tags: [setup]
+      summary: Get installation status
+      responses:
+        "200":
+          description: Setup status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SetupStatus"
+
+  /setup/complete:
+    post:
+      operationId: completeSetup
+      tags: [setup]
+      summary: Complete setup wizard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteSetupBody"
+      responses:
+        "200":
+          description: Setup completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SetupResult"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResult"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /entries:
+    get:
+      operationId: listEntries
+      tags: [entries]
+      summary: List all entries (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: category
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: published
+          in: query
+          schema:
+            type: ["boolean", "null"]
+      responses:
+        "200":
+          description: List of entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntryListResponse"
+
+    post:
+      operationId: createEntry
+      tags: [entries]
+      summary: Create a new entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEntryBody"
+      responses:
+        "201":
+          description: Entry created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /entries/{id}:
+    get:
+      operationId: getEntry
+      tags: [entries]
+      summary: Get a single entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Entry found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      operationId: updateEntry
+      tags: [entries]
+      summary: Update an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEntryBody"
+      responses:
+        "200":
+          description: Entry updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+    delete:
+      operationId: deleteEntry
+      tags: [entries]
+      summary: Delete an entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /entries/{id}/publish:
+    patch:
+      operationId: toggleEntryPublished
+      tags: [entries]
+      summary: Toggle entry published status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TogglePublishBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryBody"
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoryBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get directory settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectorySettings"
+
+    patch:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update directory settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectorySettings"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+    post:
+      operationId: createUser
+      tags: [users]
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserBody"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    delete:
+      operationId: deleteUser
+      tags: [users]
+      summary: Delete a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /import/analyze:
+    post:
+      operationId: analyzeImport
+      tags: [import]
+      summary: Analyze CSV headers and suggest field mappings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportAnalyzeBody"
+      responses:
+        "200":
+          description: Suggested column mappings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportAnalyzeResult"
+
+  /import/csv:
+    post:
+      operationId: importCsv
+      tags: [import]
+      summary: Import entries from CSV text with confirmed field mappings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportCsvBody"
+      responses:
+        "200":
+          description: Import job started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportJob"
+
+  /import/status/{jobId}:
+    get:
+      operationId: getImportStatus
+      tags: [import]
+      summary: Get import job status
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Import status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportJob"
+
+  /public/entries:
+    get:
+      operationId: listPublicEntries
+      tags: [public]
+      summary: List published entries for public directory
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: category
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: sort
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: Published entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntryListResponse"
+
+  /public/entries/{id}:
+    get:
+      operationId: getPublicEntry
+      tags: [public]
+      summary: Get a single published entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entry"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /public/stats:
+    get:
+      operationId: getPublicStats
+      tags: [public]
+      summary: Get directory stats for homepage
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicStats"
+
+  /public/featured:
+    get:
+      operationId: getFeaturedEntries
+      tags: [public]
+      summary: Get featured/highlighted entries
+      responses:
+        "200":
+          description: Featured entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+
+  /public/recent:
+    get:
+      operationId: getRecentEntries
+      tags: [public]
+      summary: Get most recently added entries
+      responses:
+        "200":
+          description: Recent entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entry"
+
+  /public/settings:
+    get:
+      operationId: getPublicSettings
+      tags: [public]
+      summary: Get public directory settings (no auth needed)
+      responses:
+        "200":
+          description: Public settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectorySettings"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: ["string", "null"]
+      required: [success]
+
+    SetupStatus:
+      type: object
+      properties:
+        installed:
+          type: boolean
+        step:
+          type: ["integer", "null"]
+      required: [installed]
+
+    CompleteSetupBody:
+      type: object
+      properties:
+        setupToken:
+          type: string
+        siteTitle:
+          type: string
+        adminName:
+          type: string
+        adminEmail:
+          type: string
+        adminPassword:
+          type: string
+        themeColor:
+          type: ["string", "null"]
+        homepageHeadline:
+          type: ["string", "null"]
+        homepageDescription:
+          type: ["string", "null"]
+      required: [setupToken, siteTitle, adminName, adminEmail, adminPassword]
+
+    SetupResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success, message]
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    AuthResult:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required: [user, token]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, editor, viewer]
+        createdAt:
+          type: string
+      required: [id, name, email, role, createdAt]
+
+    CreateUserBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [admin, editor, viewer]
+      required: [name, email, password, role]
+
+    UpdateUserBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        password:
+          type: ["string", "null"]
+        role:
+          type: ["string", "null"]
+
+    Entry:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: ["string", "null"]
+        summary:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        contactEmail:
+          type: ["string", "null"]
+        contactPhone:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        venue:
+          type: ["string", "null"]
+        eventType:
+          type: ["string", "null"]
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+        tags:
+          type: ["string", "null"]
+        moreDetails:
+          type: ["string", "null"]
+        customFields:
+          type: ["object", "null"]
+        sourceCsvRow:
+          type: ["string", "null"]
+        published:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, title, published, createdAt, updatedAt]
+
+    CreateEntryBody:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          type: ["string", "null"]
+        summary:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        contactEmail:
+          type: ["string", "null"]
+        contactPhone:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        venue:
+          type: ["string", "null"]
+        eventType:
+          type: ["string", "null"]
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+        tags:
+          type: ["string", "null"]
+        moreDetails:
+          type: ["string", "null"]
+        published:
+          type: ["boolean", "null"]
+      required: [title]
+
+    UpdateEntryBody:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        summary:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        contactEmail:
+          type: ["string", "null"]
+        contactPhone:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        venue:
+          type: ["string", "null"]
+        eventType:
+          type: ["string", "null"]
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+        tags:
+          type: ["string", "null"]
+        moreDetails:
+          type: ["string", "null"]
+        customFields:
+          type: ["object", "null"]
+        published:
+          type: ["boolean", "null"]
+
+    TogglePublishBody:
+      type: object
+      properties:
+        published:
+          type: boolean
+      required: [published]
+
+    EntryListResponse:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Entry"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required: [entries, total, page, totalPages]
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: ["string", "null"]
+        entryCount:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, slug, entryCount, createdAt]
+
+    CreateCategoryBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+      required: [name]
+
+    UpdateCategoryBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+
+    DirectorySettings:
+      type: object
+      properties:
+        id:
+          type: integer
+        siteTitle:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        homepageHeadline:
+          type: ["string", "null"]
+        homepageDescription:
+          type: ["string", "null"]
+        themeColor:
+          type: ["string", "null"]
+        calloutSections:
+          type: ["string", "null"]
+        faviconUrl:
+          type: ["string", "null"]
+        homepageMetaTitle:
+          type: ["string", "null"]
+        homepageMetaDescription:
+          type: ["string", "null"]
+        homepageOgImageUrl:
+          type: ["string", "null"]
+        installed:
+          type: boolean
+        updatedAt:
+          type: string
+        geminiApiKeySet:
+          type: boolean
+        geminiApiKeyHint:
+          type: ["string", "null"]
+      required: [id, siteTitle, installed, updatedAt]
+
+    UpdateSettingsBody:
+      type: object
+      properties:
+        siteTitle:
+          type: ["string", "null"]
+        logoUrl:
+          type: ["string", "null"]
+        homepageHeadline:
+          type: ["string", "null"]
+        homepageDescription:
+          type: ["string", "null"]
+        themeColor:
+          type: ["string", "null"]
+        calloutSections:
+          type: ["string", "null"]
+        faviconUrl:
+          type: ["string", "null"]
+        homepageMetaTitle:
+          type: ["string", "null"]
+        homepageMetaDescription:
+          type: ["string", "null"]
+        homepageOgImageUrl:
+          type: ["string", "null"]
+        geminiApiKey:
+          type: ["string", "null"]
+
+    ImportAnalyzeBody:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            type: string
+        sampleRows:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+      required: [headers, sampleRows]
+
+    ColumnMapping:
+      type: object
+      properties:
+        csvColumn:
+          type: string
+        targetField:
+          type: string
+        sampleValues:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+        approved:
+          type: boolean
+      required: [csvColumn, targetField, sampleValues, confidence, approved]
+
+    ImportAnalyzeResult:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ColumnMapping"
+        availableFields:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              label:
+                type: string
+              description:
+                type: string
+            required: [value, label, description]
+      required: [mappings, availableFields]
+
+    ImportCsvBody:
+      type: object
+      properties:
+        csvContent:
+          type: string
+        fieldMappings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ColumnMapping"
+      required: [csvContent, fieldMappings]
+
+    ImportJob:
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, complete, error]
+        message:
+          type: ["string", "null"]
+        progress:
+          type: ["integer", "null"]
+        totalRows:
+          type: ["integer", "null"]
+        processedRows:
+          type: ["integer", "null"]
+        entriesCreated:
+          type: ["integer", "null"]
+        categoriesCreated:
+          type: ["integer", "null"]
+        error:
+          type: ["string", "null"]
+      required: [jobId, status]
+
+    PublicStats:
+      type: object
+      properties:
+        totalEntries:
+          type: integer
+        totalCategories:
+          type: integer
+        categoryBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryCount"
+      required: [totalEntries, totalCategories, categoryBreakdown]
+
+    CategoryCount:
+      type: object
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+      required: [category, count]
+
+    ContactSubmitBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+      required: [fullName, phone, email]
+
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+      required: [id, fullName, phone, email, createdAt]
+
+    ContactListResponse:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Contact"
+      required: [contacts]
+
+    RequestUploadUrlBody:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+        contentType:
+          type: string
+      required: [name, size, contentType]
+
+    RequestUploadUrlResponse:
+      type: object
+      properties:
+        uploadURL:
+          type: string
+        objectPath:
+          type: string
+        metadata:
+          type: object
+          properties:
+            name:
+              type: string
+            size:
+              type: integer
+            contentType:
+              type: string
+          required: [name, size, contentType]
+      required: [uploadURL, objectPath, metadata]

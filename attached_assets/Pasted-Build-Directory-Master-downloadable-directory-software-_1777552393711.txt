@@ -1,0 +1,164 @@
+Build “Directory Master”: downloadable directory software that lets a user install their own searchable directory website from a CSV file, with help from Gemini to organize and structure the data.
+
+What the user can do (MVP):
+1) Install the app through a first-time setup wizard.
+2) Connect their own database during setup.
+3) Upload a CSV file containing directory entries.
+4) Let Gemini review the CSV and organize the data into categories, searchable fields, summaries, and individual entry pages.
+5) Customize the directory name, logo, homepage text, colors, and key callout sections.
+6) Manage entries after setup through an admin dashboard.
+7) Search, browse categories, and view individual entry pages on the public website.
+
+Pages & Navigation:
+- Install / Setup Wizard:
+  - Step 1: Welcome screen with app name “Directory Master”.
+  - Step 2: Database setup form.
+  - Step 3: Create admin account.
+  - Step 4: Upload CSV.
+  - Step 5: Gemini reviews and structures the data.
+  - Step 6: Customize directory name, logo, homepage intro, and theme.
+  - Step 7: Finish setup and open the live directory.
+
+- Public Homepage:
+  - Large search bar.
+  - Featured categories.
+  - Popular or highlighted entries.
+  - Helpful callout cards.
+  - Recent entries.
+  - Clean layout inspired by Zillow-style browsing: cards, filters, summaries, and clear actions.
+
+- Archive / Category Page:
+  - List of entries for a selected category.
+  - Pagination.
+  - Filters created from the CSV data.
+  - Sort options.
+  - Entry cards with title, short summary, category, location if available, and “View Details” button.
+
+- Individual Entry Page:
+  - Clean detail page for one directory entry.
+  - Show the most important information at the top.
+  - Use sections for details, description, contact info, links, location, dates, tags, and related entries.
+  - Layout should be easy to scan, similar to a polished listing page.
+
+- Admin Dashboard:
+  - View all entries.
+  - Add, edit, delete, and publish/unpublish entries.
+  - Manage categories.
+  - Update logo, title, homepage content, colors, and callouts.
+  - Re-upload or import a new CSV if needed.
+  - Manage users and roles.
+
+Data to remember:
+- Directory settings:
+  - Site title
+  - Logo
+  - Homepage headline
+  - Homepage description
+  - Theme color
+  - Callout sections
+  - Admin user
+
+- Directory entry:
+  - Title
+  - Category
+  - Summary
+  - Description
+  - Contact details
+  - Website link
+  - Location
+  - Tags
+  - Source CSV row
+  - Created date
+  - Updated date
+  - Published status
+
+- User:
+  - Name
+  - Email
+  - Password
+  - Role: Admin, Editor, Viewer
+
+Required fields:
+- Site title
+- Admin email
+- Admin password
+- CSV upload
+- Entry title
+
+Rules & Limits:
+- The setup wizard only appears before installation is complete.
+- After setup, regular visitors go directly to the public directory.
+- Only admins can access setup, settings, users, and CSV import.
+- Editors can add and edit entries but cannot change installation settings.
+- Viewers can only view public pages.
+- Confirm before deleting entries, categories, users, or imported data.
+- Show friendly errors if database setup fails or CSV upload is invalid.
+- Allow large CSV files and show a progress screen while Gemini reviews the data.
+- If Gemini is unsure about a field, keep the original data and place it in a “More Details” section.
+
+Safety & Access:
+- Require admin sign-in for the dashboard.
+- Keep database credentials hidden after setup.
+- Do not expose private setup screens to public visitors.
+- Public visitors can search and browse only published entries.
+
+Look & Feel:
+- Clean, modern, readable directory layout.
+- Zillow-inspired browsing experience with large search, cards, filters, and strong visual hierarchy.
+- Homepage should feel complete after CSV import.
+- Individual entry pages should be easy to skim.
+- Use clear buttons, labels, helper text, and success messages.
+
+Sample Text & Labels:
+- App name: “Directory Master”
+- Setup button: “Start Setup”
+- CSV upload button: “Upload Directory CSV”
+- Gemini processing message: “Directory Master is reviewing your CSV and organizing your directory.”
+- Main search placeholder: “Search entries, categories, locations, or keywords…”
+- Empty state: “No entries found. Try a different search or category.”
+- Success toast: “Your directory has been created.”
+- Error message: “Something needs attention. Please check the highlighted fields.”
+
+Success Checks:
+- I can upload the zip files to hosting and open the install screen.
+- I can connect a database through the setup wizard.
+- I can create the first admin account.
+- I can upload a CSV.
+- Gemini reviews the CSV and creates categories, summaries, filters, archive pages, and entry pages.
+- I can customize the logo, site title, homepage text, and colors.
+- I can search the public directory.
+- I can browse archive/category pages.
+- I can open an individual entry page.
+- I can sign into the admin dashboard.
+- I can add, edit, delete, publish, and unpublish entries.
+- Refreshing the site keeps all data.
+
+Starter Content:
+- If no CSV is uploaded yet, show 3 demo entries so the layout can be previewed.
+- Demo categories:
+  - Events
+  - Companies
+  - Resources
+
+Run & Save in Replit:
+- The app must start when I press Run in Replit and open in the preview.
+- The app must include a downloadable zip version of the software.
+- The zip should include everything needed to upload to a hosting account.
+- Include an install screen that runs on first launch.
+- Include a short README explaining how to upload the zip, run the installer, connect the database, import CSV data, and manage the directory.
+
+Stretch Ideas:
+- Let admins choose homepage layouts.
+- Let admins map CSV columns manually before Gemini processes them.
+- Add featured listings.
+- Add paid listing options later.
+- Add claim-this-listing functionality.
+- Add export backup.
+- Add custom fields per category.
+
+Notes for the Builder:
+- Work screen-by-screen.
+- Prioritize the install wizard, CSV import, Gemini structuring, homepage, archive pages, entry pages, and admin dashboard.
+- Keep the setup simple for non-technical users.
+- If something is unclear, choose the simplest path that matches the goal.
+- The final product should feel like a complete white-label directory builder.
