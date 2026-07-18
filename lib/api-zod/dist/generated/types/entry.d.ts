@@ -5,6 +5,7 @@
  * Directory Master API
  * OpenAPI spec version: 0.1.0
  */
+import type { EntryCustomFields } from "./entryCustomFields";
 export interface Entry {
     id: number;
     title: string;
@@ -23,9 +24,19 @@ export interface Entry {
     /** @nullable */
     location?: string | null;
     /** @nullable */
+    venue?: string | null;
+    /** @nullable */
+    eventType?: string | null;
+    /** @nullable */
+    startDate?: string | null;
+    /** @nullable */
+    endDate?: string | null;
+    /** @nullable */
     tags?: string | null;
     /** @nullable */
     moreDetails?: string | null;
+    /** @nullable */
+    customFields?: EntryCustomFields;
     /** @nullable */
     sourceCsvRow?: string | null;
     published: boolean;

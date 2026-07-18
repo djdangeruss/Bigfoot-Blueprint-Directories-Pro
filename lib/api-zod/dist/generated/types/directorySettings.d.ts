@@ -18,7 +18,18 @@ export interface DirectorySettings {
     themeColor?: string | null;
     /** @nullable */
     calloutSections?: string | null;
+    /** @nullable */
+    faviconUrl?: string | null;
+    /** @nullable */
+    homepageMetaTitle?: string | null;
+    /** @nullable */
+    homepageMetaDescription?: string | null;
+    /** @nullable */
+    homepageOgImageUrl?: string | null;
     installed: boolean;
     updatedAt: string;
+    geminiApiKeySet?: boolean;
+    /** @nullable */
+    geminiApiKeyHint?: string | null;
 }
 //# sourceMappingURL=directorySettings.d.ts.map

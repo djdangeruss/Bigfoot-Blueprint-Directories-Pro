@@ -5,7 +5,9 @@
  * Directory Master API
  * OpenAPI spec version: 0.1.0
  */
+import type { ColumnMapping } from "./columnMapping";
 export interface ImportCsvBody {
     csvContent: string;
+    fieldMappings: ColumnMapping[];
 }
 //# sourceMappingURL=importCsvBody.d.ts.map

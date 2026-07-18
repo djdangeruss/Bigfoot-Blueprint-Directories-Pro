@@ -629,7 +629,7 @@ router.post("/csv", requireEditor, async (req, res) => {
 // GET /api/import/status/:jobId
 router.get("/status/:jobId", requireEditor, async (req, res) => {
   try {
-    const [job] = await db.select().from(importJobs).where(eq(importJobs.jobId, req.params.jobId)).limit(1);
+    const [job] = await db.select().from(importJobs).where(eq(importJobs.jobId, String(req.params.jobId))).limit(1);
     if (!job) { res.status(404).json({ error: "Job not found" }); return; }
     res.json({
       jobId: job.jobId,

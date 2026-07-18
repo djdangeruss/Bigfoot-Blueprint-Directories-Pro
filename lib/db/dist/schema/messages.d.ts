@@ -92,8 +92,8 @@ export declare const messages: import("drizzle-orm/pg-core").PgTableWithColumns<
     dialect: "pg";
 }>;
 export declare const insertMessageSchema: z.ZodObject<{
-    conversationId: z.ZodInt;
     role: z.ZodString;
+    conversationId: z.ZodInt;
     content: z.ZodString;
 }, {
     out: {};

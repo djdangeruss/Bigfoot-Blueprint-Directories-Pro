@@ -1,6 +1,6 @@
 import { db } from "@workspace/db";
 import { entries } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 // entries.customFields is the flexible store for listing data (ratings, claim state,
 // tier, owner-edited content). The public PATCH /api/entries contract replaces
@@ -40,16 +40,18 @@ export function getTier(cf: Record<string, unknown>): SubscriptionTier {
   return TIERS.includes(t as SubscriptionTier) ? (t as SubscriptionTier) : "free";
 }
 
-// Read-merge-write. Returns the merged customFields, or null if the entry is missing.
+// Atomic JSONB merge. This prevents concurrent owner/admin writes from silently
+// replacing unrelated keys in the flexible listing state.
 export async function mergeCustomFields(
   entryId: number,
   patch: Record<string, unknown>,
 ): Promise<Record<string, unknown> | null> {
-  const [entry] = await db.select().from(entries).where(eq(entries.id, entryId)).limit(1);
-  if (!entry) return null;
-  const merged = { ...getCustomFields(entry), ...patch };
-  await db.update(entries)
-    .set({ customFields: merged, updatedAt: new Date() })
-    .where(eq(entries.id, entryId));
-  return merged;
+  const [updated] = await db.update(entries)
+    .set({
+      customFields: sql`coalesce(${entries.customFields}, '{}'::jsonb) || ${JSON.stringify(patch)}::jsonb`,
+      updatedAt: new Date(),
+    })
+    .where(eq(entries.id, entryId))
+    .returning({ customFields: entries.customFields });
+  return updated ? getCustomFields(updated) : null;
 }

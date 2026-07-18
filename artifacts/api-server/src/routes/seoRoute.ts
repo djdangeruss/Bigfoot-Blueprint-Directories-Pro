@@ -265,12 +265,13 @@ router.post("/bulk", requireAdmin, async (req, res) => {
 
 // GET /api/seo/status/:jobId
 router.get("/status/:jobId", requireAdmin, async (req, res) => {
-  const job = seoJobs.get(req.params.jobId);
+  const jobId = String(req.params.jobId);
+  const job = seoJobs.get(jobId);
   if (!job) {
     res.status(404).json({ error: "Job not found" });
     return;
   }
-  res.json({ jobId: req.params.jobId, ...job });
+  res.json({ jobId, ...job });
 });
 
 export default router;

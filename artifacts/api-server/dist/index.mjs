@@ -205,18 +205,18 @@ var require_common = __commonJS({
           if (typeof args[0] !== "string") {
             args.unshift("%O");
           }
-          let index = 0;
+          let index2 = 0;
           args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
             if (match === "%%") {
               return "%";
             }
-            index++;
+            index2++;
             const formatter = createDebug.formatters[format];
             if (typeof formatter === "function") {
-              const val = args[index];
+              const val = args[index2];
               match = formatter.call(self, val);
-              args.splice(index, 1);
-              index--;
+              args.splice(index2, 1);
+              index2--;
             }
             return match;
           });
@@ -270,14 +270,14 @@ var require_common = __commonJS({
           }
         }
       }
-      function matchesTemplate(search, template) {
+      function matchesTemplate(search, template2) {
         let searchIndex = 0;
         let templateIndex = 0;
         let starIndex = -1;
         let matchIndex = 0;
         while (searchIndex < search.length) {
-          if (templateIndex < template.length && (template[templateIndex] === search[searchIndex] || template[templateIndex] === "*")) {
-            if (template[templateIndex] === "*") {
+          if (templateIndex < template2.length && (template2[templateIndex] === search[searchIndex] || template2[templateIndex] === "*")) {
+            if (template2[templateIndex] === "*") {
               starIndex = templateIndex;
               matchIndex = searchIndex;
               templateIndex++;
@@ -293,10 +293,10 @@ var require_common = __commonJS({
             return false;
           }
         }
-        while (templateIndex < template.length && template[templateIndex] === "*") {
+        while (templateIndex < template2.length && template2[templateIndex] === "*") {
           templateIndex++;
         }
-        return templateIndex === template.length;
+        return templateIndex === template2.length;
       }
       function disable() {
         const namespaces = [
@@ -451,15 +451,15 @@ var require_browser = __commonJS({
       }
       const c = "color: " + this.color;
       args.splice(1, 0, c, "color: inherit");
-      let index = 0;
+      let index2 = 0;
       let lastC = 0;
       args[0].replace(/%[a-zA-Z%]/g, (match) => {
         if (match === "%%") {
           return;
         }
-        index++;
+        index2++;
         if (match === "%c") {
-          lastC = index;
+          lastC = index2;
         }
       });
       args.splice(lastC, 0, c);
@@ -5342,10 +5342,10 @@ var require_raw_body = __commonJS({
       if (done) {
         return readStream(stream, encoding, length, limit, wrap(done));
       }
-      return new Promise(function executor(resolve, reject) {
+      return new Promise(function executor(resolve3, reject) {
         readStream(stream, encoding, length, limit, function onRead(err, buf) {
           if (err) return reject(err);
-          resolve(buf);
+          resolve3(buf);
         });
       });
     }
@@ -5682,22 +5682,22 @@ var require_content_type = __commonJS({
       if (typeof header !== "string") {
         throw new TypeError("argument string is required to be a string");
       }
-      var index = header.indexOf(";");
-      var type = index !== -1 ? header.slice(0, index).trim() : header.trim();
+      var index2 = header.indexOf(";");
+      var type = index2 !== -1 ? header.slice(0, index2).trim() : header.trim();
       if (!TYPE_REGEXP.test(type)) {
         throw new TypeError("invalid media type");
       }
       var obj = new ContentType(type.toLowerCase());
-      if (index !== -1) {
+      if (index2 !== -1) {
         var key;
         var match;
         var value;
-        PARAM_REGEXP.lastIndex = index;
+        PARAM_REGEXP.lastIndex = index2;
         while (match = PARAM_REGEXP.exec(header)) {
-          if (match.index !== index) {
+          if (match.index !== index2) {
             throw new TypeError("invalid parameter format");
           }
-          index += match[0].length;
+          index2 += match[0].length;
           key = match[1].toLowerCase();
           value = match[2];
           if (value.charCodeAt(0) === 34) {
@@ -5708,7 +5708,7 @@ var require_content_type = __commonJS({
           }
           obj.parameters[key] = value;
         }
-        if (index !== header.length) {
+        if (index2 !== header.length) {
           throw new TypeError("invalid parameter format");
         }
       }
@@ -15303,10 +15303,10 @@ var require_media_typer = __commonJS({
       var type = match[1];
       var subtype = match[2];
       var suffix;
-      var index = subtype.lastIndexOf("+");
-      if (index !== -1) {
-        suffix = subtype.substr(index + 1);
-        subtype = subtype.substr(0, index);
+      var index2 = subtype.lastIndexOf("+");
+      if (index2 !== -1) {
+        suffix = subtype.substr(index2 + 1);
+        subtype = subtype.substr(0, index2);
       }
       return new MediaType(type, subtype, suffix);
     }
@@ -15667,10 +15667,10 @@ var require_json = __commonJS({
       };
     }
     function createStrictSyntaxError(str, char2) {
-      var index = str.indexOf(char2);
+      var index2 = str.indexOf(char2);
       var partial2 = "";
-      if (index !== -1) {
-        partial2 = str.substring(0, index) + JSON_SYNTAX_CHAR.repeat(str.length - index);
+      if (index2 !== -1) {
+        partial2 = str.substring(0, index2) + JSON_SYNTAX_CHAR.repeat(str.length - index2);
       }
       try {
         JSON.parse(partial2);
@@ -15678,7 +15678,7 @@ var require_json = __commonJS({
       } catch (e) {
         return normalizeJsonSyntaxError(e, {
           message: e.message.replace(JSON_SYNTAX_REGEXP, function(placeholder) {
-            return str.substring(index, index + placeholder.length);
+            return str.substring(index2, index2 + placeholder.length);
           }),
           stack: e.stack
         });
@@ -15732,8 +15732,8 @@ var require_text = __commonJS({
     var debug = require_src()("body-parser:text");
     var read = require_read();
     var { normalizeOptions, passthrough } = require_utils();
-    module.exports = text2;
-    function text2(options) {
+    module.exports = text3;
+    function text3(options) {
       const normalizedOptions = normalizeOptions(options, "text/plain");
       return function textParser(req, res, next) {
         read(req, res, next, passthrough, debug, normalizedOptions);
@@ -15980,7 +15980,7 @@ var require_object_inspect = __commonJS({
       if (isBoolean(obj)) {
         return markBoxed(booleanValueOf.call(obj));
       }
-      if (isString(obj)) {
+      if (isString2(obj)) {
         return markBoxed(inspect(String(obj)));
       }
       if (typeof window !== "undefined" && obj === window) {
@@ -16029,7 +16029,7 @@ var require_object_inspect = __commonJS({
     function isError(obj) {
       return toStr(obj) === "[object Error]" && canTrustToString(obj);
     }
-    function isString(obj) {
+    function isString2(obj) {
       return toStr(obj) === "[object String]" && canTrustToString(obj);
     }
     function isNumber(obj) {
@@ -18096,18 +18096,18 @@ var require_parse = __commonJS({
           obj = options.plainObjects ? { __proto__: null } : {};
           var cleanRoot = root.charAt(0) === "[" && root.charAt(root.length - 1) === "]" ? root.slice(1, -1) : root;
           var decodedRoot = options.decodeDotInKeys ? cleanRoot.replace(/%2E/g, ".") : cleanRoot;
-          var index = parseInt(decodedRoot, 10);
-          var isValidArrayIndex = !isNaN(index) && root !== decodedRoot && String(index) === decodedRoot && index >= 0 && options.parseArrays;
+          var index2 = parseInt(decodedRoot, 10);
+          var isValidArrayIndex = !isNaN(index2) && root !== decodedRoot && String(index2) === decodedRoot && index2 >= 0 && options.parseArrays;
           if (!options.parseArrays && decodedRoot === "") {
             obj = { 0: leaf };
-          } else if (isValidArrayIndex && index < options.arrayLimit) {
+          } else if (isValidArrayIndex && index2 < options.arrayLimit) {
             obj = [];
-            obj[index] = leaf;
+            obj[index2] = leaf;
           } else if (isValidArrayIndex && options.throwOnLimitExceeded) {
             throw new RangeError("Array limit exceeded. Only " + options.arrayLimit + " element" + (options.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
           } else if (isValidArrayIndex) {
-            obj[index] = leaf;
-            utils.markOverflow(obj, index);
+            obj[index2] = leaf;
+            utils.markOverflow(obj, index2);
           } else if (decodedRoot !== "__proto__") {
             obj[decodedRoot] = leaf;
           }
@@ -18332,12 +18332,12 @@ var require_urlencoded = __commonJS({
     }
     function parameterCount(body, limit) {
       let count2 = 0;
-      let index = -1;
+      let index2 = -1;
       do {
         count2++;
         if (count2 > limit) return void 0;
-        index = body.indexOf("&", index + 1);
-      } while (index !== -1);
+        index2 = body.indexOf("&", index2 + 1);
+      } while (index2 !== -1);
       return count2;
     }
   }
@@ -18417,8 +18417,8 @@ var require_escape_html = __commonJS({
   "../../node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html/index.js"(exports, module) {
     "use strict";
     var matchHtmlRegExp = /["'&<>]/;
-    module.exports = escapeHtml;
-    function escapeHtml(string4) {
+    module.exports = escapeHtml2;
+    function escapeHtml2(string4) {
       var str = "" + string4;
       var match = matchHtmlRegExp.exec(str);
       if (!match) {
@@ -18426,10 +18426,10 @@ var require_escape_html = __commonJS({
       }
       var escape2;
       var html = "";
-      var index = 0;
+      var index2 = 0;
       var lastIndex = 0;
-      for (index = match.index; index < str.length; index++) {
-        switch (str.charCodeAt(index)) {
+      for (index2 = match.index; index2 < str.length; index2++) {
+        switch (str.charCodeAt(index2)) {
           case 34:
             escape2 = "&quot;";
             break;
@@ -18448,13 +18448,13 @@ var require_escape_html = __commonJS({
           default:
             continue;
         }
-        if (lastIndex !== index) {
-          html += str.substring(lastIndex, index);
+        if (lastIndex !== index2) {
+          html += str.substring(lastIndex, index2);
         }
-        lastIndex = index + 1;
+        lastIndex = index2 + 1;
         html += escape2;
       }
-      return lastIndex !== index ? html + str.substring(lastIndex, index) : html;
+      return lastIndex !== index2 ? html + str.substring(lastIndex, index2) : html;
     }
   }
 });
@@ -18549,13 +18549,13 @@ var require_finalhandler = __commonJS({
     "use strict";
     var debug = require_src()("finalhandler");
     var encodeUrl = require_encodeurl();
-    var escapeHtml = require_escape_html();
+    var escapeHtml2 = require_escape_html();
     var onFinished = require_on_finished();
     var parseUrl = require_parseurl();
     var statuses = require_statuses();
     var isFinished = onFinished.isFinished;
     function createHtmlDocument(message) {
-      var body = escapeHtml(message).replaceAll("\n", "<br>").replaceAll("  ", " &nbsp;");
+      var body = escapeHtml2(message).replaceAll("\n", "<br>").replaceAll("  ", " &nbsp;");
       return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>Error</title>\n</head>\n<body>\n<pre>' + body + "</pre>\n</body>\n</html>\n";
     }
     module.exports = finalhandler;
@@ -18681,7 +18681,7 @@ var require_view = __commonJS({
     var basename = path.basename;
     var extname = path.extname;
     var join = path.join;
-    var resolve = path.resolve;
+    var resolve3 = path.resolve;
     module.exports = View2;
     function View2(name, options) {
       var opts = options || {};
@@ -18715,7 +18715,7 @@ var require_view = __commonJS({
       debug('lookup "%s"', name);
       for (var i = 0; i < roots.length && !path2; i++) {
         var root = roots[i];
-        var loc = resolve(root, name);
+        var loc = resolve3(root, name);
         var dir = dirname(loc);
         var file2 = basename(loc);
         path2 = this.resolve(dir, file2);
@@ -18740,7 +18740,7 @@ var require_view = __commonJS({
       });
       sync = false;
     };
-    View2.prototype.resolve = function resolve2(dir, file2) {
+    View2.prototype.resolve = function resolve4(dir, file2) {
       var ext = this.ext;
       var path2 = join(dir, file2);
       var stat = tryStat(path2);
@@ -18769,14 +18769,14 @@ var require_etag = __commonJS({
   "../../node_modules/.pnpm/etag@1.8.1/node_modules/etag/index.js"(exports, module) {
     "use strict";
     module.exports = etag;
-    var crypto4 = __require("crypto");
+    var crypto5 = __require("crypto");
     var Stats = __require("fs").Stats;
     var toString = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash = crypto4.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash = crypto5.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash + '"';
     }
@@ -19658,25 +19658,25 @@ var require_utils3 = __commonJS({
     function acceptParams(str) {
       var length = str.length;
       var colonIndex = str.indexOf(";");
-      var index = colonIndex === -1 ? length : colonIndex;
-      var ret = { value: str.slice(0, index).trim(), quality: 1, params: {} };
-      while (index < length) {
-        var splitIndex = str.indexOf("=", index);
+      var index2 = colonIndex === -1 ? length : colonIndex;
+      var ret = { value: str.slice(0, index2).trim(), quality: 1, params: {} };
+      while (index2 < length) {
+        var splitIndex = str.indexOf("=", index2);
         if (splitIndex === -1) break;
-        var colonIndex = str.indexOf(";", index);
+        var colonIndex = str.indexOf(";", index2);
         var endIndex = colonIndex === -1 ? length : colonIndex;
         if (splitIndex > endIndex) {
-          index = str.lastIndexOf(";", splitIndex - 1) + 1;
+          index2 = str.lastIndexOf(";", splitIndex - 1) + 1;
           continue;
         }
-        var key = str.slice(index, splitIndex).trim();
+        var key = str.slice(index2, splitIndex).trim();
         var value = str.slice(splitIndex + 1, endIndex).trim();
         if (key === "q") {
           ret.quality = parseFloat(value);
         } else {
           ret.params[key] = value;
         }
-        index = endIndex + 1;
+        index2 = endIndex + 1;
       }
       return ret;
     }
@@ -19877,11 +19877,11 @@ var require_dist = __commonJS({
     exports.TokenData = TokenData;
     var PathError = class extends TypeError {
       constructor(message, originalPath) {
-        let text2 = message;
+        let text3 = message;
         if (originalPath)
-          text2 += `: ${originalPath}`;
-        text2 += `; visit https://git.new/pathToRegexpError for info`;
-        super(text2);
+          text3 += `: ${originalPath}`;
+        text3 += `; visit https://git.new/pathToRegexpError for info`;
+        super(text3);
         this.originalPath = originalPath;
       }
     };
@@ -19889,7 +19889,7 @@ var require_dist = __commonJS({
     function parse3(str, options = {}) {
       const { encodePath = NOOP_VALUE } = options;
       const chars = [...str];
-      let index = 0;
+      let index2 = 0;
       function consumeUntil(end) {
         const output = [];
         let path = "";
@@ -19902,44 +19902,44 @@ var require_dist = __commonJS({
           });
           path = "";
         }
-        while (index < chars.length) {
-          const value = chars[index++];
+        while (index2 < chars.length) {
+          const value = chars[index2++];
           if (value === end) {
             writePath();
             return output;
           }
           if (value === "\\") {
-            if (index === chars.length) {
-              throw new PathError(`Unexpected end after \\ at index ${index}`, str);
+            if (index2 === chars.length) {
+              throw new PathError(`Unexpected end after \\ at index ${index2}`, str);
             }
-            path += chars[index++];
+            path += chars[index2++];
             continue;
           }
           if (value === ":" || value === "*") {
             const type = value === ":" ? "param" : "wildcard";
             let name = "";
-            if (ID_START.test(chars[index])) {
+            if (ID_START.test(chars[index2])) {
               do {
-                name += chars[index++];
-              } while (ID_CONTINUE.test(chars[index]));
-            } else if (chars[index] === '"') {
-              let quoteStart = index;
-              while (index < chars.length) {
-                if (chars[++index] === '"') {
-                  index++;
+                name += chars[index2++];
+              } while (ID_CONTINUE.test(chars[index2]));
+            } else if (chars[index2] === '"') {
+              let quoteStart = index2;
+              while (index2 < chars.length) {
+                if (chars[++index2] === '"') {
+                  index2++;
                   quoteStart = 0;
                   break;
                 }
-                if (chars[index] === "\\")
-                  index++;
-                name += chars[index];
+                if (chars[index2] === "\\")
+                  index2++;
+                name += chars[index2];
               }
               if (quoteStart) {
                 throw new PathError(`Unterminated quote at index ${quoteStart}`, str);
               }
             }
             if (!name) {
-              throw new PathError(`Missing parameter name at index ${index}`, str);
+              throw new PathError(`Missing parameter name at index ${index2}`, str);
             }
             writePath();
             output.push({ type, name });
@@ -19954,12 +19954,12 @@ var require_dist = __commonJS({
             continue;
           }
           if (value === "}" || value === "(" || value === ")" || value === "[" || value === "]" || value === "+" || value === "?" || value === "!") {
-            throw new PathError(`Unexpected ${value} at index ${index - 1}`, str);
+            throw new PathError(`Unexpected ${value} at index ${index2 - 1}`, str);
           }
           path += value;
         }
         if (end) {
-          throw new PathError(`Unexpected end at index ${index}, expected ${end}`, str);
+          throw new PathError(`Unexpected end at index ${index2}, expected ${end}`, str);
         }
         writePath();
         return output;
@@ -20093,12 +20093,12 @@ var require_dist = __commonJS({
       pattern += end ? "$" : "(?=" + escape2(delimiter) + "|$)";
       return { regexp: new RegExp(pattern, sensitive ? "" : "i"), keys };
     }
-    function flatten(tokens, index, result, callback) {
-      while (index < tokens.length) {
-        const token = tokens[index++];
+    function flatten(tokens, index2, result, callback) {
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
         if (token.type === "group") {
           const len = result.length;
-          flatten(token.tokens, 0, result, (seq) => flatten(tokens, index, seq, callback));
+          flatten(token.tokens, 0, result, (seq) => flatten(tokens, index2, seq, callback));
           result.length = len;
           continue;
         }
@@ -20112,10 +20112,10 @@ var require_dist = __commonJS({
       let wildcardBacktrack = "";
       let prevCaptureType = 0;
       let hasSegmentCapture = 0;
-      let index = 0;
-      function hasInSegment(index2, type) {
-        while (index2 < tokens.length) {
-          const token = tokens[index2++];
+      let index2 = 0;
+      function hasInSegment(index3, type) {
+        while (index3 < tokens.length) {
+          const token = tokens[index3++];
           if (token.type === type)
             return true;
           if (token.type === "text") {
@@ -20125,18 +20125,18 @@ var require_dist = __commonJS({
         }
         return false;
       }
-      function peekText(index2) {
+      function peekText(index3) {
         let result2 = "";
-        while (index2 < tokens.length) {
-          const token = tokens[index2++];
+        while (index3 < tokens.length) {
+          const token = tokens[index3++];
           if (token.type !== "text")
             break;
           result2 += token.value;
         }
         return result2;
       }
-      while (index < tokens.length) {
-        const token = tokens[index++];
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
         if (token.type === "text") {
           result += escape2(token.value);
           backtrack += token.value;
@@ -20151,7 +20151,7 @@ var require_dist = __commonJS({
             throw new PathError(`Missing text before "${token.name}" ${token.type}`, originalPath);
           }
           if (token.type === "param") {
-            result += hasSegmentCapture & 2 ? `(${negate(delimiter, backtrack)}+)` : hasInSegment(index, "wildcard") ? `(${negate(delimiter, peekText(index))}+)` : hasSegmentCapture & 1 ? `(${negate(delimiter, backtrack)}+|${escape2(backtrack)})` : `(${negate(delimiter, "")}+)`;
+            result += hasSegmentCapture & 2 ? `(${negate(delimiter, backtrack)}+)` : hasInSegment(index2, "wildcard") ? `(${negate(delimiter, peekText(index2))}+)` : hasSegmentCapture & 1 ? `(${negate(delimiter, backtrack)}+|${escape2(backtrack)})` : `(${negate(delimiter, "")}+)`;
             hasSegmentCapture |= prevCaptureType = 1;
           } else {
             result += hasSegmentCapture & 2 ? `(${negate(backtrack, "")}+)` : wildcardBacktrack ? `(${negate(wildcardBacktrack, "")}+|${negate(delimiter, "")}+)` : `([^]+)`;
@@ -20177,10 +20177,10 @@ var require_dist = __commonJS({
         return `(?:(?!${escape2(a)})[^${escape2(b)}])`;
       return `[^${escape2(a + b)}]`;
     }
-    function stringifyTokens(tokens, index) {
+    function stringifyTokens(tokens, index2) {
       let value = "";
-      while (index < tokens.length) {
-        const token = tokens[index++];
+      while (index2 < tokens.length) {
+        const token = tokens[index2++];
         if (token.type === "text") {
           value += escapeText(token.value);
           continue;
@@ -20190,11 +20190,11 @@ var require_dist = __commonJS({
           continue;
         }
         if (token.type === "param") {
-          value += ":" + stringifyName(token.name, tokens[index]);
+          value += ":" + stringifyName(token.name, tokens[index2]);
           continue;
         }
         if (token.type === "wildcard") {
-          value += "*" + stringifyName(token.name, tokens[index]);
+          value += "*" + stringifyName(token.name, tokens[index2]);
           continue;
         }
         throw new TypeError(`Unknown token type: ${token.type}`);
@@ -20499,27 +20499,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router16;
+    module.exports = Router19;
     module.exports.Route = Route;
-    function Router16(options) {
-      if (!(this instanceof Router16)) {
-        return new Router16(options);
+    function Router19(options) {
+      if (!(this instanceof Router19)) {
+        return new Router19(options);
       }
       const opts = options || {};
-      function router16(req, res, next) {
-        router16.handle(req, res, next);
+      function router19(req, res, next) {
+        router19.handle(req, res, next);
       }
-      Object.setPrototypeOf(router16, this);
-      router16.caseSensitive = opts.caseSensitive;
-      router16.mergeParams = opts.mergeParams;
-      router16.params = {};
-      router16.strict = opts.strict;
-      router16.stack = [];
-      return router16;
+      Object.setPrototypeOf(router19, this);
+      router19.caseSensitive = opts.caseSensitive;
+      router19.mergeParams = opts.mergeParams;
+      router19.params = {};
+      router19.strict = opts.strict;
+      router19.stack = [];
+      return router19;
     }
-    Router16.prototype = function() {
+    Router19.prototype = function() {
     };
-    Router16.prototype.param = function param(name, fn) {
+    Router19.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20539,7 +20539,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router16.prototype.handle = function handle(req, res, callback) {
+    Router19.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20666,7 +20666,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router16.prototype.use = function use(handler) {
+    Router19.prototype.use = function use(handler) {
       let offset = 0;
       let path = "/";
       if (typeof handler !== "function") {
@@ -20699,7 +20699,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router16.prototype.route = function route(path) {
+    Router19.prototype.route = function route(path) {
       const route2 = new Route(path);
       const layer = new Layer(path, {
         sensitive: this.caseSensitive,
@@ -20714,7 +20714,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router16.prototype[method] = function(path) {
+      Router19.prototype[method] = function(path) {
         const route = this.route(path);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20895,15 +20895,15 @@ var require_application = __commonJS({
     var compileETag = require_utils3().compileETag;
     var compileQueryParser = require_utils3().compileQueryParser;
     var compileTrust = require_utils3().compileTrust;
-    var resolve = __require("node:path").resolve;
+    var resolve3 = __require("node:path").resolve;
     var once = require_once();
-    var Router16 = require_router();
+    var Router19 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router16 = null;
+      var router19 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20912,13 +20912,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router16 === null) {
-            router16 = new Router16({
+          if (router19 === null) {
+            router19 = new Router19({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router16;
+          return router19;
         }
       });
     };
@@ -20949,7 +20949,7 @@ var require_application = __commonJS({
       this.mountpath = "/";
       this.locals.settings = this.settings;
       this.set("view", View2);
-      this.set("views", resolve("views"));
+      this.set("views", resolve3("views"));
       this.set("jsonp callback name", "callback");
       if (env === "production") {
         this.enable("view cache");
@@ -20989,15 +20989,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router16 = this.router;
+      var router19 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router16.use(path, fn2);
+          return router19.use(path, fn2);
         }
         debug(".use app under %s", path);
         fn2.mountpath = path;
         fn2.parent = this;
-        router16.use(path, function mounted_app(req, res, next) {
+        router19.use(path, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -21183,17 +21183,17 @@ var require_charset = __commonJS({
         i
       };
     }
-    function getCharsetPriority(charset, accepted, index) {
+    function getCharsetPriority(charset, accepted, index2) {
       var priority = { o: -1, q: 0, s: 0 };
       for (var i = 0; i < accepted.length; i++) {
-        var spec = specify(charset, accepted[i], index);
+        var spec = specify(charset, accepted[i], index2);
         if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
           priority = spec;
         }
       }
       return priority;
     }
-    function specify(charset, spec, index) {
+    function specify(charset, spec, index2) {
       var s = 0;
       if (spec.charset.toLowerCase() === charset.toLowerCase()) {
         s |= 1;
@@ -21201,7 +21201,7 @@ var require_charset = __commonJS({
         return null;
       }
       return {
-        i: index,
+        i: index2,
         o: spec.i,
         q: spec.q,
         s
@@ -21212,8 +21212,8 @@ var require_charset = __commonJS({
       if (!provided) {
         return accepts.filter(isQuality).sort(compareSpecs).map(getFullCharset);
       }
-      var priorities = provided.map(function getPriority(type, index) {
-        return getCharsetPriority(type, accepts, index);
+      var priorities = provided.map(function getPriority(type, index2) {
+        return getCharsetPriority(type, accepts, index2);
       });
       return priorities.filter(isQuality).sort(compareSpecs).map(function getCharset(priority) {
         return provided[priorities.indexOf(priority)];
@@ -21281,17 +21281,17 @@ var require_encoding = __commonJS({
         i
       };
     }
-    function getEncodingPriority(encoding, accepted, index) {
+    function getEncodingPriority(encoding, accepted, index2) {
       var priority = { encoding, o: -1, q: 0, s: 0 };
       for (var i = 0; i < accepted.length; i++) {
-        var spec = specify(encoding, accepted[i], index);
+        var spec = specify(encoding, accepted[i], index2);
         if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
           priority = spec;
         }
       }
       return priority;
     }
-    function specify(encoding, spec, index) {
+    function specify(encoding, spec, index2) {
       var s = 0;
       if (spec.encoding.toLowerCase() === encoding.toLowerCase()) {
         s |= 1;
@@ -21300,7 +21300,7 @@ var require_encoding = __commonJS({
       }
       return {
         encoding,
-        i: index,
+        i: index2,
         o: spec.i,
         q: spec.q,
         s
@@ -21325,8 +21325,8 @@ var require_encoding = __commonJS({
       if (!provided) {
         return accepts.filter(isQuality).sort(comparator).map(getFullEncoding);
       }
-      var priorities = provided.map(function getPriority(type, index) {
-        return getEncodingPriority(type, accepts, index);
+      var priorities = provided.map(function getPriority(type, index2) {
+        return getEncodingPriority(type, accepts, index2);
       });
       return priorities.filter(isQuality).sort(comparator).map(function getEncoding(priority) {
         return provided[priorities.indexOf(priority)];
@@ -21385,17 +21385,17 @@ var require_language = __commonJS({
         full
       };
     }
-    function getLanguagePriority(language, accepted, index) {
+    function getLanguagePriority(language, accepted, index2) {
       var priority = { o: -1, q: 0, s: 0 };
       for (var i = 0; i < accepted.length; i++) {
-        var spec = specify(language, accepted[i], index);
+        var spec = specify(language, accepted[i], index2);
         if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
           priority = spec;
         }
       }
       return priority;
     }
-    function specify(language, spec, index) {
+    function specify(language, spec, index2) {
       var p = parseLanguage(language);
       if (!p) return null;
       var s = 0;
@@ -21409,7 +21409,7 @@ var require_language = __commonJS({
         return null;
       }
       return {
-        i: index,
+        i: index2,
         o: spec.i,
         q: spec.q,
         s
@@ -21420,8 +21420,8 @@ var require_language = __commonJS({
       if (!provided) {
         return accepts.filter(isQuality).sort(compareSpecs).map(getFullLanguage);
       }
-      var priorities = provided.map(function getPriority(type, index) {
-        return getLanguagePriority(type, accepts, index);
+      var priorities = provided.map(function getPriority(type, index2) {
+        return getLanguagePriority(type, accepts, index2);
       });
       return priorities.filter(isQuality).sort(compareSpecs).map(function getLanguage(priority) {
         return provided[priorities.indexOf(priority)];
@@ -21486,17 +21486,17 @@ var require_mediaType = __commonJS({
         i
       };
     }
-    function getMediaTypePriority(type, accepted, index) {
+    function getMediaTypePriority(type, accepted, index2) {
       var priority = { o: -1, q: 0, s: 0 };
       for (var i = 0; i < accepted.length; i++) {
-        var spec = specify(type, accepted[i], index);
+        var spec = specify(type, accepted[i], index2);
         if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
           priority = spec;
         }
       }
       return priority;
     }
-    function specify(type, spec, index) {
+    function specify(type, spec, index2) {
       var p = parseMediaType(type);
       var s = 0;
       if (!p) {
@@ -21523,7 +21523,7 @@ var require_mediaType = __commonJS({
         }
       }
       return {
-        i: index,
+        i: index2,
         o: spec.i,
         q: spec.q,
         s
@@ -21534,8 +21534,8 @@ var require_mediaType = __commonJS({
       if (!provided) {
         return accepts.filter(isQuality).sort(compareSpecs).map(getFullType);
       }
-      var priorities = provided.map(function getPriority(type, index) {
-        return getMediaTypePriority(type, accepts, index);
+      var priorities = provided.map(function getPriority(type, index2) {
+        return getMediaTypePriority(type, accepts, index2);
       });
       return priorities.filter(isQuality).sort(compareSpecs).map(function getType(priority) {
         return provided[priorities.indexOf(priority)];
@@ -21552,22 +21552,22 @@ var require_mediaType = __commonJS({
     }
     function quoteCount(string4) {
       var count2 = 0;
-      var index = 0;
-      while ((index = string4.indexOf('"', index)) !== -1) {
+      var index2 = 0;
+      while ((index2 = string4.indexOf('"', index2)) !== -1) {
         count2++;
-        index++;
+        index2++;
       }
       return count2;
     }
     function splitKeyValuePair(str) {
-      var index = str.indexOf("=");
+      var index2 = str.indexOf("=");
       var key;
       var val;
-      if (index === -1) {
+      if (index2 === -1) {
         key = str;
       } else {
-        key = str.slice(0, index);
-        val = str.slice(index + 1);
+        key = str.slice(0, index2);
+        val = str.slice(index2 + 1);
       }
       return [key, val];
     }
@@ -21819,13 +21819,13 @@ var require_range_parser = __commonJS({
       if (typeof str !== "string") {
         throw new TypeError("argument str must be a string");
       }
-      var index = str.indexOf("=");
-      if (index === -1) {
+      var index2 = str.indexOf("=");
+      if (index2 === -1) {
         return -2;
       }
-      var arr = str.slice(index + 1).split(",");
+      var arr = str.slice(index2 + 1).split(",");
       var ranges = [];
-      ranges.type = str.slice(0, index);
+      ranges.type = str.slice(0, index2);
       for (var i = 0; i < arr.length; i++) {
         var range = arr[i].split("-");
         var start = parseInt(range[0], 10);
@@ -21869,11 +21869,11 @@ var require_range_parser = __commonJS({
       combined.type = ranges.type;
       return combined;
     }
-    function mapWithIndex(range, index) {
+    function mapWithIndex(range, index2) {
       return {
         start: range.start,
         end: range.end,
-        index
+        index: index2
       };
     }
     function mapWithoutIndex(range) {
@@ -21966,8 +21966,8 @@ var require_request = __commonJS({
         return proto;
       }
       var header = this.get("X-Forwarded-Proto") || proto;
-      var index = header.indexOf(",");
-      return index !== -1 ? header.substring(0, index).trim() : header.trim();
+      var index2 = header.indexOf(",");
+      return index2 !== -1 ? header.substring(0, index2).trim() : header.trim();
     });
     defineGetter(req, "secure", function secure() {
       return this.protocol === "https";
@@ -22006,8 +22006,8 @@ var require_request = __commonJS({
       var host = this.host;
       if (!host) return;
       var offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
-      var index = host.indexOf(":", offset);
-      return index !== -1 ? host.substring(0, index) : host;
+      var index2 = host.indexOf(":", offset);
+      return index2 !== -1 ? host.substring(0, index2) : host;
     });
     defineGetter(req, "fresh", function() {
       var method = this.method;
@@ -22143,18 +22143,18 @@ var require_content_disposition = __commonJS({
       if (!match) {
         throw new TypeError("invalid type format");
       }
-      var index = match[0].length;
+      var index2 = match[0].length;
       var type = match[1].toLowerCase();
       var key;
       var names = [];
       var params = {};
       var value;
-      index = PARAM_REGEXP.lastIndex = match[0].slice(-1) === ";" ? index - 1 : index;
+      index2 = PARAM_REGEXP.lastIndex = match[0].slice(-1) === ";" ? index2 - 1 : index2;
       while (match = PARAM_REGEXP.exec(string4)) {
-        if (match.index !== index) {
+        if (match.index !== index2) {
           throw new TypeError("invalid parameter format");
         }
-        index += match[0].length;
+        index2 += match[0].length;
         key = match[1].toLowerCase();
         value = match[2];
         if (names.indexOf(key) !== -1) {
@@ -22175,7 +22175,7 @@ var require_content_disposition = __commonJS({
         }
         params[key] = value;
       }
-      if (index !== -1 && index !== string4.length) {
+      if (index2 !== -1 && index2 !== string4.length) {
         throw new TypeError("invalid parameter format");
       }
       return new ContentDisposition(type, params);
@@ -22205,17 +22205,17 @@ var require_content_disposition = __commonJS({
 // ../../node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS({
   "../../node_modules/.pnpm/cookie-signature@1.2.2/node_modules/cookie-signature/index.js"(exports) {
-    var crypto4 = __require("crypto");
+    var crypto5 = __require("crypto");
     exports.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      return val + "." + crypto4.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto5.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports.unsign = function(input, secret) {
       if ("string" != typeof input) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       var tentativeValue = input.slice(0, input.lastIndexOf(".")), expectedInput = exports.sign(tentativeValue, secret), expectedBuffer = Buffer.from(expectedInput), inputBuffer = Buffer.from(input);
-      return expectedBuffer.length === inputBuffer.length && crypto4.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
+      return expectedBuffer.length === inputBuffer.length && crypto5.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
     };
   }
 });
@@ -22240,20 +22240,20 @@ var require_cookie = __commonJS({
       var len = str.length;
       if (len < 2) return obj;
       var dec = opt && opt.decode || decode;
-      var index = 0;
+      var index2 = 0;
       var eqIdx = 0;
       var endIdx = 0;
       do {
-        eqIdx = str.indexOf("=", index);
+        eqIdx = str.indexOf("=", index2);
         if (eqIdx === -1) break;
-        endIdx = str.indexOf(";", index);
+        endIdx = str.indexOf(";", index2);
         if (endIdx === -1) {
           endIdx = len;
         } else if (eqIdx > endIdx) {
-          index = str.lastIndexOf(";", eqIdx - 1) + 1;
+          index2 = str.lastIndexOf(";", eqIdx - 1) + 1;
           continue;
         }
-        var keyStartIdx = startIndex(str, index, eqIdx);
+        var keyStartIdx = startIndex(str, index2, eqIdx);
         var keyEndIdx = endIndex(str, eqIdx, keyStartIdx);
         var key = str.slice(keyStartIdx, keyEndIdx);
         if (!__hasOwnProperty.call(obj, key)) {
@@ -22266,21 +22266,21 @@ var require_cookie = __commonJS({
           var val = str.slice(valStartIdx, valEndIdx);
           obj[key] = tryDecode(val, dec);
         }
-        index = endIdx + 1;
-      } while (index < len);
+        index2 = endIdx + 1;
+      } while (index2 < len);
       return obj;
     }
-    function startIndex(str, index, max) {
+    function startIndex(str, index2, max) {
       do {
-        var code = str.charCodeAt(index);
-        if (code !== 32 && code !== 9) return index;
-      } while (++index < max);
+        var code = str.charCodeAt(index2);
+        if (code !== 32 && code !== 9) return index2;
+      } while (++index2 < max);
       return max;
     }
-    function endIndex(str, index, min) {
-      while (index > min) {
-        var code = str.charCodeAt(--index);
-        if (code !== 32 && code !== 9) return index + 1;
+    function endIndex(str, index2, min) {
+      while (index2 > min) {
+        var code = str.charCodeAt(--index2);
+        if (code !== 32 && code !== 9) return index2 + 1;
       }
       return min;
     }
@@ -22393,7 +22393,7 @@ var require_send = __commonJS({
     var createError = require_http_errors();
     var debug = require_src()("send");
     var encodeUrl = require_encodeurl();
-    var escapeHtml = require_escape_html();
+    var escapeHtml2 = require_escape_html();
     var etag = require_etag();
     var fresh = require_fresh();
     var fs = __require("fs");
@@ -22408,7 +22408,7 @@ var require_send = __commonJS({
     var extname = path.extname;
     var join = path.join;
     var normalize = path.normalize;
-    var resolve = path.resolve;
+    var resolve3 = path.resolve;
     var sep = path.sep;
     var BYTES_RANGE_REGEXP = /^ *bytes=/;
     var MAX_MAXAGE = 60 * 60 * 24 * 365 * 1e3;
@@ -22437,7 +22437,7 @@ var require_send = __commonJS({
       this._maxage = opts.maxAge || opts.maxage;
       this._maxage = typeof this._maxage === "string" ? ms(this._maxage) : Number(this._maxage);
       this._maxage = !isNaN(this._maxage) ? Math.min(Math.max(0, this._maxage), MAX_MAXAGE) : 0;
-      this._root = opts.root ? resolve(opts.root) : null;
+      this._root = opts.root ? resolve3(opts.root) : null;
     }
     util2.inherits(SendStream, Stream);
     SendStream.prototype.error = function error40(status, err) {
@@ -22446,7 +22446,7 @@ var require_send = __commonJS({
       }
       var res = this.res;
       var msg = statuses.message[status] || String(status);
-      var doc = createHtmlDocument("Error", escapeHtml(msg));
+      var doc = createHtmlDocument("Error", escapeHtml2(msg));
       clearHeaders(res);
       if (err && err.headers) {
         setHeaders(res, err.headers);
@@ -22546,7 +22546,7 @@ var require_send = __commonJS({
         return;
       }
       var loc = encodeUrl(collapseLeadingSlashes(this.path + "/"));
-      var doc = createHtmlDocument("Redirecting", "Redirecting to " + escapeHtml(loc));
+      var doc = createHtmlDocument("Redirecting", "Redirecting to " + escapeHtml2(loc));
       res.statusCode = 301;
       res.setHeader("Content-Type", "text/html; charset=UTF-8");
       res.setHeader("Content-Length", Buffer.byteLength(doc));
@@ -22586,7 +22586,7 @@ var require_send = __commonJS({
           return res;
         }
         parts = normalize(path2).split(sep);
-        path2 = resolve(path2);
+        path2 = resolve3(path2);
       }
       if (containsDotFile(parts)) {
         debug('%s dotfile "%s"', this._dotfiles, path2);
@@ -22950,7 +22950,7 @@ var require_response = __commonJS({
     var createError = require_http_errors();
     var deprecate = require_depd()("express");
     var encodeUrl = require_encodeurl();
-    var escapeHtml = require_escape_html();
+    var escapeHtml2 = require_escape_html();
     var http = __require("node:http");
     var onFinished = require_on_finished();
     var mime = require_mime_types();
@@ -22964,7 +22964,7 @@ var require_response = __commonJS({
     var cookie = require_cookie();
     var send = require_send();
     var extname = path.extname;
-    var resolve = path.resolve;
+    var resolve3 = path.resolve;
     var vary = require_vary();
     var { Buffer: Buffer3 } = __require("node:buffer");
     var res = Object.create(http.ServerResponse.prototype);
@@ -23170,7 +23170,7 @@ var require_response = __commonJS({
       }
       opts = Object.create(opts);
       opts.headers = headers;
-      var fullPath = !opts.root ? resolve(path2) : path2;
+      var fullPath = !opts.root ? resolve3(path2) : path2;
       return this.sendFile(fullPath, opts, done);
     };
     res.contentType = res.type = function contentType(type) {
@@ -23289,7 +23289,7 @@ var require_response = __commonJS({
           body = statuses.message[status] + ". Redirecting to " + address;
         },
         html: function() {
-          var u = escapeHtml(address);
+          var u = escapeHtml2(address);
           body = "<p>" + statuses.message[status] + ". Redirecting to " + u + "</p>";
         },
         default: function() {
@@ -23417,9 +23417,9 @@ var require_serve_static = __commonJS({
   "../../node_modules/.pnpm/serve-static@2.2.1/node_modules/serve-static/index.js"(exports, module) {
     "use strict";
     var encodeUrl = require_encodeurl();
-    var escapeHtml = require_escape_html();
+    var escapeHtml2 = require_escape_html();
     var parseUrl = require_parseurl();
-    var resolve = __require("path").resolve;
+    var resolve3 = __require("path").resolve;
     var send = require_send();
     var url2 = __require("url");
     module.exports = serveStatic;
@@ -23438,7 +23438,7 @@ var require_serve_static = __commonJS({
         throw new TypeError("option setHeaders must be function");
       }
       opts.maxage = opts.maxage || opts.maxAge || 0;
-      opts.root = resolve(root);
+      opts.root = resolve3(root);
       var onDirectory = redirect ? createRedirectDirectoryListener() : createNotFoundDirectoryListener();
       return function serveStatic2(req, res, next) {
         if (req.method !== "GET" && req.method !== "HEAD") {
@@ -23503,7 +23503,7 @@ var require_serve_static = __commonJS({
         originalUrl.path = null;
         originalUrl.pathname = collapseLeadingSlashes(originalUrl.pathname + "/");
         var loc = encodeUrl(url2.format(originalUrl));
-        var doc = createHtmlDocument("Redirecting", "Redirecting to " + escapeHtml(loc));
+        var doc = createHtmlDocument("Redirecting", "Redirecting to " + escapeHtml2(loc));
         res.statusCode = 301;
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.setHeader("Content-Length", Buffer.byteLength(doc));
@@ -23524,7 +23524,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router16 = require_router();
+    var Router19 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23546,8 +23546,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router16.Route;
-    exports.Router = Router16;
+    exports.Route = Router19.Route;
+    exports.Router = Router19;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -23647,7 +23647,7 @@ var require_lib3 = __commonJS({
         preflightContinue: false,
         optionsSuccessStatus: 204
       };
-      function isString(s) {
+      function isString2(s) {
         return typeof s === "string" || s instanceof String;
       }
       function isOriginAllowed(origin, allowedOrigin) {
@@ -23658,7 +23658,7 @@ var require_lib3 = __commonJS({
             }
           }
           return false;
-        } else if (isString(allowedOrigin)) {
+        } else if (isString2(allowedOrigin)) {
           return origin === allowedOrigin;
         } else if (allowedOrigin instanceof RegExp) {
           return allowedOrigin.test(origin);
@@ -23673,7 +23673,7 @@ var require_lib3 = __commonJS({
             key: "Access-Control-Allow-Origin",
             value: "*"
           }]);
-        } else if (isString(options.origin)) {
+        } else if (isString2(options.origin)) {
           headers.push([{
             key: "Access-Control-Allow-Origin",
             value: options.origin
@@ -23839,6 +23839,119 @@ var require_lib3 = __commonJS({
       }
       module.exports = middlewareWrapper;
     })();
+  }
+});
+
+// ../../node_modules/.pnpm/cookie-signature@1.0.6/node_modules/cookie-signature/index.js
+var require_cookie_signature2 = __commonJS({
+  "../../node_modules/.pnpm/cookie-signature@1.0.6/node_modules/cookie-signature/index.js"(exports) {
+    var crypto5 = __require("crypto");
+    exports.sign = function(val, secret) {
+      if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
+      if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
+      return val + "." + crypto5.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+    };
+    exports.unsign = function(val, secret) {
+      if ("string" != typeof val) throw new TypeError("Signed cookie string must be provided.");
+      if ("string" != typeof secret) throw new TypeError("Secret string must be provided.");
+      var str = val.slice(0, val.lastIndexOf(".")), mac = exports.sign(str, secret);
+      return sha1(mac) == sha1(val) ? str : false;
+    };
+    function sha1(str) {
+      return crypto5.createHash("sha1").update(str).digest("hex");
+    }
+  }
+});
+
+// ../../node_modules/.pnpm/cookie-parser@1.4.7/node_modules/cookie-parser/index.js
+var require_cookie_parser = __commonJS({
+  "../../node_modules/.pnpm/cookie-parser@1.4.7/node_modules/cookie-parser/index.js"(exports, module) {
+    "use strict";
+    var cookie = require_cookie();
+    var signature = require_cookie_signature2();
+    module.exports = cookieParser2;
+    module.exports.JSONCookie = JSONCookie;
+    module.exports.JSONCookies = JSONCookies;
+    module.exports.signedCookie = signedCookie;
+    module.exports.signedCookies = signedCookies;
+    function cookieParser2(secret, options) {
+      var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
+      return function cookieParser3(req, res, next) {
+        if (req.cookies) {
+          return next();
+        }
+        var cookies = req.headers.cookie;
+        req.secret = secrets[0];
+        req.cookies = /* @__PURE__ */ Object.create(null);
+        req.signedCookies = /* @__PURE__ */ Object.create(null);
+        if (!cookies) {
+          return next();
+        }
+        req.cookies = cookie.parse(cookies, options);
+        if (secrets.length !== 0) {
+          req.signedCookies = signedCookies(req.cookies, secrets);
+          req.signedCookies = JSONCookies(req.signedCookies);
+        }
+        req.cookies = JSONCookies(req.cookies);
+        next();
+      };
+    }
+    function JSONCookie(str) {
+      if (typeof str !== "string" || str.substr(0, 2) !== "j:") {
+        return void 0;
+      }
+      try {
+        return JSON.parse(str.slice(2));
+      } catch (err) {
+        return void 0;
+      }
+    }
+    function JSONCookies(obj) {
+      var cookies = Object.keys(obj);
+      var key;
+      var val;
+      for (var i = 0; i < cookies.length; i++) {
+        key = cookies[i];
+        val = JSONCookie(obj[key]);
+        if (val) {
+          obj[key] = val;
+        }
+      }
+      return obj;
+    }
+    function signedCookie(str, secret) {
+      if (typeof str !== "string") {
+        return void 0;
+      }
+      if (str.substr(0, 2) !== "s:") {
+        return str;
+      }
+      var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
+      for (var i = 0; i < secrets.length; i++) {
+        var val = signature.unsign(str.slice(2), secrets[i]);
+        if (val !== false) {
+          return val;
+        }
+      }
+      return false;
+    }
+    function signedCookies(obj, secret) {
+      var cookies = Object.keys(obj);
+      var dec;
+      var key;
+      var ret = /* @__PURE__ */ Object.create(null);
+      var val;
+      for (var i = 0; i < cookies.length; i++) {
+        key = cookies[i];
+        val = obj[key];
+        dec = signedCookie(val, secret);
+        if (val !== dec) {
+          ret[key] = dec;
+          delete obj[key];
+        }
+      }
+      return ret;
+    }
   }
 });
 
@@ -24772,8 +24885,8 @@ var require_redaction = __commonJS({
         if (o[ns] === null) {
           return o;
         }
-        const { index } = next;
-        const nextPath = `${str.substr(index, str.length - 1)}`;
+        const { index: index2 } = next;
+        const nextPath = `${str.substr(index2, str.length - 1)}`;
         o[ns] = o[ns] || [];
         if (ns !== wildcardFirstSym && o[ns].length === 0) {
           o[ns].push(...o[wildcardFirstSym] || []);
@@ -24879,8 +24992,8 @@ var require_quick_format_unescaped = __commonJS({
         if (len === 1) return f;
         var objects = new Array(len);
         objects[0] = ss(f);
-        for (var index = 1; index < len; index++) {
-          objects[index] = ss(args[index]);
+        for (var index2 = 1; index2 < len; index2++) {
+          objects[index2] = ss(args[index2]);
         }
         return objects.join(" ");
       }
@@ -25651,8 +25764,8 @@ var require_on_exit_leak_free = __commonJS({
     }
     function clear(ref) {
       for (const event of ["exit", "beforeExit"]) {
-        const index = refs[event].indexOf(ref);
-        refs[event].splice(index, index + 1);
+        const index2 = refs[event].indexOf(ref);
+        refs[event].splice(index2, index2 + 1);
         uninstall(event);
       }
     }
@@ -25762,9 +25875,9 @@ var require_wait = __commonJS({
   "../../node_modules/.pnpm/thread-stream@3.1.0/node_modules/thread-stream/lib/wait.js"(exports, module) {
     "use strict";
     var MAX_TIMEOUT = 1e3;
-    function wait(state, index, expected, timeout, done) {
+    function wait(state, index2, expected, timeout, done) {
       const max = Date.now() + timeout;
-      let current = Atomics.load(state, index);
+      let current = Atomics.load(state, index2);
       if (current === expected) {
         done(null, "ok");
         return;
@@ -25776,7 +25889,7 @@ var require_wait = __commonJS({
         } else {
           setTimeout(() => {
             prior = current;
-            current = Atomics.load(state, index);
+            current = Atomics.load(state, index2);
             if (current === prior) {
               check2(backoff >= MAX_TIMEOUT ? MAX_TIMEOUT : backoff * 2);
             } else {
@@ -25788,9 +25901,9 @@ var require_wait = __commonJS({
       };
       check2(1);
     }
-    function waitDiff(state, index, expected, timeout, done) {
+    function waitDiff(state, index2, expected, timeout, done) {
       const max = Date.now() + timeout;
-      let current = Atomics.load(state, index);
+      let current = Atomics.load(state, index2);
       if (current !== expected) {
         done(null, "ok");
         return;
@@ -25800,7 +25913,7 @@ var require_wait = __commonJS({
           done(null, "timed-out");
         } else {
           setTimeout(() => {
-            current = Atomics.load(state, index);
+            current = Atomics.load(state, index2);
             if (current !== expected) {
               done(null, "ok");
             } else {
@@ -27884,9 +27997,9 @@ var require_multistream = __commonJS({
       }
       function remove(id) {
         const { streams } = this;
-        const index = streams.findIndex((s) => s.id === id);
-        if (index >= 0) {
-          streams.splice(index, 1);
+        const index2 = streams.findIndex((s) => s.id === id);
+        if (index2 >= 0) {
+          streams.splice(index2, 1);
           streams.sort(compareByLevel);
           this.minLevel = streams.length > 0 ? streams[0].level : -1;
         }
@@ -27943,7 +28056,7 @@ var require_pino = __commonJS({
     function pinoBundlerAbsolutePath(p) {
       try {
         const path = __require("path");
-        const outputDir = "/home/runner/workspace/artifacts/api-server/dist";
+        const outputDir = "E:\\Users\\USUARIO\\Downloads\\directory-master\\artifacts\\api-server\\dist";
         return path.resolve(outputDir, p.replace(/^\.\//, ""));
       } catch (e) {
         const f = new Function("p", "return new URL(p, import.meta.url).pathname");
@@ -29575,12 +29688,12 @@ var require_utils_legacy = __commonJS({
       const outer = md5(Buffer.concat([Buffer.from(inner), salt]));
       return "md5" + outer;
     }
-    function sha256(text2) {
-      return nodeCrypto.createHash("sha256").update(text2).digest();
+    function sha256(text3) {
+      return nodeCrypto.createHash("sha256").update(text3).digest();
     }
-    function hashByName(hashName, text2) {
+    function hashByName(hashName, text3) {
       hashName = hashName.replace(/(\D)-/, "$1");
-      return nodeCrypto.createHash(hashName).update(text2).digest();
+      return nodeCrypto.createHash(hashName).update(text3).digest();
     }
     function hmacSha256(key, msg) {
       return nodeCrypto.createHmac("sha256", key).update(msg).digest();
@@ -29633,11 +29746,11 @@ var require_utils_webcrypto = __commonJS({
       const outer = await md5(Buffer.concat([Buffer.from(inner), salt]));
       return "md5" + outer;
     }
-    async function sha256(text2) {
-      return await subtleCrypto.digest("SHA-256", text2);
+    async function sha256(text3) {
+      return await subtleCrypto.digest("SHA-256", text3);
     }
-    async function hashByName(hashName, text2) {
-      return await subtleCrypto.digest(hashName, text2);
+    async function hashByName(hashName, text3) {
+      return await subtleCrypto.digest(hashName, text3);
     }
     async function hmacSha256(keyBuffer, msg) {
       const key = await subtleCrypto.importKey("raw", keyBuffer, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -29670,46 +29783,46 @@ var require_cert_signatures = __commonJS({
     function x509Error(msg, cert) {
       return new Error("SASL channel binding: " + msg + " when parsing public certificate " + cert.toString("base64"));
     }
-    function readASN1Length(data, index) {
-      let length = data[index++];
-      if (length < 128) return { length, index };
+    function readASN1Length(data, index2) {
+      let length = data[index2++];
+      if (length < 128) return { length, index: index2 };
       const lengthBytes = length & 127;
       if (lengthBytes > 4) throw x509Error("bad length", data);
       length = 0;
       for (let i = 0; i < lengthBytes; i++) {
-        length = length << 8 | data[index++];
+        length = length << 8 | data[index2++];
       }
-      return { length, index };
+      return { length, index: index2 };
     }
-    function readASN1OID(data, index) {
-      if (data[index++] !== 6) throw x509Error("non-OID data", data);
-      const { length: OIDLength, index: indexAfterOIDLength } = readASN1Length(data, index);
-      index = indexAfterOIDLength;
-      const lastIndex = index + OIDLength;
-      const byte1 = data[index++];
+    function readASN1OID(data, index2) {
+      if (data[index2++] !== 6) throw x509Error("non-OID data", data);
+      const { length: OIDLength, index: indexAfterOIDLength } = readASN1Length(data, index2);
+      index2 = indexAfterOIDLength;
+      const lastIndex = index2 + OIDLength;
+      const byte1 = data[index2++];
       let oid = (byte1 / 40 >> 0) + "." + byte1 % 40;
-      while (index < lastIndex) {
+      while (index2 < lastIndex) {
         let value = 0;
-        while (index < lastIndex) {
-          const nextByte = data[index++];
+        while (index2 < lastIndex) {
+          const nextByte = data[index2++];
           value = value << 7 | nextByte & 127;
           if (nextByte < 128) break;
         }
         oid += "." + value;
       }
-      return { oid, index };
+      return { oid, index: index2 };
     }
-    function expectASN1Seq(data, index) {
-      if (data[index++] !== 48) throw x509Error("non-sequence data", data);
-      return readASN1Length(data, index);
+    function expectASN1Seq(data, index2) {
+      if (data[index2++] !== 48) throw x509Error("non-sequence data", data);
+      return readASN1Length(data, index2);
     }
-    function signatureAlgorithmHashFromCertificate(data, index) {
-      if (index === void 0) index = 0;
-      index = expectASN1Seq(data, index).index;
-      const { length: certInfoLength, index: indexAfterCertInfoLength } = expectASN1Seq(data, index);
-      index = indexAfterCertInfoLength + certInfoLength;
-      index = expectASN1Seq(data, index).index;
-      const { oid, index: indexAfterOID } = readASN1OID(data, index);
+    function signatureAlgorithmHashFromCertificate(data, index2) {
+      if (index2 === void 0) index2 = 0;
+      index2 = expectASN1Seq(data, index2).index;
+      const { length: certInfoLength, index: indexAfterCertInfoLength } = expectASN1Seq(data, index2);
+      index2 = indexAfterCertInfoLength + certInfoLength;
+      index2 = expectASN1Seq(data, index2).index;
+      const { oid, index: indexAfterOID } = readASN1OID(data, index2);
       switch (oid) {
         // RSA
         case "1.2.840.113549.1.1.4":
@@ -29741,12 +29854,12 @@ var require_cert_signatures = __commonJS({
           return "SHA-512";
         // RSASSA-PSS: hash is indicated separately
         case "1.2.840.113549.1.1.10": {
-          index = indexAfterOID;
-          index = expectASN1Seq(data, index).index;
-          if (data[index++] !== 160) throw x509Error("non-tag data", data);
-          index = readASN1Length(data, index).index;
-          index = expectASN1Seq(data, index).index;
-          const { oid: hashOID } = readASN1OID(data, index);
+          index2 = indexAfterOID;
+          index2 = expectASN1Seq(data, index2).index;
+          if (data[index2++] !== 160) throw x509Error("non-tag data", data);
+          index2 = readASN1Length(data, index2).index;
+          index2 = expectASN1Seq(data, index2).index;
+          const { oid: hashOID } = readASN1OID(data, index2);
           switch (hashOID) {
             // standalone hash OIDs
             case "1.2.840.113549.2.5":
@@ -29781,7 +29894,7 @@ var require_cert_signatures = __commonJS({
 var require_sasl = __commonJS({
   "../../node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/crypto/sasl.js"(exports, module) {
     "use strict";
-    var crypto4 = require_utils5();
+    var crypto5 = require_utils5();
     var { signatureAlgorithmHashFromCertificate } = require_cert_signatures();
     function startSession(mechanisms, stream) {
       const candidates = ["SCRAM-SHA-256"];
@@ -29793,7 +29906,7 @@ var require_sasl = __commonJS({
       if (mechanism === "SCRAM-SHA-256-PLUS" && typeof stream.getPeerCertificate !== "function") {
         throw new Error("SASL: Mechanism SCRAM-SHA-256-PLUS requires a certificate");
       }
-      const clientNonce = crypto4.randomBytes(18).toString("base64");
+      const clientNonce = crypto5.randomBytes(18).toString("base64");
       const gs2Header = mechanism === "SCRAM-SHA-256-PLUS" ? "p=tls-server-end-point" : stream ? "y" : "n";
       return {
         mechanism,
@@ -29828,20 +29941,20 @@ var require_sasl = __commonJS({
         const peerCert = stream.getPeerCertificate().raw;
         let hashName = signatureAlgorithmHashFromCertificate(peerCert);
         if (hashName === "MD5" || hashName === "SHA-1") hashName = "SHA-256";
-        const certHash = await crypto4.hashByName(hashName, peerCert);
+        const certHash = await crypto5.hashByName(hashName, peerCert);
         const bindingData = Buffer.concat([Buffer.from("p=tls-server-end-point,,"), Buffer.from(certHash)]);
         channelBinding = bindingData.toString("base64");
       }
       const clientFinalMessageWithoutProof = "c=" + channelBinding + ",r=" + sv.nonce;
       const authMessage = clientFirstMessageBare + "," + serverFirstMessage + "," + clientFinalMessageWithoutProof;
       const saltBytes = Buffer.from(sv.salt, "base64");
-      const saltedPassword = await crypto4.deriveKey(password, saltBytes, sv.iteration);
-      const clientKey = await crypto4.hmacSha256(saltedPassword, "Client Key");
-      const storedKey = await crypto4.sha256(clientKey);
-      const clientSignature = await crypto4.hmacSha256(storedKey, authMessage);
+      const saltedPassword = await crypto5.deriveKey(password, saltBytes, sv.iteration);
+      const clientKey = await crypto5.hmacSha256(saltedPassword, "Client Key");
+      const storedKey = await crypto5.sha256(clientKey);
+      const clientSignature = await crypto5.hmacSha256(storedKey, authMessage);
       const clientProof = xorBuffers(Buffer.from(clientKey), Buffer.from(clientSignature)).toString("base64");
-      const serverKey = await crypto4.hmacSha256(saltedPassword, "Server Key");
-      const serverSignatureBytes = await crypto4.hmacSha256(serverKey, authMessage);
+      const serverKey = await crypto5.hmacSha256(saltedPassword, "Server Key");
+      const serverSignatureBytes = await crypto5.hmacSha256(serverKey, authMessage);
       session.message = "SASLResponse";
       session.serverSignature = Buffer.from(serverSignatureBytes).toString("base64");
       session.response = clientFinalMessageWithoutProof + ",p=" + clientProof;
@@ -29858,21 +29971,21 @@ var require_sasl = __commonJS({
         throw new Error("SASL: SCRAM-SERVER-FINAL-MESSAGE: server signature does not match");
       }
     }
-    function isPrintableChars(text2) {
-      if (typeof text2 !== "string") {
+    function isPrintableChars(text3) {
+      if (typeof text3 !== "string") {
         throw new TypeError("SASL: text must be a string");
       }
-      return text2.split("").map((_, i) => text2.charCodeAt(i)).every((c) => c >= 33 && c <= 43 || c >= 45 && c <= 126);
+      return text3.split("").map((_, i) => text3.charCodeAt(i)).every((c) => c >= 33 && c <= 43 || c >= 45 && c <= 126);
     }
-    function isBase64(text2) {
-      return /^(?:[a-zA-Z0-9+/]{4})*(?:[a-zA-Z0-9+/]{2}==|[a-zA-Z0-9+/]{3}=)?$/.test(text2);
+    function isBase64(text3) {
+      return /^(?:[a-zA-Z0-9+/]{4})*(?:[a-zA-Z0-9+/]{2}==|[a-zA-Z0-9+/]{3}=)?$/.test(text3);
     }
-    function parseAttributePairs(text2) {
-      if (typeof text2 !== "string") {
+    function parseAttributePairs(text3) {
+      if (typeof text3 !== "string") {
         throw new TypeError("SASL: attribute pairs text must be a string");
       }
       return new Map(
-        text2.split(",").map((attrValue) => {
+        text3.split(",").map((attrValue) => {
           if (!/^.=/.test(attrValue)) {
             throw new Error("SASL: Invalid attribute pair entry");
           }
@@ -30731,9 +30844,9 @@ var require_messages = __commonJS({
     };
     exports.ReadyForQueryMessage = ReadyForQueryMessage;
     var CommandCompleteMessage = class {
-      constructor(length, text2) {
+      constructor(length, text3) {
         this.length = length;
-        this.text = text2;
+        this.text = text3;
         this.name = "commandComplete";
       }
     };
@@ -30882,8 +30995,8 @@ var require_serializer = __commonJS({
         /* code.startup */
       );
     };
-    var query = (text2) => {
-      return writer.addCString(text2).flush(
+    var query = (text3) => {
+      return writer.addCString(text3).flush(
         81
         /* code.query */
       );
@@ -31003,8 +31116,8 @@ var require_serializer = __commonJS({
       return msg.name ? cstringMessage(68, `${msg.type}${msg.name || ""}`) : msg.type === "P" ? emptyDescribePortal : emptyDescribeStatement;
     };
     var close = (msg) => {
-      const text2 = `${msg.type}${msg.name || ""}`;
-      return cstringMessage(67, text2);
+      const text3 = `${msg.type}${msg.name || ""}`;
+      return cstringMessage(67, text3);
     };
     var copyData = (chunk) => {
       return writer.add(chunk).flush(
@@ -31276,8 +31389,8 @@ var require_parser = __commonJS({
       return new messages_1.ReadyForQueryMessage(LATEINIT_LENGTH, status);
     };
     var parseCommandCompleteMessage = (reader) => {
-      const text2 = reader.cstring();
-      return new messages_1.CommandCompleteMessage(LATEINIT_LENGTH, text2);
+      const text3 = reader.cstring();
+      return new messages_1.CommandCompleteMessage(LATEINIT_LENGTH, text3);
     };
     var parseCopyData = (reader, length) => {
       const chunk = reader.bytes(length - 4);
@@ -31440,7 +31553,7 @@ var require_dist2 = __commonJS({
     function parse3(stream, callback) {
       const parser = new parser_1.Parser();
       stream.on("data", (buffer) => parser.parse(buffer, callback));
-      return new Promise((resolve) => stream.on("end", () => resolve()));
+      return new Promise((resolve3) => stream.on("end", () => resolve3()));
     }
     exports.parse = parse3;
   }
@@ -31644,8 +31757,8 @@ var require_connection = __commonJS({
         }
         return this.stream.write(buffer);
       }
-      query(text2) {
-        this._send(serialize.query(text2));
+      query(text3) {
+        this._send(serialize.query(text3));
       }
       // send parse message
       parse(query) {
@@ -32009,7 +32122,7 @@ var require_client = __commonJS({
     var Query2 = require_query();
     var defaults2 = require_defaults();
     var Connection2 = require_connection();
-    var crypto4 = require_utils5();
+    var crypto5 = require_utils5();
     var activeQueryDeprecationNotice = nodeUtils.deprecate(
       () => {
       },
@@ -32171,12 +32284,12 @@ var require_client = __commonJS({
           this._connect(callback);
           return;
         }
-        return new this._Promise((resolve, reject) => {
+        return new this._Promise((resolve3, reject) => {
           this._connect((error40) => {
             if (error40) {
               reject(error40);
             } else {
-              resolve(this);
+              resolve3(this);
             }
           });
         });
@@ -32244,7 +32357,7 @@ var require_client = __commonJS({
       _handleAuthMD5Password(msg) {
         this._getPassword(async () => {
           try {
-            const hashedPassword = await crypto4.postgresMd5PasswordHash(this.user, this.password, msg.salt);
+            const hashedPassword = await crypto5.postgresMd5PasswordHash(this.user, this.password, msg.salt);
             this.connection.password(hashedPassword);
           } catch (e) {
             this.emit("error", e);
@@ -32522,8 +32635,8 @@ var require_client = __commonJS({
           readTimeout = config2.query_timeout || this.connectionParameters.query_timeout;
           query = new Query2(config2, values, callback);
           if (!query.callback) {
-            result = new this._Promise((resolve, reject) => {
-              query.callback = (err, res) => err ? reject(err) : resolve(res);
+            result = new this._Promise((resolve3, reject) => {
+              query.callback = (err, res) => err ? reject(err) : resolve3(res);
             }).catch((err) => {
               Error.captureStackTrace(err);
               throw err;
@@ -32541,9 +32654,9 @@ var require_client = __commonJS({
             queryCallback(error40);
             query.callback = () => {
             };
-            const index = this._queryQueue.indexOf(query);
-            if (index > -1) {
-              this._queryQueue.splice(index, 1);
+            const index2 = this._queryQueue.indexOf(query);
+            if (index2 > -1) {
+              this._queryQueue.splice(index2, 1);
             }
             this._pulseQueryQueue();
           }, readTimeout);
@@ -32600,8 +32713,8 @@ var require_client = __commonJS({
         if (cb) {
           this.connection.once("end", cb);
         } else {
-          return new this._Promise((resolve) => {
-            this.connection.once("end", resolve);
+          return new this._Promise((resolve3) => {
+            this.connection.once("end", resolve3);
           });
         }
       }
@@ -32650,8 +32763,8 @@ var require_pg_pool = __commonJS({
       const cb = function(err, client) {
         err ? rej(err) : res(client);
       };
-      const result = new Promise2(function(resolve, reject) {
-        res = resolve;
+      const result = new Promise2(function(resolve3, reject) {
+        res = resolve3;
         rej = reject;
       }).catch((err) => {
         Error.captureStackTrace(err);
@@ -32712,7 +32825,7 @@ var require_pg_pool = __commonJS({
         if (typeof Promise2.try === "function") {
           return Promise2.try(f);
         }
-        return new Promise2((resolve) => resolve(f()));
+        return new Promise2((resolve3) => resolve3(f()));
       }
       _isFull() {
         return this._clients.length >= this.options.max;
@@ -32962,9 +33075,9 @@ var require_pg_pool = __commonJS({
         this._idle.push(new IdleItem(client, idleListener, tid));
         this._pulseQueue();
       }
-      query(text2, values, cb) {
-        if (typeof text2 === "function") {
-          const response2 = promisify(this.Promise, text2);
+      query(text3, values, cb) {
+        if (typeof text3 === "function") {
+          const response2 = promisify(this.Promise, text3);
           setImmediate(function() {
             return response2.callback(new Error("Passing a function as the first parameter to pool.query is not supported"));
           });
@@ -32992,7 +33105,7 @@ var require_pg_pool = __commonJS({
           client.once("error", onError);
           this.log("dispatching query");
           try {
-            client.query(text2, values, (err2, res) => {
+            client.query(text3, values, (err2, res) => {
               this.log("query dispatched");
               client.removeListener("error", onError);
               if (clientReleased) {
@@ -33105,8 +33218,8 @@ var require_query2 = __commonJS({
     NativeQuery.prototype._getPromise = function() {
       if (this._promise) return this._promise;
       this._promise = new Promise(
-        function(resolve, reject) {
-          this._once("end", resolve);
+        function(resolve3, reject) {
+          this._once("end", resolve3);
           this._once("error", reject);
         }.bind(this)
       );
@@ -33283,12 +33396,12 @@ var require_client2 = __commonJS({
         this._connect(callback);
         return;
       }
-      return new this._Promise((resolve, reject) => {
+      return new this._Promise((resolve3, reject) => {
         this._connect((error40) => {
           if (error40) {
             reject(error40);
           } else {
-            resolve(this);
+            resolve3(this);
           }
         });
       });
@@ -33312,8 +33425,8 @@ var require_client2 = __commonJS({
         query = new NativeQuery(config2, values, callback);
         if (!query.callback) {
           let resolveOut, rejectOut;
-          result = new this._Promise((resolve, reject) => {
-            resolveOut = resolve;
+          result = new this._Promise((resolve3, reject) => {
+            resolveOut = resolve3;
             rejectOut = reject;
           }).catch((err) => {
             Error.captureStackTrace(err);
@@ -33333,9 +33446,9 @@ var require_client2 = __commonJS({
           queryCallback(error40);
           query.callback = () => {
           };
-          const index = this._queryQueue.indexOf(query);
-          if (index > -1) {
-            this._queryQueue.splice(index, 1);
+          const index2 = this._queryQueue.indexOf(query);
+          if (index2 > -1) {
+            this._queryQueue.splice(index2, 1);
           }
           this._pulseQueryQueue();
         }, readTimeout);
@@ -33373,8 +33486,8 @@ var require_client2 = __commonJS({
       }
       let result;
       if (!cb) {
-        result = new this._Promise(function(resolve, reject) {
-          cb = (err) => err ? reject(err) : resolve();
+        result = new this._Promise(function(resolve3, reject) {
+          cb = (err) => err ? reject(err) : resolve3();
         });
       }
       this.native.end(function() {
@@ -34134,23 +34247,23 @@ var require_helpers = __commonJS({
   "../../node_modules/.pnpm/ip-address@10.2.0/node_modules/ip-address/dist/v6/helpers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.escapeHtml = escapeHtml;
+    exports.escapeHtml = escapeHtml2;
     exports.spanAllZeroes = spanAllZeroes;
     exports.spanAll = spanAll;
     exports.spanLeadingZeroes = spanLeadingZeroes;
     exports.simpleGroup = simpleGroup;
-    function escapeHtml(s) {
+    function escapeHtml2(s) {
       return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
     function spanAllZeroes(s) {
-      return escapeHtml(s).replace(/(0+)/g, '<span class="zero">$1</span>');
+      return escapeHtml2(s).replace(/(0+)/g, '<span class="zero">$1</span>');
     }
     function spanAll(s, offset = 0) {
       const letters = s.split("");
-      return letters.map((n, i) => `<span class="digit value-${escapeHtml(n)} position-${i + offset}">${spanAllZeroes(n)}</span>`).join("");
+      return letters.map((n, i) => `<span class="digit value-${escapeHtml2(n)} position-${i + offset}">${spanAllZeroes(n)}</span>`).join("");
     }
     function spanLeadingZeroesSimple(group) {
-      return escapeHtml(group).replace(/^(0+)/, '<span class="zero">$1</span>');
+      return escapeHtml2(group).replace(/^(0+)/, '<span class="zero">$1</span>');
     }
     function spanLeadingZeroes(address) {
       const groups = address.split(":");
@@ -34802,8 +34915,8 @@ var require_ipv6 = __commonJS({
         }
         const zeroLengths = zeroes.map((n) => n[1] - n[0] + 1);
         if (zeroes.length > 0) {
-          const index = zeroLengths.indexOf(Math.max(...zeroLengths));
-          groups = compact(this.parsedAddress, zeroes[index]);
+          const index2 = zeroLengths.indexOf(Math.max(...zeroLengths));
+          groups = compact(this.parsedAddress, zeroes[index2]);
         } else {
           groups = this.parsedAddress;
         }
@@ -35428,12 +35541,584 @@ var require_ip_address = __commonJS({
 });
 
 // src/app.ts
-var import_express16 = __toESM(require_express2(), 1);
+var import_express19 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
+var import_cookie_parser = __toESM(require_cookie_parser(), 1);
+
+// ../../node_modules/.pnpm/helmet@8.3.0/node_modules/helmet/index.mjs
+var dashify = (str) => str.replace(/[A-Z]/g, (capitalLetter) => "-" + capitalLetter.toLowerCase());
+var errify = (err) => err instanceof Error ? err : new Error(String(err));
+var isString = (value) => typeof value === "string";
+var throwErrorIfExists = (err) => {
+  if (err) throw err;
+};
+var dangerouslyDisableDefaultSrc = /* @__PURE__ */ Symbol("dangerouslyDisableDefaultSrc");
+var SHOULD_BE_QUOTED = /* @__PURE__ */ new Set(["none", "self", "strict-dynamic", "report-sample", "inline-speculation-rules", "unsafe-inline", "unsafe-eval", "unsafe-hashes", "wasm-unsafe-eval"]);
+var getDefaultDirectives = () => ({
+  "default-src": ["'self'"],
+  "base-uri": ["'self'"],
+  "font-src": ["'self'", "https:", "data:"],
+  "form-action": ["'self'"],
+  "frame-ancestors": ["'self'"],
+  "img-src": ["'self'", "data:"],
+  "object-src": ["'none'"],
+  "script-src": ["'self'"],
+  "script-src-attr": ["'none'"],
+  "style-src": ["'self'", "https:", "'unsafe-inline'"],
+  "upgrade-insecure-requests": []
+});
+var parseDirectiveName = (rawDirectiveName) => {
+  if (rawDirectiveName.length === 0 || !/^[a-z](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(rawDirectiveName)) {
+    throw new Error(`Content-Security-Policy received an invalid directive name ${JSON.stringify(rawDirectiveName)}`);
+  }
+  return dashify(rawDirectiveName);
+};
+var getDirectiveValueValidationError = (directiveName, directiveValue) => /;|,/.test(directiveValue) ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`) : null;
+var getDirectiveValueEntryValidationError = (directiveName, directiveValueEntry) => SHOULD_BE_QUOTED.has(directiveValueEntry) || directiveValueEntry.startsWith("nonce-") || directiveValueEntry.startsWith("sha256-") || directiveValueEntry.startsWith("sha384-") || directiveValueEntry.startsWith("sha512-") ? new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}. ${JSON.stringify(directiveValueEntry)} should be quoted`) : null;
+var stringifyDirectiveValue = (directiveValue) => {
+  if (Array.isArray(directiveValue)) {
+    return directiveValue.every(isString) ? directiveValue.join(" ") : null;
+  }
+  if (directiveValue instanceof Set) {
+    return stringifyDirectiveValue(Array.from(directiveValue));
+  }
+  return null;
+};
+var parseDirectives = ({ useDefaults = true, directives: rawDirectives = {} }) => {
+  const result = new Map(useDefaults ? Object.entries(getDefaultDirectives()) : []);
+  let hasDisabledDefaultSrc = false;
+  const directiveNamesSeen = /* @__PURE__ */ new Set();
+  for (const rawDirectiveName in rawDirectives) {
+    if (!Object.hasOwn(rawDirectives, rawDirectiveName)) {
+      continue;
+    }
+    const directiveName = parseDirectiveName(rawDirectiveName);
+    if (directiveNamesSeen.has(directiveName)) {
+      throw new Error(`Content-Security-Policy received a duplicate directive ${JSON.stringify(directiveName)}`);
+    }
+    directiveNamesSeen.add(directiveName);
+    const rawDirectiveValue = rawDirectives[rawDirectiveName];
+    let directiveValue;
+    if (rawDirectiveValue === null) {
+      if (directiveName === "default-src") {
+        throw new Error("Content-Security-Policy needs a default-src but it was set to `null`. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
+      }
+      result.delete(directiveName);
+      continue;
+    } else if (typeof rawDirectiveValue === "string") {
+      directiveValue = [rawDirectiveValue];
+    } else if (rawDirectiveValue === dangerouslyDisableDefaultSrc) {
+      if (directiveName === "default-src") {
+        hasDisabledDefaultSrc = true;
+        result.delete(directiveName);
+        continue;
+      } else {
+        throw new Error(`Content-Security-Policy: tried to disable ${JSON.stringify(directiveName)} as if it were default-src; simply omit the key`);
+      }
+    } else if (rawDirectiveValue) {
+      directiveValue = rawDirectiveValue;
+    } else {
+      throw new Error(`Content-Security-Policy received an invalid directive value for ${JSON.stringify(directiveName)}`);
+    }
+    for (const element of directiveValue) {
+      if (typeof element !== "string") continue;
+      throwErrorIfExists(getDirectiveValueValidationError(directiveName, element) ?? getDirectiveValueEntryValidationError(directiveName, element));
+    }
+    result.set(directiveName, directiveValue);
+  }
+  if (!result.size) {
+    throw new Error("Content-Security-Policy has no directives. Either set some or disable the header");
+  }
+  if (!result.has("default-src") && !hasDisabledDefaultSrc) {
+    throw new Error("Content-Security-Policy needs a default-src but none was provided. If you really want to disable it, set it to `contentSecurityPolicy.dangerouslyDisableDefaultSrc`.");
+  }
+  let stringResult = "";
+  let shouldUseStringResult = true;
+  for (const [directiveName, directiveValue] of result) {
+    const directiveValueString = stringifyDirectiveValue(directiveValue);
+    if (directiveValueString === null) {
+      shouldUseStringResult = false;
+      break;
+    } else {
+      if (stringResult) stringResult += ";";
+      stringResult += directiveValueString ? `${directiveName} ${directiveValueString}` : directiveName;
+    }
+  }
+  return shouldUseStringResult ? stringResult : result;
+};
+function getHeaderValue(req, res, normalizedDirectives) {
+  const result = [];
+  for (const [directiveName, rawDirectiveValue] of normalizedDirectives) {
+    let directiveValue = "";
+    for (const element of rawDirectiveValue) {
+      if (typeof element === "function") {
+        let newElement;
+        try {
+          newElement = element(req, res);
+        } catch (err2) {
+          return errify(err2);
+        }
+        const err = getDirectiveValueEntryValidationError(directiveName, newElement);
+        if (err) return err;
+        directiveValue += " " + newElement;
+      } else {
+        directiveValue += " " + element;
+      }
+    }
+    if (directiveValue) {
+      const err = getDirectiveValueValidationError(directiveName, directiveValue);
+      if (err) return err;
+      result.push(`${directiveName}${directiveValue}`);
+    } else {
+      result.push(directiveName);
+    }
+  }
+  return result.join(";");
+}
+var contentSecurityPolicy = function contentSecurityPolicy2(options = {}) {
+  const headerName = options.reportOnly ? "Content-Security-Policy-Report-Only" : "Content-Security-Policy";
+  const parsedDirectives = parseDirectives(options);
+  if (typeof parsedDirectives === "string") {
+    return function contentSecurityPolicyMiddleware(_req, res, next) {
+      res.setHeader(headerName, parsedDirectives);
+      next();
+    };
+  }
+  return function contentSecurityPolicyMiddleware(req, res, next) {
+    const result = getHeaderValue(req, res, parsedDirectives);
+    if (result instanceof Error) {
+      next(result);
+    } else {
+      res.setHeader(headerName, result);
+      next();
+    }
+  };
+};
+contentSecurityPolicy.getDefaultDirectives = getDefaultDirectives;
+contentSecurityPolicy.dangerouslyDisableDefaultSrc = dangerouslyDisableDefaultSrc;
+var ALLOWED_POLICIES$2 = /* @__PURE__ */ new Set(["require-corp", "credentialless", "unsafe-none"]);
+function getHeaderValueFromOptions$6({ policy = "require-corp" }) {
+  if (ALLOWED_POLICIES$2.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Embedder-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginEmbedderPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$6(options);
+  return function crossOriginEmbedderPolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Embedder-Policy", headerValue);
+    next();
+  };
+}
+var ALLOWED_POLICIES$1 = /* @__PURE__ */ new Set(["same-origin", "same-origin-allow-popups", "noopener-allow-popups", "unsafe-none"]);
+function getHeaderValueFromOptions$5({ policy = "same-origin" }) {
+  if (ALLOWED_POLICIES$1.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Opener-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginOpenerPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$5(options);
+  return function crossOriginOpenerPolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Opener-Policy", headerValue);
+    next();
+  };
+}
+var ALLOWED_POLICIES = /* @__PURE__ */ new Set(["same-origin", "same-site", "cross-origin"]);
+function getHeaderValueFromOptions$4({ policy = "same-origin" }) {
+  if (ALLOWED_POLICIES.has(policy)) {
+    return policy;
+  } else {
+    throw new Error(`Cross-Origin-Resource-Policy does not support the ${JSON.stringify(policy)} policy`);
+  }
+}
+function crossOriginResourcePolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$4(options);
+  return function crossOriginResourcePolicyMiddleware(_req, res, next) {
+    res.setHeader("Cross-Origin-Resource-Policy", headerValue);
+    next();
+  };
+}
+function originAgentCluster() {
+  return function originAgentClusterMiddleware(_req, res, next) {
+    res.setHeader("Origin-Agent-Cluster", "?1");
+    next();
+  };
+}
+var ALLOWED_TOKENS = /* @__PURE__ */ new Set(["no-referrer", "no-referrer-when-downgrade", "same-origin", "origin", "strict-origin", "origin-when-cross-origin", "strict-origin-when-cross-origin", "unsafe-url", ""]);
+function getHeaderValueFromOptions$3({ policy = ["no-referrer"] }) {
+  const tokens = typeof policy === "string" ? [policy] : policy;
+  if (tokens.length === 0) {
+    throw new Error("Referrer-Policy received no policy tokens");
+  }
+  const tokensSeen = /* @__PURE__ */ new Set();
+  tokens.forEach((token) => {
+    if (!ALLOWED_TOKENS.has(token)) {
+      throw new Error(`Referrer-Policy received an unexpected policy token ${JSON.stringify(token)}`);
+    } else if (tokensSeen.has(token)) {
+      throw new Error(`Referrer-Policy received a duplicate policy token ${JSON.stringify(token)}`);
+    }
+    tokensSeen.add(token);
+  });
+  return tokens.join(",");
+}
+function referrerPolicy(options = {}) {
+  const headerValue = getHeaderValueFromOptions$3(options);
+  return function referrerPolicyMiddleware(_req, res, next) {
+    res.setHeader("Referrer-Policy", headerValue);
+    next();
+  };
+}
+var DEFAULT_MAX_AGE = 365 * 24 * 60 * 60;
+function parseMaxAge(value = DEFAULT_MAX_AGE) {
+  if (value >= 0 && Number.isFinite(value)) {
+    return Math.floor(value);
+  } else {
+    throw new Error(`Strict-Transport-Security: ${JSON.stringify(value)} is not a valid value for maxAge. Please choose a positive integer.`);
+  }
+}
+function getHeaderValueFromOptions$2(options) {
+  if ("maxage" in options) {
+    throw new Error("Strict-Transport-Security received an unsupported property, `maxage`. Did you mean to pass `maxAge`?");
+  }
+  if ("includeSubdomains" in options) {
+    throw new Error('Strict-Transport-Security middleware should use `includeSubDomains` instead of `includeSubdomains`. (The correct one has an uppercase "D".)');
+  }
+  const directives = [`max-age=${parseMaxAge(options.maxAge)}`];
+  if (options.includeSubDomains === void 0 || options.includeSubDomains) {
+    directives.push("includeSubDomains");
+  }
+  if (options.preload) {
+    directives.push("preload");
+  }
+  return directives.join("; ");
+}
+function strictTransportSecurity(options = {}) {
+  const headerValue = getHeaderValueFromOptions$2(options);
+  return function strictTransportSecurityMiddleware(_req, res, next) {
+    res.setHeader("Strict-Transport-Security", headerValue);
+    next();
+  };
+}
+function xContentTypeOptions() {
+  return function xContentTypeOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    next();
+  };
+}
+function xDnsPrefetchControl(options = {}) {
+  const headerValue = options.allow ? "on" : "off";
+  return function xDnsPrefetchControlMiddleware(_req, res, next) {
+    res.setHeader("X-DNS-Prefetch-Control", headerValue);
+    next();
+  };
+}
+function xDownloadOptions() {
+  return function xDownloadOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Download-Options", "noopen");
+    next();
+  };
+}
+function getHeaderValueFromOptions$1({ action = "sameorigin" }) {
+  const normalizedAction = typeof action === "string" ? action.toUpperCase() : action;
+  switch (normalizedAction) {
+    case "SAME-ORIGIN":
+      return "SAMEORIGIN";
+    case "DENY":
+    case "SAMEORIGIN":
+      return normalizedAction;
+    default:
+      throw new Error(`X-Frame-Options received an invalid action ${JSON.stringify(action)}`);
+  }
+}
+function xFrameOptions(options = {}) {
+  const headerValue = getHeaderValueFromOptions$1(options);
+  return function xFrameOptionsMiddleware(_req, res, next) {
+    res.setHeader("X-Frame-Options", headerValue);
+    next();
+  };
+}
+var ALLOWED_PERMITTED_POLICIES = /* @__PURE__ */ new Set(["none", "master-only", "by-content-type", "all"]);
+function getHeaderValueFromOptions({ permittedPolicies = "none" }) {
+  if (ALLOWED_PERMITTED_POLICIES.has(permittedPolicies)) {
+    return permittedPolicies;
+  } else {
+    throw new Error(`X-Permitted-Cross-Domain-Policies does not support ${JSON.stringify(permittedPolicies)}`);
+  }
+}
+function xPermittedCrossDomainPolicies(options = {}) {
+  const headerValue = getHeaderValueFromOptions(options);
+  return function xPermittedCrossDomainPoliciesMiddleware(_req, res, next) {
+    res.setHeader("X-Permitted-Cross-Domain-Policies", headerValue);
+    next();
+  };
+}
+function xPoweredBy() {
+  return function xPoweredByMiddleware(_req, res, next) {
+    res.removeHeader("X-Powered-By");
+    next();
+  };
+}
+function xXssProtection() {
+  return function xXssProtectionMiddleware(_req, res, next) {
+    res.setHeader("X-XSS-Protection", "0");
+    next();
+  };
+}
+function getMiddlewareFunctionsFromOptions(options) {
+  const result = [];
+  switch (options.contentSecurityPolicy) {
+    case void 0:
+    case true:
+      result.push(contentSecurityPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(contentSecurityPolicy(options.contentSecurityPolicy));
+      break;
+  }
+  switch (options.crossOriginEmbedderPolicy) {
+    case void 0:
+    case false:
+      break;
+    case true:
+      result.push(crossOriginEmbedderPolicy());
+      break;
+    default:
+      result.push(crossOriginEmbedderPolicy(options.crossOriginEmbedderPolicy));
+      break;
+  }
+  switch (options.crossOriginOpenerPolicy) {
+    case void 0:
+    case true:
+      result.push(crossOriginOpenerPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(crossOriginOpenerPolicy(options.crossOriginOpenerPolicy));
+      break;
+  }
+  switch (options.crossOriginResourcePolicy) {
+    case void 0:
+    case true:
+      result.push(crossOriginResourcePolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(crossOriginResourcePolicy(options.crossOriginResourcePolicy));
+      break;
+  }
+  switch (options.originAgentCluster) {
+    case void 0:
+    case true:
+      result.push(originAgentCluster());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("Origin-Agent-Cluster does not take options. Remove the property to silence this warning.");
+      result.push(originAgentCluster());
+      break;
+  }
+  switch (options.referrerPolicy) {
+    case void 0:
+    case true:
+      result.push(referrerPolicy());
+      break;
+    case false:
+      break;
+    default:
+      result.push(referrerPolicy(options.referrerPolicy));
+      break;
+  }
+  if ("strictTransportSecurity" in options && "hsts" in options) {
+    throw new Error("Strict-Transport-Security option was specified twice. Remove the `hsts` option to fix this error.");
+  }
+  const strictTransportSecurityOption = options.strictTransportSecurity ?? options.hsts;
+  switch (strictTransportSecurityOption) {
+    case void 0:
+    case true:
+      result.push(strictTransportSecurity());
+      break;
+    case false:
+      break;
+    default:
+      result.push(strictTransportSecurity(strictTransportSecurityOption));
+      break;
+  }
+  if ("xContentTypeOptions" in options && "noSniff" in options) {
+    throw new Error("X-Content-Type-Options option was specified twice. Remove the `noSniff` option to fix this error.");
+  }
+  const xContentTypeOptionsOption = options.xContentTypeOptions ?? options.noSniff;
+  switch (xContentTypeOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xContentTypeOptions());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Content-Type-Options does not take options. Remove the property to silence this warning.");
+      result.push(xContentTypeOptions());
+      break;
+  }
+  if ("xDnsPrefetchControl" in options && "dnsPrefetchControl" in options) {
+    throw new Error("X-DNS-Prefetch-Control option was specified twice. Remove the `dnsPrefetchControl` option to fix this error.");
+  }
+  const xDnsPrefetchControlOption = options.xDnsPrefetchControl ?? options.dnsPrefetchControl;
+  switch (xDnsPrefetchControlOption) {
+    case void 0:
+    case true:
+      result.push(xDnsPrefetchControl());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xDnsPrefetchControl(xDnsPrefetchControlOption));
+      break;
+  }
+  if ("xDownloadOptions" in options && "ieNoOpen" in options) {
+    throw new Error("X-Download-Options option was specified twice. Remove the `ieNoOpen` option to fix this error.");
+  }
+  const xDownloadOptionsOption = options.xDownloadOptions ?? options.ieNoOpen;
+  switch (xDownloadOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xDownloadOptions());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Download-Options does not take options. Remove the property to silence this warning.");
+      result.push(xDownloadOptions());
+      break;
+  }
+  if ("xFrameOptions" in options && "frameguard" in options) {
+    throw new Error("X-Frame-Options option was specified twice. Remove the `frameguard` option to fix this error.");
+  }
+  const xFrameOptionsOption = options.xFrameOptions ?? options.frameguard;
+  switch (xFrameOptionsOption) {
+    case void 0:
+    case true:
+      result.push(xFrameOptions());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xFrameOptions(xFrameOptionsOption));
+      break;
+  }
+  if ("xPermittedCrossDomainPolicies" in options && "permittedCrossDomainPolicies" in options) {
+    throw new Error("X-Permitted-Cross-Domain-Policies option was specified twice. Remove the `permittedCrossDomainPolicies` option to fix this error.");
+  }
+  const xPermittedCrossDomainPoliciesOption = options.xPermittedCrossDomainPolicies ?? options.permittedCrossDomainPolicies;
+  switch (xPermittedCrossDomainPoliciesOption) {
+    case void 0:
+    case true:
+      result.push(xPermittedCrossDomainPolicies());
+      break;
+    case false:
+      break;
+    default:
+      result.push(xPermittedCrossDomainPolicies(xPermittedCrossDomainPoliciesOption));
+      break;
+  }
+  if ("xPoweredBy" in options && "hidePoweredBy" in options) {
+    throw new Error("X-Powered-By option was specified twice. Remove the `hidePoweredBy` option to fix this error.");
+  }
+  const xPoweredByOption = options.xPoweredBy ?? options.hidePoweredBy;
+  switch (xPoweredByOption) {
+    case void 0:
+    case true:
+      result.push(xPoweredBy());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-Powered-By does not take options. Remove the property to silence this warning.");
+      result.push(xPoweredBy());
+      break;
+  }
+  if ("xXssProtection" in options && "xssFilter" in options) {
+    throw new Error("X-XSS-Protection option was specified twice. Remove the `xssFilter` option to fix this error.");
+  }
+  const xXssProtectionOption = options.xXssProtection ?? options.xssFilter;
+  switch (xXssProtectionOption) {
+    case void 0:
+    case true:
+      result.push(xXssProtection());
+      break;
+    case false:
+      break;
+    default:
+      console.warn("X-XSS-Protection does not take options. Remove the property to silence this warning.");
+      result.push(xXssProtection());
+      break;
+  }
+  return result;
+}
+var helmet = Object.assign(
+  function helmet2(options = {}) {
+    if (options.constructor?.name === "IncomingMessage") {
+      throw new Error("It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`.");
+    }
+    const middlewareFunctions = getMiddlewareFunctionsFromOptions(options);
+    return function helmetMiddleware(req, res, next) {
+      let middlewareIndex = 0;
+      (function internalNext(err) {
+        if (err) {
+          next(err);
+          return;
+        }
+        const middlewareFunction = middlewareFunctions[middlewareIndex];
+        if (middlewareFunction) {
+          middlewareIndex++;
+          middlewareFunction(req, res, internalNext);
+        } else {
+          next();
+        }
+      })();
+    };
+  },
+  {
+    contentSecurityPolicy,
+    crossOriginEmbedderPolicy,
+    crossOriginOpenerPolicy,
+    crossOriginResourcePolicy,
+    originAgentCluster,
+    referrerPolicy,
+    strictTransportSecurity,
+    xContentTypeOptions,
+    xDnsPrefetchControl,
+    xDownloadOptions,
+    xFrameOptions,
+    xPermittedCrossDomainPolicies,
+    xPoweredBy,
+    xXssProtection,
+    // Legacy aliases
+    dnsPrefetchControl: xDnsPrefetchControl,
+    xssFilter: xXssProtection,
+    permittedCrossDomainPolicies: xPermittedCrossDomainPolicies,
+    ieNoOpen: xDownloadOptions,
+    noSniff: xContentTypeOptions,
+    frameguard: xFrameOptions,
+    hidePoweredBy: xPoweredBy,
+    hsts: strictTransportSecurity
+  }
+);
+
+// src/app.ts
 var import_pino_http = __toESM(require_logger(), 1);
+import { resolve as resolve2 } from "path";
+import { existsSync } from "fs";
 
 // src/routes/index.ts
-var import_express14 = __toESM(require_express2(), 1);
+var import_express16 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -37923,10 +38608,10 @@ var ZodObject = class _ZodObject extends ZodType {
   //   }) as any;
   //   return merged;
   // }
-  catchall(index) {
+  catchall(index2) {
     return new _ZodObject({
       ...this._def,
-      catchall: index
+      catchall: index2
     });
   }
   pick(mask) {
@@ -38244,9 +38929,9 @@ function mergeValues(a, b) {
       return { valid: false };
     }
     const newArray = [];
-    for (let index = 0; index < a.length; index++) {
-      const itemA = a[index];
-      const itemB = b[index];
+    for (let index2 = 0; index2 < a.length; index2++) {
+      const itemA = a[index2];
+      const itemB = b[index2];
       const sharedValue = mergeValues(itemA, itemB);
       if (!sharedValue.valid) {
         return { valid: false };
@@ -38452,10 +39137,10 @@ var ZodMap = class extends ZodType {
     }
     const keyType = this._def.keyType;
     const valueType = this._def.valueType;
-    const pairs = [...ctx.data.entries()].map(([key, value], index) => {
+    const pairs = [...ctx.data.entries()].map(([key, value], index2) => {
       return {
-        key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, [index, "key"])),
-        value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index, "value"]))
+        key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, [index2, "key"])),
+        value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index2, "value"]))
       };
     });
     if (ctx.common.async) {
@@ -41334,8 +42019,8 @@ function haveSameKeys(left, right) {
   if (leftKeys.length !== rightKeys.length) {
     return false;
   }
-  for (const [index, key] of leftKeys.entries()) {
-    if (key !== rightKeys[index]) {
+  for (const [index2, key] of leftKeys.entries()) {
+    if (key !== rightKeys[index2]) {
       return false;
     }
   }
@@ -42830,6 +43515,118 @@ var pgTable = (name, columns, extraConfig) => {
   return pgTableWithSchema(name, columns, extraConfig, void 0);
 };
 
+// ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/indexes.js
+var IndexBuilderOn = class {
+  constructor(unique, name) {
+    this.unique = unique;
+    this.name = name;
+  }
+  static [entityKind] = "PgIndexBuilderOn";
+  on(...columns) {
+    return new IndexBuilder(
+      columns.map((it) => {
+        if (is(it, SQL)) {
+          return it;
+        }
+        it = it;
+        const clonedIndexedColumn = new IndexedColumn(it.name, !!it.keyAsName, it.columnType, it.indexConfig);
+        it.indexConfig = JSON.parse(JSON.stringify(it.defaultConfig));
+        return clonedIndexedColumn;
+      }),
+      this.unique,
+      false,
+      this.name
+    );
+  }
+  onOnly(...columns) {
+    return new IndexBuilder(
+      columns.map((it) => {
+        if (is(it, SQL)) {
+          return it;
+        }
+        it = it;
+        const clonedIndexedColumn = new IndexedColumn(it.name, !!it.keyAsName, it.columnType, it.indexConfig);
+        it.indexConfig = it.defaultConfig;
+        return clonedIndexedColumn;
+      }),
+      this.unique,
+      true,
+      this.name
+    );
+  }
+  /**
+   * Specify what index method to use. Choices are `btree`, `hash`, `gist`, `spgist`, `gin`, `brin`, or user-installed access methods like `bloom`. The default method is `btree.
+   *
+   * If you have the `pg_vector` extension installed in your database, you can use the `hnsw` and `ivfflat` options, which are predefined types.
+   *
+   * **You can always specify any string you want in the method, in case Drizzle doesn't have it natively in its types**
+   *
+   * @param method The name of the index method to be used
+   * @param columns
+   * @returns
+   */
+  using(method, ...columns) {
+    return new IndexBuilder(
+      columns.map((it) => {
+        if (is(it, SQL)) {
+          return it;
+        }
+        it = it;
+        const clonedIndexedColumn = new IndexedColumn(it.name, !!it.keyAsName, it.columnType, it.indexConfig);
+        it.indexConfig = JSON.parse(JSON.stringify(it.defaultConfig));
+        return clonedIndexedColumn;
+      }),
+      this.unique,
+      true,
+      this.name,
+      method
+    );
+  }
+};
+var IndexBuilder = class {
+  static [entityKind] = "PgIndexBuilder";
+  /** @internal */
+  config;
+  constructor(columns, unique, only, name, method = "btree") {
+    this.config = {
+      name,
+      columns,
+      unique,
+      only,
+      method
+    };
+  }
+  concurrently() {
+    this.config.concurrently = true;
+    return this;
+  }
+  with(obj) {
+    this.config.with = obj;
+    return this;
+  }
+  where(condition) {
+    this.config.where = condition;
+    return this;
+  }
+  /** @internal */
+  build(table) {
+    return new Index(this.config, table);
+  }
+};
+var Index = class {
+  static [entityKind] = "PgIndex";
+  config;
+  constructor(config2, table) {
+    this.config = { ...config2, table };
+  }
+};
+function index(name) {
+  return new IndexBuilderOn(false, name);
+}
+function uniqueIndex(name) {
+  return new IndexBuilderOn(true, name);
+}
+
 // ../../node_modules/.pnpm/drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0/node_modules/drizzle-orm/pg-core/primary-keys.js
 var PrimaryKeyBuilder = class {
   static [entityKind] = "PgPrimaryKeyBuilder";
@@ -43493,8 +44290,8 @@ var PgDialect = class {
       return void 0;
     }
     const joinsArray = [];
-    for (const [index, joinMeta] of joins.entries()) {
-      if (index === 0) {
+    for (const [index2, joinMeta] of joins.entries()) {
+      if (index2 === 0) {
         joinsArray.push(sql` `);
       }
       const table = joinMeta.table;
@@ -43521,7 +44318,7 @@ var PgDialect = class {
           sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${table}${onSql}`
         );
       }
-      if (index < joins.length - 1) {
+      if (index2 < joins.length - 1) {
         joinsArray.push(sql` `);
       }
     }
@@ -46870,20 +47667,27 @@ function drizzle(...params) {
 var schema_exports = {};
 __export(schema_exports, {
   categories: () => categories,
+  claims: () => claims,
   contacts: () => contacts,
   conversations: () => conversations,
   directorySettings: () => directorySettings,
   entries: () => entries,
   importJobs: () => importJobs,
   insertCategorySchema: () => insertCategorySchema,
+  insertClaimSchema: () => insertClaimSchema,
   insertConversationSchema: () => insertConversationSchema,
   insertDirectorySettingsSchema: () => insertDirectorySettingsSchema,
   insertEntrySchema: () => insertEntrySchema,
   insertImportJobSchema: () => insertImportJobSchema,
   insertMessageSchema: () => insertMessageSchema,
+  insertOwnerSchema: () => insertOwnerSchema,
   insertUserSchema: () => insertUserSchema,
   messages: () => messages,
+  ownerAuditEvents: () => ownerAuditEvents,
+  ownerSessions: () => ownerSessions,
+  owners: () => owners,
   sessions: () => sessions,
+  upgradeRequests: () => upgradeRequests,
   users: () => users
 });
 
@@ -49398,11 +50202,11 @@ var $ZodDate = /* @__PURE__ */ $constructor("$ZodDate", (inst, def) => {
     return payload;
   };
 });
-function handleArrayResult(result, final, index) {
+function handleArrayResult(result, final, index2) {
   if (result.issues.length) {
-    final.issues.push(...prefixIssues(index, result.issues));
+    final.issues.push(...prefixIssues(index2, result.issues));
   }
-  final.value[index] = result.value;
+  final.value[index2] = result.value;
 }
 var $ZodArray = /* @__PURE__ */ $constructor("$ZodArray", (inst, def) => {
   $ZodType.init(inst, def);
@@ -49786,14 +50590,14 @@ function mergeValues2(a, b) {
       return { valid: false, mergeErrorPath: [] };
     }
     const newArray = [];
-    for (let index = 0; index < a.length; index++) {
-      const itemA = a[index];
-      const itemB = b[index];
+    for (let index2 = 0; index2 < a.length; index2++) {
+      const itemA = a[index2];
+      const itemB = b[index2];
       const sharedValue = mergeValues2(itemA, itemB);
       if (!sharedValue.valid) {
         return {
           valid: false,
-          mergeErrorPath: [index, ...sharedValue.mergeErrorPath]
+          mergeErrorPath: [index2, ...sharedValue.mergeErrorPath]
         };
       }
       newArray.push(sharedValue.data);
@@ -49885,11 +50689,11 @@ var $ZodTuple = /* @__PURE__ */ $constructor("$ZodTuple", (inst, def) => {
     return payload;
   };
 });
-function handleTupleResult(result, final, index) {
+function handleTupleResult(result, final, index2) {
   if (result.issues.length) {
-    final.issues.push(...prefixIssues(index, result.issues));
+    final.issues.push(...prefixIssues(index2, result.issues));
   }
-  final.value[index] = result.value;
+  final.value[index2] = result.value;
 }
 var $ZodRecord = /* @__PURE__ */ $constructor("$ZodRecord", (inst, def) => {
   $ZodType.init(inst, def);
@@ -58026,7 +58830,7 @@ function date5(params) {
 // ../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/v4/classic/external.js
 config(en_default2());
 
-// ../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-orm@0.45.2_@types+pg@8.18.0_pg@8.20.0__zod@3.25.76/node_modules/drizzle-zod/index.mjs
+// ../../node_modules/.pnpm/drizzle-zod@0.8.3_drizzle-o_d27f62d116bf4f485f380c49791147d1/node_modules/drizzle-zod/index.mjs
 var CONSTANTS = {
   INT8_MIN: -128,
   INT8_MAX: 127,
@@ -58418,6 +59222,64 @@ var contacts = pgTable("contacts", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
 });
 
+// ../../lib/db/src/schema/owners.ts
+var owners = pgTable("owners", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [uniqueIndex("owners_email_unique").on(table.email)]);
+var ownerSessions = pgTable("owner_sessions", {
+  id: serial("id").primaryKey(),
+  tokenHash: text("token_hash").notNull().unique(),
+  ownerId: integer("owner_id").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [index("owner_sessions_owner_idx").on(table.ownerId), index("owner_sessions_expires_idx").on(table.expiresAt)]);
+var claims = pgTable("claims", {
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id").notNull(),
+  ownerId: integer("owner_id").notNull(),
+  businessEmail: text("business_email").notNull(),
+  phone: text("phone"),
+  message: text("message"),
+  method: text("method").notNull().default("manual"),
+  status: text("status").notNull().default("pending"),
+  reviewedBy: integer("reviewed_by"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  reviewNote: text("review_note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [index("claims_entry_idx").on(table.entryId), index("claims_owner_idx").on(table.ownerId), index("claims_status_idx").on(table.status)]);
+var upgradeRequests = pgTable("upgrade_requests", {
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id").notNull(),
+  ownerId: integer("owner_id").notNull(),
+  requestedTier: text("requested_tier").notNull(),
+  message: text("message"),
+  status: text("status").notNull().default("pending"),
+  reviewedBy: integer("reviewed_by"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  reviewNote: text("review_note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [index("upgrade_requests_entry_idx").on(table.entryId), index("upgrade_requests_status_idx").on(table.status)]);
+var ownerAuditEvents = pgTable("owner_audit_events", {
+  id: serial("id").primaryKey(),
+  ownerId: integer("owner_id"),
+  entryId: integer("entry_id"),
+  actorType: text("actor_type").notNull(),
+  actorId: integer("actor_id"),
+  eventType: text("event_type").notNull(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [index("owner_audit_owner_idx").on(table.ownerId), index("owner_audit_entry_idx").on(table.entryId), index("owner_audit_created_idx").on(table.createdAt)]);
+var insertOwnerSchema = createInsertSchema(owners).omit({ id: true, status: true, createdAt: true, updatedAt: true });
+var insertClaimSchema = createInsertSchema(claims).omit({ id: true, createdAt: true, updatedAt: true, reviewedBy: true, reviewedAt: true, reviewNote: true });
+
 // ../../lib/db/src/index.ts
 var { Pool: Pool3 } = esm_default;
 if (!process.env.DATABASE_URL) {
@@ -58437,8 +59299,9 @@ function hashPassword(password) {
 }
 function verifyPassword(password, stored) {
   const [salt, hash] = stored.split(":");
+  if (!salt || !hash || !/^[a-f0-9]{128}$/i.test(hash)) return false;
   const inputHash = crypto2.scryptSync(password, salt, 64).toString("hex");
-  return hash === inputHash;
+  return crypto2.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(inputHash, "hex"));
 }
 function generateToken() {
   return crypto2.randomBytes(32).toString("hex");
@@ -58466,12 +59329,18 @@ async function deleteSession(token) {
 
 // src/lib/setupToken.ts
 import crypto3 from "crypto";
-var bootstrapToken = crypto3.randomBytes(24).toString("hex");
+var bootstrapToken = process.env.SETUP_TOKEN || (process.env.NODE_ENV === "production" ? null : crypto3.randomBytes(24).toString("hex"));
 function getSetupToken() {
   return bootstrapToken;
 }
 function consumeSetupToken() {
   bootstrapToken = null;
+}
+function verifySetupToken(candidate) {
+  if (!bootstrapToken || typeof candidate !== "string") return false;
+  const expected = Buffer.from(bootstrapToken);
+  const provided = Buffer.from(candidate);
+  return expected.length === provided.length && crypto3.timingSafeEqual(expected, provided);
 }
 
 // src/routes/setup.ts
@@ -58492,9 +59361,8 @@ router2.get("/status", async (req, res) => {
 router2.post("/complete", async (req, res) => {
   try {
     const { siteTitle, adminName, adminEmail, adminPassword, themeColor, homepageHeadline, homepageDescription, setupToken } = req.body;
-    const expectedToken = getSetupToken();
-    if (!expectedToken || setupToken !== expectedToken) {
-      res.status(403).json({ error: "Invalid or missing setup token. Check your server logs for the token." });
+    if (!verifySetupToken(setupToken)) {
+      res.status(403).json({ error: "Invalid or missing setup token." });
       return;
     }
     if (!siteTitle || !adminName || !adminEmail || !adminPassword) {
@@ -59213,12 +60081,12 @@ var promisifyStore = (passedStore) => {
   const legacyStore = passedStore;
   class PromisifiedStore {
     async increment(key) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve3, reject) => {
         legacyStore.incr(
           key,
           (error40, totalHits, resetTime) => {
             if (error40) reject(error40);
-            resolve({ totalHits, resetTime });
+            resolve3({ totalHits, resetTime });
           }
         );
       });
@@ -59367,9 +60235,9 @@ var rateLimit = (passedOptions) => {
   }
   const middleware = handleAsyncErrors(
     async (request, response, next) => {
-      const closePromise = config2.skipFailedRequests && new Promise((resolve) => response.once("close", resolve));
-      const finishPromise = (config2.skipFailedRequests || config2.skipSuccessfulRequests) && new Promise((resolve) => response.once("finish", resolve));
-      const errorPromise = config2.skipFailedRequests && new Promise((resolve) => response.once("error", resolve));
+      const closePromise = config2.skipFailedRequests && new Promise((resolve3) => response.once("close", resolve3));
+      const finishPromise = (config2.skipFailedRequests || config2.skipSuccessfulRequests) && new Promise((resolve3) => response.once("finish", resolve3));
+      const errorPromise = config2.skipFailedRequests && new Promise((resolve3) => response.once("error", resolve3));
       const skip = await config2.skip(request, response);
       if (skip) {
         next();
@@ -59661,7 +60529,7 @@ router4.post("/", requireEditor, async (req, res) => {
 });
 router4.get("/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const [entry] = await db.select().from(entries).where(eq(entries.id, id)).limit(1);
     if (!entry) {
       res.status(404).json({ error: "Entry not found" });
@@ -59675,7 +60543,7 @@ router4.get("/:id", requireAuth, async (req, res) => {
 });
 router4.patch("/:id", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const [entry] = await db.update(entries).set({ ...req.body, updatedAt: /* @__PURE__ */ new Date() }).where(eq(entries.id, id)).returning();
     if (!entry) {
       res.status(404).json({ error: "Entry not found" });
@@ -59689,7 +60557,7 @@ router4.patch("/:id", requireEditor, async (req, res) => {
 });
 router4.delete("/:id", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     await db.delete(entries).where(eq(entries.id, id));
     res.json({ success: true, message: null });
   } catch (err) {
@@ -59699,7 +60567,7 @@ router4.delete("/:id", requireEditor, async (req, res) => {
 });
 router4.patch("/:id/publish", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { published } = req.body;
     const [entry] = await db.update(entries).set({ published, updatedAt: /* @__PURE__ */ new Date() }).where(eq(entries.id, id)).returning();
     if (!entry) {
@@ -59714,7 +60582,7 @@ router4.patch("/:id/publish", requireEditor, async (req, res) => {
 });
 router4.patch("/:id/featured", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { featured } = req.body;
     const [entry] = await db.update(entries).set({ featured, updatedAt: /* @__PURE__ */ new Date() }).where(eq(entries.id, id)).returning();
     if (!entry) {
@@ -59823,7 +60691,7 @@ router5.post("/", requireAdmin, async (req, res) => {
 });
 router5.patch("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { name, description, imageUrl } = req.body;
     const updates = {};
     if (name !== void 0) {
@@ -59845,7 +60713,7 @@ router5.patch("/:id", requireAdmin, async (req, res) => {
 });
 router5.delete("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     await db.delete(categories).where(eq(categories.id, id));
     res.json({ success: true, message: null });
   } catch (err) {
@@ -59987,7 +60855,7 @@ router7.post("/", requireAdmin, async (req, res) => {
 });
 router7.patch("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const updates = {};
     if (req.body.name) updates.name = req.body.name;
     if (req.body.email) updates.email = req.body.email;
@@ -60006,7 +60874,7 @@ router7.patch("/:id", requireAdmin, async (req, res) => {
 });
 router7.delete("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     await db.delete(users).where(eq(users.id, id));
     res.json({ success: true, message: null });
   } catch (err) {
@@ -60024,43 +60892,15 @@ import { GoogleGenAI as GoogleGenAI3 } from "@google/genai";
 
 // ../../lib/integrations-gemini-ai/src/client.ts
 import { GoogleGenAI } from "@google/genai";
-if (!process.env.AI_INTEGRATIONS_GEMINI_BASE_URL) {
-  throw new Error(
-    "AI_INTEGRATIONS_GEMINI_BASE_URL must be set. Did you forget to provision the Gemini AI integration?"
-  );
-}
-if (!process.env.AI_INTEGRATIONS_GEMINI_API_KEY) {
-  throw new Error(
-    "AI_INTEGRATIONS_GEMINI_API_KEY must be set. Did you forget to provision the Gemini AI integration?"
-  );
-}
-var ai = new GoogleGenAI({
-  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
-  httpOptions: {
-    apiVersion: "",
-    baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL
-  }
-});
+var baseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
+var apiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+var ai = baseUrl && apiKey ? new GoogleGenAI({ apiKey, httpOptions: { apiVersion: "", baseUrl } }) : null;
 
 // ../../lib/integrations-gemini-ai/src/image/client.ts
 import { GoogleGenAI as GoogleGenAI2, Modality } from "@google/genai";
-if (!process.env.AI_INTEGRATIONS_GEMINI_BASE_URL) {
-  throw new Error(
-    "AI_INTEGRATIONS_GEMINI_BASE_URL must be set. Did you forget to provision the Gemini AI integration?"
-  );
-}
-if (!process.env.AI_INTEGRATIONS_GEMINI_API_KEY) {
-  throw new Error(
-    "AI_INTEGRATIONS_GEMINI_API_KEY must be set. Did you forget to provision the Gemini AI integration?"
-  );
-}
-var ai2 = new GoogleGenAI2({
-  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
-  httpOptions: {
-    apiVersion: "",
-    baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL
-  }
-});
+var baseUrl2 = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
+var apiKey2 = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
+var ai2 = baseUrl2 && apiKey2 ? new GoogleGenAI2({ apiKey: apiKey2, httpOptions: { apiVersion: "", baseUrl: baseUrl2 } }) : null;
 
 // src/lib/gemini.ts
 async function getGeminiClient() {
@@ -60070,6 +60910,9 @@ async function getGeminiClient() {
       return new GoogleGenAI3({ apiKey: settings.geminiApiKey });
     }
   } catch {
+  }
+  if (!ai) {
+    throw new Error("Gemini integration is not configured");
   }
   return ai;
 }
@@ -60153,12 +60996,12 @@ function parseCSV(content) {
   let currentRow = [];
   let currentField = "";
   let inQuotes = false;
-  const text2 = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-  for (let i = 0; i < text2.length; i++) {
-    const ch = text2[i];
+  const text3 = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  for (let i = 0; i < text3.length; i++) {
+    const ch = text3[i];
     if (inQuotes) {
       if (ch === '"') {
-        if (text2[i + 1] === '"') {
+        if (text3[i + 1] === '"') {
           currentField += '"';
           i++;
         } else {
@@ -60194,12 +61037,12 @@ function parseCSV(content) {
 function slugify2(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
-function extractJson(text2) {
+function extractJson(text3) {
   try {
-    return JSON.parse(text2);
+    return JSON.parse(text3);
   } catch {
   }
-  const stripped = text2.replace(/^```(?:json)?\s*/im, "").replace(/\s*```$/im, "").trim();
+  const stripped = text3.replace(/^```(?:json)?\s*/im, "").replace(/\s*```$/im, "").trim();
   try {
     return JSON.parse(stripped);
   } catch {
@@ -60258,9 +61101,9 @@ ${needsEnrich.map((b) => `[${b.index}] Title: ${b.data.title || "Unknown"} | Cat
     contents: [{ role: "user", parts: [{ text: prompt }] }],
     config: { maxOutputTokens: 16384 }
   });
-  const text2 = response.text ?? "";
-  if (!text2) return /* @__PURE__ */ new Map();
-  const parsed = extractJson(text2);
+  const text3 = response.text ?? "";
+  if (!text3) return /* @__PURE__ */ new Map();
+  const parsed = extractJson(text3);
   const result = /* @__PURE__ */ new Map();
   for (const r of parsed.results ?? []) {
     result.set(r.index, { summary: r.summary || "", tags: r.tags || "" });
@@ -60465,12 +61308,12 @@ Respond with ONLY this JSON (no markdown fences, no explanation):
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: { maxOutputTokens: 8192 }
     });
-    const text2 = response.text ?? "";
-    if (!text2) {
+    const text3 = response.text ?? "";
+    if (!text3) {
       res.status(500).json({ error: "No response from AI" });
       return;
     }
-    const parsed = extractJson(text2);
+    const parsed = extractJson(text3);
     const mappings = parsed.mappings ?? [];
     for (const m of mappings) {
       if (m.targetField === "custom") {
@@ -60597,7 +61440,7 @@ router8.post("/csv", requireEditor, async (req, res) => {
 });
 router8.get("/status/:jobId", requireEditor, async (req, res) => {
   try {
-    const [job] = await db.select().from(importJobs).where(eq(importJobs.jobId, req.params.jobId)).limit(1);
+    const [job] = await db.select().from(importJobs).where(eq(importJobs.jobId, String(req.params.jobId))).limit(1);
     if (!job) {
       res.status(404).json({ error: "Job not found" });
       return;
@@ -60622,6 +61465,41 @@ var importRoute_default = router8;
 
 // src/routes/publicRoute.ts
 var import_express9 = __toESM(require_express2(), 1);
+
+// src/lib/entryCustomFields.ts
+var TIERS = ["free", "basic", "pro", "premium"];
+var TIER_LIMITS = {
+  free: { photos: 1, menuUrl: false, analytics: false, featured: false },
+  basic: { photos: 5, menuUrl: true, analytics: false, featured: false },
+  pro: { photos: 15, menuUrl: true, analytics: true, featured: false },
+  premium: { photos: 30, menuUrl: true, analytics: true, featured: true }
+};
+var OWNER_EDITABLE_KEYS = ["hours", "ownerDescription", "photos", "menuUrl"];
+function stripPrivateCustomFields(cf) {
+  if (!cf || typeof cf !== "object" || Array.isArray(cf)) return cf;
+  const out = {};
+  for (const [k, v] of Object.entries(cf)) {
+    if (!k.startsWith("_")) out[k] = v;
+  }
+  return out;
+}
+function getCustomFields(entry) {
+  const cf = entry.customFields;
+  return cf && typeof cf === "object" && !Array.isArray(cf) ? { ...cf } : {};
+}
+function getTier(cf) {
+  const t = cf.subscriptionTier;
+  return TIERS.includes(t) ? t : "free";
+}
+async function mergeCustomFields(entryId, patch) {
+  const [updated] = await db.update(entries).set({
+    customFields: sql`coalesce(${entries.customFields}, '{}'::jsonb) || ${JSON.stringify(patch)}::jsonb`,
+    updatedAt: /* @__PURE__ */ new Date()
+  }).where(eq(entries.id, entryId)).returning({ customFields: entries.customFields });
+  return updated ? getCustomFields(updated) : null;
+}
+
+// src/routes/publicRoute.ts
 var router9 = (0, import_express9.Router)();
 function formatEntry2(e) {
   return {
@@ -60640,8 +61518,7 @@ function formatEntry2(e) {
     endDate: e.endDate,
     tags: e.tags,
     moreDetails: e.moreDetails,
-    customFields: e.customFields,
-    sourceCsvRow: e.sourceCsvRow,
+    customFields: stripPrivateCustomFields(e.customFields),
     published: e.published,
     slug: e.slug,
     metaTitle: e.metaTitle,
@@ -60654,6 +61531,7 @@ function formatEntry2(e) {
 }
 router9.get("/entries", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, parseInt(req.query.limit) || 20);
     const offset = (page - 1) * limit;
@@ -60693,6 +61571,7 @@ router9.get("/entries", async (req, res) => {
 });
 router9.get("/entries/:idOrSlug", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const param = req.params.idOrSlug;
     const numericId = parseInt(param, 10);
     const isNumeric = !isNaN(numericId) && String(numericId) === param;
@@ -60710,6 +61589,7 @@ router9.get("/entries/:idOrSlug", async (req, res) => {
 });
 router9.get("/stats", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
     const [totalEntries] = await db.select({ count: count() }).from(entries).where(eq(entries.published, true));
     const breakdown = await db.select({
       category: entries.category,
@@ -60733,6 +61613,7 @@ router9.get("/stats", async (req, res) => {
 });
 router9.get("/featured", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const rows = await db.select().from(entries).where(and(eq(entries.published, true), eq(entries.featured, true))).orderBy(desc(entries.createdAt)).limit(6);
     res.json(rows.map(formatEntry2));
   } catch (err) {
@@ -60742,6 +61623,7 @@ router9.get("/featured", async (req, res) => {
 });
 router9.get("/recent", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const rows = await db.select().from(entries).where(eq(entries.published, true)).orderBy(desc(entries.createdAt)).limit(8);
     res.json(rows.map(formatEntry2));
   } catch (err) {
@@ -60751,6 +61633,7 @@ router9.get("/recent", async (req, res) => {
 });
 router9.get("/settings", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
     const [settings] = await db.select().from(directorySettings).limit(1);
     if (!settings) {
       res.json({
@@ -60808,15 +61691,15 @@ var import_express10 = __toESM(require_express2(), 1);
 import { randomUUID as randomUUID2 } from "crypto";
 var router10 = (0, import_express10.Router)();
 var seoJobs = /* @__PURE__ */ new Map();
-function slugify3(text2) {
-  return text2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/[\s]+/g, "-").replace(/-+/g, "-").replace(/(^-|-$)/g, "");
+function slugify3(text3) {
+  return text3.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/[\s]+/g, "-").replace(/-+/g, "-").replace(/(^-|-$)/g, "");
 }
-function extractJson2(text2) {
+function extractJson2(text3) {
   try {
-    return JSON.parse(text2);
+    return JSON.parse(text3);
   } catch {
   }
-  const stripped = text2.replace(/^```(?:json)?\s*/im, "").replace(/\s*```$/im, "").trim();
+  const stripped = text3.replace(/^```(?:json)?\s*/im, "").replace(/\s*```$/im, "").trim();
   try {
     return JSON.parse(stripped);
   } catch {
@@ -60850,9 +61733,9 @@ ${batch.map((e) => `[${e.id}] Title: "${e.title}" | Category: ${e.category || "G
     contents: [{ role: "user", parts: [{ text: prompt }] }],
     config: { maxOutputTokens: 16384 }
   });
-  const text2 = response.text ?? "";
-  if (!text2) return /* @__PURE__ */ new Map();
-  const parsed = extractJson2(text2);
+  const text3 = response.text ?? "";
+  if (!text3) return /* @__PURE__ */ new Map();
+  const parsed = extractJson2(text3);
   const result = /* @__PURE__ */ new Map();
   for (const r of parsed.results ?? []) {
     if (r.id && r.metaTitle) {
@@ -61004,12 +61887,13 @@ router10.post("/bulk", requireAdmin, async (req, res) => {
   }
 });
 router10.get("/status/:jobId", requireAdmin, async (req, res) => {
-  const job = seoJobs.get(req.params.jobId);
+  const jobId = String(req.params.jobId);
+  const job = seoJobs.get(jobId);
   if (!job) {
     res.status(404).json({ error: "Job not found" });
     return;
   }
-  res.json({ jobId: req.params.jobId, ...job });
+  res.json({ jobId, ...job });
 });
 var seoRoute_default = router10;
 
@@ -61285,8 +62169,11 @@ async function signObjectURL({
       `Failed to sign object URL, errorcode: ${response.status}, make sure you're running on Replit`
     );
   }
-  const { signed_url: signedURL } = await response.json();
-  return signedURL;
+  const payload = await response.json();
+  if (!payload || typeof payload !== "object" || !("signed_url" in payload) || typeof payload.signed_url !== "string") {
+    throw new Error("Object storage signer returned an invalid response");
+  }
+  return payload.signed_url;
 }
 
 // src/routes/storage.ts
@@ -61379,9 +62266,9 @@ var storage_default = router11;
 // src/routes/builderRoute.ts
 var import_express12 = __toESM(require_express2(), 1);
 var router12 = (0, import_express12.Router)();
-function extractJsonArray(text2) {
-  const fenceMatch = text2.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const raw = (fenceMatch ? fenceMatch[1] : text2).trim();
+function extractJsonArray(text3) {
+  const fenceMatch = text3.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const raw = (fenceMatch ? fenceMatch[1] : text3).trim();
   const start = raw.indexOf("[");
   const end = raw.lastIndexOf("]");
   if (start === -1 || end <= start) return null;
@@ -61477,14 +62364,14 @@ Respond with ONLY the valid JSON array of SectionConfig objects.`;
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: { maxOutputTokens: 8192 }
     });
-    const text2 = response.text ?? "";
-    if (!text2) {
+    const text3 = response.text ?? "";
+    if (!text3) {
       res.status(500).json({ error: "No response from AI" });
       return;
     }
-    const parsed = extractJsonArray(text2);
+    const parsed = extractJsonArray(text3);
     if (!parsed) {
-      req.log.error({ text: text2.slice(0, 500) }, "AI returned invalid JSON array");
+      req.log.error({ text: text3.slice(0, 500) }, "AI returned invalid JSON array");
       res.status(500).json({ error: "AI returned an invalid response \u2014 please try again" });
       return;
     }
@@ -61552,107 +62439,888 @@ router13.delete("/:id", requireAdmin, async (req, res) => {
 });
 var contactsRoute_default = router13;
 
-// src/routes/index.ts
-var router14 = (0, import_express14.Router)();
-router14.use(health_default);
-router14.use("/setup", setup_default);
-router14.use("/auth", auth_default);
-router14.use("/entries", entries_default);
-router14.use("/categories", categories_default);
-router14.use("/settings", settings_default);
-router14.use("/users", usersRoute_default);
-router14.use("/import", importRoute_default);
-router14.use("/public", publicRoute_default);
-router14.use("/seo", seoRoute_default);
-router14.use(storage_default);
-router14.use("/builder", builderRoute_default);
-router14.use("/contacts", contactsRoute_default);
-var routes_default = router14;
+// src/routes/ownerRoute.ts
+var import_express14 = __toESM(require_express2(), 1);
 
-// src/routes/sitemapRoute.ts
-var import_express15 = __toESM(require_express2(), 1);
-var router15 = (0, import_express15.Router)();
-function escapeXml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+// src/lib/ownerAuth.ts
+import crypto4 from "node:crypto";
+var OWNER_SESSION_COOKIE = "colrest_owner_session";
+function tokenHash(token) {
+  return crypto4.createHash("sha256").update(token).digest("hex");
 }
-router15.get("/sitemap.xml", async (req, res) => {
+async function createOwnerSession(ownerId) {
+  const token = generateToken();
+  const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1e3);
+  await db.insert(ownerSessions).values({ tokenHash: tokenHash(token), ownerId, expiresAt });
+  void db.delete(ownerSessions).where(lt(ownerSessions.expiresAt, /* @__PURE__ */ new Date())).catch(() => void 0);
+  return token;
+}
+async function getOwnerSession(token) {
+  if (!/^[a-f0-9]{64}$/i.test(token)) return null;
+  const [session] = await db.select().from(ownerSessions).where(eq(ownerSessions.tokenHash, tokenHash(token))).limit(1);
+  if (!session) return null;
+  if (session.expiresAt < /* @__PURE__ */ new Date()) {
+    await db.delete(ownerSessions).where(eq(ownerSessions.id, session.id));
+    return null;
+  }
+  return { ownerId: session.ownerId };
+}
+async function deleteOwnerSession(token) {
+  if (!/^[a-f0-9]{64}$/i.test(token)) return;
+  await db.delete(ownerSessions).where(eq(ownerSessions.tokenHash, tokenHash(token)));
+}
+
+// src/middlewares/ownerAuth.ts
+function ownerToken(req) {
+  const cookieToken = req.cookies?.[OWNER_SESSION_COOKIE];
+  if (typeof cookieToken === "string") return cookieToken;
+  const header = req.headers.authorization;
+  return header?.startsWith("Bearer ") ? header.slice(7) : null;
+}
+async function requireOwner(req, res, next) {
   try {
-    const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
-    const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
-    const baseUrl = `${protocol}://${host}`;
-    const publishedEntries = await db.select({ id: entries.id, slug: entries.slug, updatedAt: entries.updatedAt }).from(entries).where(eq(entries.published, true));
-    const now = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-    const staticPages = [
-      { loc: "/", priority: "1.0", changefreq: "daily", lastmod: now },
-      { loc: "/browse", priority: "0.8", changefreq: "daily", lastmod: now }
-    ];
-    const entryPages = publishedEntries.map((e) => ({
-      loc: `/entry/${e.slug || e.id}`,
-      priority: "0.6",
-      changefreq: "weekly",
-      lastmod: e.updatedAt ? new Date(e.updatedAt).toISOString().split("T")[0] : now
-    }));
-    const allPages = [...staticPages, ...entryPages];
-    const urlElements = allPages.map(
-      (p) => `  <url>
-    <loc>${escapeXml(baseUrl + p.loc)}</loc>
-    <lastmod>${p.lastmod}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`
-    ).join("\n");
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlElements}
-</urlset>`;
-    res.set("Content-Type", "application/xml; charset=utf-8");
-    res.set("Cache-Control", "public, max-age=3600");
-    res.send(xml);
+    const token = ownerToken(req);
+    if (!token) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    const session = await getOwnerSession(token);
+    if (!session) {
+      res.clearCookie(OWNER_SESSION_COOKIE, { path: "/api/owner" });
+      res.status(401).json({ error: "Invalid or expired session" });
+      return;
+    }
+    req.ownerId = session.ownerId;
+    req.ownerSessionToken = token;
+    next();
+  } catch {
+    res.status(500).json({ error: "Auth check failed" });
+  }
+}
+
+// src/routes/ownerRoute.ts
+var router14 = (0, import_express14.Router)();
+var authRateLimiter = rate_limit_default({
+  windowMs: 15 * 60 * 1e3,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many attempts. Please try again in 15 minutes." },
+  skipSuccessfulRequests: true
+});
+var mutationRateLimiter = rate_limit_default({
+  windowMs: 15 * 60 * 1e3,
+  limit: 30,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many changes. Please try again shortly." }
+});
+function setOwnerCookie(res, token) {
+  res.cookie(OWNER_SESSION_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 14 * 24 * 60 * 60 * 1e3
+  });
+}
+function sessionPayload(token) {
+  return process.env.NODE_ENV === "production" ? { authenticated: true } : { authenticated: true, token };
+}
+function validEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && value.length <= 254;
+}
+function safeText(value, max) {
+  if (value == null || value === "") return null;
+  return String(value).trim().slice(0, max);
+}
+function safeHttpsUrl(value) {
+  if (value == null || value === "") return null;
+  try {
+    const url2 = new URL(String(value));
+    return url2.protocol === "https:" ? url2.toString() : null;
+  } catch {
+    return null;
+  }
+}
+function domainOf(input) {
+  if (!input) return null;
+  try {
+    const url2 = input.includes("@") ? `https://${input.split("@")[1]}` : input.startsWith("http") ? input : `https://${input}`;
+    return new URL(url2).hostname.replace(/^www\./, "").toLowerCase() || null;
+  } catch {
+    return null;
+  }
+}
+function publicOwner(o) {
+  return { id: o.id, name: o.name, email: o.email, createdAt: o.createdAt.toISOString() };
+}
+var ClaimRequestError = class extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+};
+router14.post("/claim", authRateLimiter, async (req, res) => {
+  try {
+    const { entryId, name, email: email3, password, phone, message, company } = req.body ?? {};
+    if (company) {
+      res.status(201).json({ accepted: true });
+      return;
+    }
+    if (!entryId || !name || !email3 || !password) {
+      res.status(400).json({ error: "entryId, name, email and password are required" });
+      return;
+    }
+    if (String(password).length < 10 || String(password).length > 200) {
+      res.status(400).json({ error: "Password must be between 10 and 200 characters" });
+      return;
+    }
+    const normEmail = String(email3).trim().toLowerCase();
+    if (!validEmail(normEmail) || !String(name).trim() || String(name).trim().length > 120) {
+      res.status(400).json({ error: "Enter a valid name and email address" });
+      return;
+    }
+    const { owner, claim, method } = await db.transaction(async (tx) => {
+      const [entry] = await tx.select().from(entries).where(and(eq(entries.id, Number(entryId)), eq(entries.published, true))).limit(1);
+      if (!entry) throw new ClaimRequestError(404, "Listing not found");
+      if (getCustomFields(entry).claimStatus === "claimed") throw new ClaimRequestError(409, "This listing is already claimed");
+      let [owner2] = await tx.select().from(owners).where(eq(owners.email, normEmail)).limit(1);
+      if (owner2 && !verifyPassword(String(password), owner2.passwordHash)) {
+        throw new ClaimRequestError(401, "An account with this email exists \u2014 password does not match");
+      }
+      if (!owner2) {
+        [owner2] = await tx.insert(owners).values({
+          name: String(name).trim(),
+          email: normEmail,
+          passwordHash: hashPassword(String(password))
+        }).returning();
+      }
+      const [existingClaim] = await tx.select().from(claims).where(and(eq(claims.entryId, entry.id), eq(claims.ownerId, owner2.id), eq(claims.status, "pending"))).limit(1);
+      if (existingClaim) throw new ClaimRequestError(409, "You already have a pending claim for this listing");
+      const emailDomain = domainOf(normEmail);
+      const siteDomain = domainOf(entry.website);
+      const method2 = emailDomain && siteDomain && emailDomain === siteDomain ? "domain-match" : "manual";
+      const [claim2] = await tx.insert(claims).values({
+        entryId: entry.id,
+        ownerId: owner2.id,
+        businessEmail: normEmail,
+        phone: safeText(phone, 40),
+        message: safeText(message, 2e3),
+        method: method2,
+        status: "pending"
+      }).returning();
+      await tx.update(entries).set({
+        customFields: sql`coalesce(${entries.customFields}, '{}'::jsonb) || '{"claimStatus":"pending"}'::jsonb`,
+        updatedAt: /* @__PURE__ */ new Date()
+      }).where(eq(entries.id, entry.id));
+      await tx.insert(ownerAuditEvents).values({ ownerId: owner2.id, entryId: entry.id, actorType: "owner", actorId: owner2.id, eventType: "claim_submitted", metadata: { method: method2 } });
+      return { owner: owner2, claim: claim2, method: method2 };
+    });
+    const token = await createOwnerSession(owner.id);
+    setOwnerCookie(res, token);
+    res.status(201).json({
+      owner: publicOwner(owner),
+      ...sessionPayload(token),
+      claim: { id: claim.id, entryId: claim.entryId, status: claim.status, method: claim.method }
+    });
   } catch (err) {
-    req.log.error({ err }, "Failed to generate sitemap");
-    res.status(500).send("Failed to generate sitemap");
+    if (err instanceof ClaimRequestError) {
+      res.status(err.status).json({ error: err.message });
+      return;
+    }
+    if (err?.code === "23505") {
+      res.status(409).json({ error: "A matching claim is already pending" });
+      return;
+    }
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to submit claim" });
   }
 });
-var sitemapRoute_default = router15;
+router14.post("/login", authRateLimiter, async (req, res) => {
+  try {
+    const { email: email3, password } = req.body ?? {};
+    if (!email3 || !password) {
+      res.status(400).json({ error: "Email and password are required" });
+      return;
+    }
+    const [owner] = await db.select().from(owners).where(eq(owners.email, String(email3).trim().toLowerCase())).limit(1);
+    if (!owner || owner.status !== "active" || !verifyPassword(String(password), owner.passwordHash)) {
+      res.status(401).json({ error: "Invalid email or password" });
+      return;
+    }
+    const token = await createOwnerSession(owner.id);
+    setOwnerCookie(res, token);
+    res.json({ owner: publicOwner(owner), ...sessionPayload(token) });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Login failed" });
+  }
+});
+router14.post("/logout", requireOwner, async (req, res) => {
+  const token = req.ownerSessionToken;
+  if (token) await deleteOwnerSession(token);
+  res.clearCookie(OWNER_SESSION_COOKIE, { path: "/" });
+  res.json({ success: true });
+});
+router14.get("/me", requireOwner, async (req, res) => {
+  try {
+    const ownerId = req.ownerId;
+    const [owner] = await db.select().from(owners).where(eq(owners.id, ownerId)).limit(1);
+    if (!owner) {
+      res.status(401).json({ error: "Owner not found" });
+      return;
+    }
+    res.json(publicOwner(owner));
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to get owner" });
+  }
+});
+async function findOwnedEntry(ownerId) {
+  const [entry] = await db.select().from(entries).where(sql`${entries.customFields}->>'_ownerId' = ${String(ownerId)} AND ${entries.customFields}->>'claimStatus' = 'claimed'`).limit(1);
+  return entry ?? null;
+}
+router14.get("/listing", requireOwner, async (req, res) => {
+  try {
+    const ownerId = req.ownerId;
+    const entry = await findOwnedEntry(ownerId);
+    if (!entry) {
+      const pending = await db.select().from(claims).where(and(eq(claims.ownerId, ownerId), eq(claims.status, "pending"))).orderBy(desc(claims.createdAt));
+      res.json({ listing: null, pendingClaims: pending.map((c) => ({ id: c.id, entryId: c.entryId, status: c.status, method: c.method, createdAt: c.createdAt.toISOString() })) });
+      return;
+    }
+    const cf = getCustomFields(entry);
+    const tier = getTier(cf);
+    res.json({
+      listing: {
+        id: entry.id,
+        title: entry.title,
+        category: entry.category,
+        location: entry.location,
+        venue: entry.venue,
+        contactPhone: entry.contactPhone,
+        website: entry.website,
+        slug: entry.slug,
+        published: entry.published,
+        featured: entry.featured,
+        customFields: stripPrivateCustomFields(cf),
+        updatedAt: entry.updatedAt.toISOString()
+      },
+      tier,
+      limits: TIER_LIMITS[tier],
+      pendingClaims: []
+    });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to get listing" });
+  }
+});
+router14.patch("/listing", mutationRateLimiter, requireOwner, async (req, res) => {
+  try {
+    const ownerId = req.ownerId;
+    const entry = await findOwnedEntry(ownerId);
+    if (!entry) {
+      res.status(404).json({ error: "No claimed listing for this account" });
+      return;
+    }
+    const tier = getTier(getCustomFields(entry));
+    const limits = TIER_LIMITS[tier];
+    const body = req.body ?? {};
+    const patch = {};
+    for (const key of OWNER_EDITABLE_KEYS) {
+      if (!(key in body)) continue;
+      const val = body[key];
+      if (key === "menuUrl") {
+        if (!limits.menuUrl) {
+          res.status(403).json({ error: "Menu link requires the Basic tier or higher", upgradeRequired: "basic" });
+          return;
+        }
+        const menuUrl = safeHttpsUrl(val);
+        if (val && !menuUrl) {
+          res.status(400).json({ error: "Menu link must be a valid HTTPS URL" });
+          return;
+        }
+        patch.menuUrl = menuUrl;
+      } else if (key === "photos") {
+        if (!Array.isArray(val)) {
+          res.status(400).json({ error: "Photos must be an array of HTTPS URLs" });
+          return;
+        }
+        const normalized = val.map(safeHttpsUrl);
+        if (normalized.some((url2) => !url2)) {
+          res.status(400).json({ error: "Every photo must be a valid HTTPS URL" });
+          return;
+        }
+        const photos = normalized.filter((url2) => Boolean(url2));
+        if (photos.length > limits.photos) {
+          res.status(403).json({ error: `Your ${tier} tier allows up to ${limits.photos} photo(s)`, upgradeRequired: TIERS[TIERS.indexOf(tier) + 1] ?? "premium" });
+          return;
+        }
+        patch.photos = photos;
+      } else {
+        patch[key] = safeText(val, key === "ownerDescription" ? 4e3 : 1e3);
+      }
+    }
+    if (Object.keys(patch).length === 0) {
+      res.status(400).json({ error: "No editable fields in request" });
+      return;
+    }
+    const merged = await mergeCustomFields(entry.id, patch);
+    await db.insert(ownerAuditEvents).values({ ownerId, entryId: entry.id, actorType: "owner", actorId: ownerId, eventType: "listing_updated", metadata: { fields: Object.keys(patch) } });
+    res.json({ success: true, customFields: stripPrivateCustomFields(merged) });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to update listing" });
+  }
+});
+router14.post("/upgrade-request", mutationRateLimiter, requireOwner, async (req, res) => {
+  try {
+    const ownerId = req.ownerId;
+    const entry = await findOwnedEntry(ownerId);
+    if (!entry) {
+      res.status(404).json({ error: "No claimed listing for this account" });
+      return;
+    }
+    const { requestedTier, message } = req.body ?? {};
+    if (!TIERS.includes(requestedTier) || requestedTier === "free") {
+      res.status(400).json({ error: "requestedTier must be basic, pro, or premium" });
+      return;
+    }
+    const [existing] = await db.select().from(upgradeRequests).where(and(eq(upgradeRequests.entryId, entry.id), eq(upgradeRequests.ownerId, ownerId), eq(upgradeRequests.status, "pending"))).limit(1);
+    if (existing) {
+      res.status(409).json({ error: "An upgrade request is already pending" });
+      return;
+    }
+    const [owner] = await db.select().from(owners).where(eq(owners.id, ownerId)).limit(1);
+    const [request] = await db.insert(upgradeRequests).values({
+      entryId: entry.id,
+      ownerId,
+      requestedTier: String(requestedTier),
+      message: safeText(message, 2e3)
+    }).returning();
+    if (owner) {
+      await db.insert(contacts).values({
+        fullName: `[UPGRADE:${requestedTier}] ${owner.name} \u2014 ${entry.title}`,
+        phone: entry.contactPhone ?? "Not provided",
+        email: owner.email
+      }).catch(() => {
+      });
+    }
+    await db.insert(ownerAuditEvents).values({ ownerId, entryId: entry.id, actorType: "owner", actorId: ownerId, eventType: "upgrade_requested", metadata: { requestedTier } });
+    res.status(201).json({ id: request.id, status: request.status, requestedTier: request.requestedTier });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to submit upgrade request" });
+  }
+});
+var ownerRoute_default = router14;
+
+// src/routes/claimsRoute.ts
+var import_express15 = __toESM(require_express2(), 1);
+var router15 = (0, import_express15.Router)();
+router15.get("/", requireAdmin, async (req, res) => {
+  try {
+    const status = req.query.status || "pending";
+    const rows = await db.select({
+      claim: claims,
+      entryTitle: entries.title,
+      entryWebsite: entries.website,
+      ownerName: owners.name,
+      ownerEmail: owners.email
+    }).from(claims).leftJoin(entries, eq(claims.entryId, entries.id)).leftJoin(owners, eq(claims.ownerId, owners.id)).where(status === "all" ? void 0 : eq(claims.status, status)).orderBy(desc(claims.createdAt));
+    res.json(rows.map((r) => ({
+      id: r.claim.id,
+      entryId: r.claim.entryId,
+      entryTitle: r.entryTitle,
+      entryWebsite: r.entryWebsite,
+      ownerId: r.claim.ownerId,
+      ownerName: r.ownerName,
+      ownerEmail: r.ownerEmail,
+      businessEmail: r.claim.businessEmail,
+      phone: r.claim.phone,
+      message: r.claim.message,
+      method: r.claim.method,
+      status: r.claim.status,
+      createdAt: r.claim.createdAt.toISOString()
+    })));
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to list claims" });
+  }
+});
+router15.patch("/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const { action, note } = req.body ?? {};
+    if (action !== "approve" && action !== "reject") {
+      res.status(400).json({ error: 'action must be "approve" or "reject"' });
+      return;
+    }
+    const [claim] = await db.select().from(claims).where(eq(claims.id, id)).limit(1);
+    if (!claim) {
+      res.status(404).json({ error: "Claim not found" });
+      return;
+    }
+    if (claim.status !== "pending") {
+      res.status(409).json({ error: `Claim is already ${claim.status}` });
+      return;
+    }
+    const adminId = req.userId;
+    const newStatus = action === "approve" ? "approved" : "rejected";
+    await db.transaction(async (tx) => {
+      await tx.update(claims).set({ status: newStatus, reviewedBy: adminId, reviewedAt: /* @__PURE__ */ new Date(), reviewNote: note ? String(note).slice(0, 2e3) : null, updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(claims.id, id), eq(claims.status, "pending")));
+      if (action === "approve") {
+        const [entry] = await tx.select().from(entries).where(eq(entries.id, claim.entryId)).limit(1);
+        if (!entry) throw new Error("Claim entry is missing");
+        const existingTier = getCustomFields(entry).subscriptionTier;
+        await tx.update(entries).set({
+          customFields: {
+            ...getCustomFields(entry),
+            claimStatus: "claimed",
+            subscriptionTier: existingTier ?? "free",
+            _ownerId: claim.ownerId,
+            _claimedAt: (/* @__PURE__ */ new Date()).toISOString()
+          },
+          updatedAt: /* @__PURE__ */ new Date()
+        }).where(eq(entries.id, claim.entryId));
+        await tx.update(claims).set({ status: "rejected", reviewedBy: adminId, reviewedAt: /* @__PURE__ */ new Date(), reviewNote: "Superseded by approved ownership claim", updatedAt: /* @__PURE__ */ new Date() }).where(and(eq(claims.entryId, claim.entryId), eq(claims.status, "pending"), ne(claims.id, id)));
+      } else {
+        const remaining = await tx.select().from(claims).where(eq(claims.entryId, claim.entryId));
+        const stillActive = remaining.some((c) => c.id !== id && (c.status === "pending" || c.status === "approved"));
+        if (!stillActive) {
+          const [entry] = await tx.select().from(entries).where(eq(entries.id, claim.entryId)).limit(1);
+          if (entry) await tx.update(entries).set({ customFields: { ...getCustomFields(entry), claimStatus: "unclaimed" }, updatedAt: /* @__PURE__ */ new Date() }).where(eq(entries.id, claim.entryId));
+        }
+      }
+      await tx.insert(ownerAuditEvents).values({ ownerId: claim.ownerId, entryId: claim.entryId, actorType: "admin", actorId: adminId, eventType: `claim_${newStatus}`, metadata: note ? { note: String(note).slice(0, 2e3) } : null });
+    });
+    res.json({ success: true, id, status: newStatus });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to update claim" });
+  }
+});
+router15.get("/upgrade-requests", requireAdmin, async (req, res) => {
+  try {
+    const rows = await db.select({
+      request: upgradeRequests,
+      entryTitle: entries.title,
+      ownerName: owners.name,
+      ownerEmail: owners.email
+    }).from(upgradeRequests).leftJoin(entries, eq(upgradeRequests.entryId, entries.id)).leftJoin(owners, eq(upgradeRequests.ownerId, owners.id)).orderBy(desc(upgradeRequests.createdAt));
+    res.json(rows.map((r) => ({
+      id: r.request.id,
+      entryId: r.request.entryId,
+      entryTitle: r.entryTitle,
+      ownerName: r.ownerName,
+      ownerEmail: r.ownerEmail,
+      requestedTier: r.request.requestedTier,
+      message: r.request.message,
+      status: r.request.status,
+      createdAt: r.request.createdAt.toISOString()
+    })));
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to list upgrade requests" });
+  }
+});
+router15.patch("/upgrade-requests/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const { action, note } = req.body ?? {};
+    if (action !== "approve" && action !== "reject") {
+      res.status(400).json({ error: 'action must be "approve" or "reject"' });
+      return;
+    }
+    const [request] = await db.select().from(upgradeRequests).where(eq(upgradeRequests.id, id)).limit(1);
+    if (!request) {
+      res.status(404).json({ error: "Upgrade request not found" });
+      return;
+    }
+    if (request.status !== "pending") {
+      res.status(409).json({ error: `Request is already ${request.status}` });
+      return;
+    }
+    const newStatus = action === "approve" ? "approved" : "rejected";
+    const adminId = req.userId;
+    await db.update(upgradeRequests).set({ status: newStatus, reviewedBy: adminId, reviewedAt: /* @__PURE__ */ new Date(), reviewNote: note ? String(note).slice(0, 2e3) : null, updatedAt: /* @__PURE__ */ new Date() }).where(eq(upgradeRequests.id, id));
+    if (action === "approve" && TIERS.includes(request.requestedTier)) {
+      await mergeCustomFields(request.entryId, { subscriptionTier: request.requestedTier });
+      if (request.requestedTier === "premium") {
+        await db.update(entries).set({ featured: true, updatedAt: /* @__PURE__ */ new Date() }).where(eq(entries.id, request.entryId));
+      }
+    }
+    await db.insert(ownerAuditEvents).values({ ownerId: request.ownerId, entryId: request.entryId, actorType: "admin", actorId: adminId, eventType: `upgrade_${newStatus}`, metadata: { requestedTier: request.requestedTier } });
+    res.json({ success: true, id, status: newStatus });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to update upgrade request" });
+  }
+});
+var claimsRoute_default = router15;
+
+// src/routes/index.ts
+var router16 = (0, import_express16.Router)();
+router16.use(health_default);
+router16.use("/setup", setup_default);
+router16.use("/auth", auth_default);
+router16.use("/entries", entries_default);
+router16.use("/categories", categories_default);
+router16.use("/settings", settings_default);
+router16.use("/users", usersRoute_default);
+router16.use("/import", importRoute_default);
+router16.use("/public", publicRoute_default);
+router16.use("/seo", seoRoute_default);
+router16.use(storage_default);
+router16.use("/builder", builderRoute_default);
+router16.use("/contacts", contactsRoute_default);
+router16.use("/owner", ownerRoute_default);
+router16.use("/claims", claimsRoute_default);
+var routes_default = router16;
+
+// src/routes/sitemapRoute.ts
+var import_express17 = __toESM(require_express2(), 1);
+var router17 = (0, import_express17.Router)();
+function escapeXml(value) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&apos;");
+}
+function publicOrigin() {
+  const url2 = new URL(process.env.PUBLIC_ORIGIN || "https://colombianrestaurantnear.me");
+  if (process.env.NODE_ENV === "production" && url2.protocol !== "https:") {
+    throw new Error("PUBLIC_ORIGIN must use HTTPS in production");
+  }
+  return url2.origin;
+}
+function isIndexableEntry(entry) {
+  return Boolean(entry.slug && `${entry.summary ?? ""} ${entry.description ?? ""}`.trim().length >= 120);
+}
+router17.get("/robots.txt", (_req, res) => {
+  const origin = publicOrigin();
+  res.type("text/plain; charset=utf-8");
+  res.set("Cache-Control", "public, max-age=300");
+  res.send([
+    "User-agent: *",
+    "Allow: /",
+    "Disallow: /admin/",
+    "Disallow: /owner/",
+    "Disallow: /setup",
+    "",
+    `Sitemap: ${origin}/sitemap.xml`,
+    ""
+  ].join("\n"));
+});
+router17.get("/sitemap.xml", async (req, res) => {
+  try {
+    const origin = publicOrigin();
+    const rows = await db.select({ slug: entries.slug, summary: entries.summary, description: entries.description, updatedAt: entries.updatedAt }).from(entries).where(eq(entries.published, true));
+    const pages = [
+      { loc: "/" },
+      { loc: "/browse" },
+      ...rows.filter(isIndexableEntry).map((entry) => ({
+        loc: `/entry/${entry.slug}`,
+        lastmod: entry.updatedAt.toISOString().slice(0, 10)
+      })).sort((a, b) => a.loc.localeCompare(b.loc))
+    ];
+    const body = pages.map((page) => [
+      "  <url>",
+      `    <loc>${escapeXml(origin + page.loc)}</loc>`,
+      ...page.lastmod ? [`    <lastmod>${page.lastmod}</lastmod>`] : [],
+      "  </url>"
+    ].join("\n")).join("\n");
+    res.type("application/xml; charset=utf-8");
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${body}
+</urlset>`);
+  } catch (err) {
+    req.log.error({ err }, "Failed to generate sitemap");
+    res.status(500).type("text/plain").send("Failed to generate sitemap");
+  }
+});
+var sitemapRoute_default = router17;
+
+// src/routes/publicSeoRoute.ts
+var import_express18 = __toESM(require_express2(), 1);
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+var router18 = (0, import_express18.Router)();
+function escapeHtml(value) {
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function jsonLd(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+function text2(value, fallback = "") {
+  return (value ?? fallback).replace(/\s+/g, " ").trim();
+}
+function truncate(value, max) {
+  if (value.length <= max) return value;
+  const sliced = value.slice(0, max - 1);
+  return `${sliced.slice(0, Math.max(0, sliced.lastIndexOf(" ")))}\u2026`;
+}
+function imageOf(entry) {
+  const fields = getCustomFields(entry);
+  return typeof fields.photoUrl === "string" && /^https:\/\//.test(fields.photoUrl) ? fields.photoUrl : void 0;
+}
+function addressOf(entry) {
+  const venue = text2(entry.venue);
+  const location = text2(entry.location);
+  const match = venue.match(/^(.+?),\s*([^,]+),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+  if (match) {
+    return {
+      "@type": "PostalAddress",
+      streetAddress: match[1],
+      addressLocality: match[2],
+      addressRegion: match[3],
+      postalCode: match[4],
+      addressCountry: "US"
+    };
+  }
+  const locality = location.match(/^([^,]+),\s*([A-Z]{2})$/);
+  if (venue && locality) {
+    return {
+      "@type": "PostalAddress",
+      streetAddress: venue,
+      addressLocality: locality[1],
+      addressRegion: locality[2],
+      addressCountry: "US"
+    };
+  }
+  return void 0;
+}
+function visibleListing(entry, origin) {
+  const url2 = `${origin}/entry/${escapeHtml(entry.slug || entry.id)}`;
+  const description = text2(entry.description, entry.summary || "");
+  return `<article><h2><a href="${url2}">${escapeHtml(entry.title)}</a></h2>${entry.location ? `<p>${escapeHtml(entry.location)}</p>` : ""}${description ? `<p>${escapeHtml(truncate(description, 220))}</p>` : ""}</article>`;
+}
+function inject(template2, input) {
+  const metadata = [
+    `<title>${escapeHtml(input.title)}</title>`,
+    `<meta name="description" content="${escapeHtml(input.description)}" />`,
+    `<meta name="robots" content="${escapeHtml(input.robots)}" />`,
+    `<link rel="canonical" href="${escapeHtml(input.canonical)}" />`,
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:title" content="${escapeHtml(input.title)}" />`,
+    `<meta property="og:description" content="${escapeHtml(input.description)}" />`,
+    `<meta property="og:url" content="${escapeHtml(input.canonical)}" />`,
+    ...input.image ? [`<meta property="og:image" content="${escapeHtml(input.image)}" />`, `<meta name="twitter:card" content="summary_large_image" />`] : [`<meta name="twitter:card" content="summary" />`],
+    `<script type="application/ld+json">${jsonLd(input.schema)}</script>`,
+    `<style id="seo-first-paint">.seo-first-paint{max-width:76rem;margin:auto;padding:2rem;font-family:system-ui,sans-serif}.seo-first-paint a{color:inherit}.seo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem}</style>`
+  ].join("\n    ");
+  let html = template2.replace(/<title>[\s\S]*?<\/title>/i, metadata).replace('<div id="root"></div>', `<div id="root"><main class="seo-first-paint">${input.body}</main></div>`).replace('lang="en"', 'lang="en-US"');
+  return { html, status: input.status ?? 200 };
+}
+async function template() {
+  const staticDir = process.env.STATIC_DIR || resolve(__dirname, "../../directory-master/dist/public");
+  return readFile(resolve(staticDir, "index.html"), "utf8");
+}
+router18.get("/{*splat}", async (req, res) => {
+  try {
+    const origin = publicOrigin();
+    const rawTemplate = await template();
+    const path = req.path.replace(/\/+$/, "") || "/";
+    const [settings] = await db.select().from(directorySettings).limit(1);
+    const siteName = text2(settings?.siteTitle, "Colombian Restaurants Near Me");
+    if (path.startsWith("/admin") || path.startsWith("/owner") || path === "/setup" || path.startsWith("/claim/")) {
+      const rendered2 = inject(rawTemplate, {
+        title: `${path.startsWith("/owner") ? "Restaurant Owner" : "Account"} | ${siteName}`,
+        description: "Secure directory account area.",
+        canonical: `${origin}${path}`,
+        robots: "noindex,nofollow,noarchive",
+        body: "<h1>Secure account area</h1>",
+        schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Secure account area" }
+      });
+      res.status(rendered2.status).set("X-Robots-Tag", "noindex, nofollow, noarchive").send(rendered2.html);
+      return;
+    }
+    if (path === "/" || path === "/browse") {
+      const rows = await db.select().from(entries).where(eq(entries.published, true)).orderBy(asc(entries.title));
+      const canonical = `${origin}${path}`;
+      const isHome = path === "/";
+      const title = isHome ? "Colombian Restaurants Near Me | Miami & South Florida" : "Browse Colombian Restaurants in South Florida";
+      const description = isHome ? "Discover Colombian restaurants in Miami, Doral, Hialeah and Miami Beach with useful restaurant details and independently attributed reputation signals." : `Compare ${rows.length} Colombian restaurants across Miami and South Florida by location, cuisine and verified public details.`;
+      const items = rows.map((entry, index2) => ({
+        "@type": "ListItem",
+        position: index2 + 1,
+        name: entry.title,
+        url: `${origin}/entry/${entry.slug || entry.id}`
+      }));
+      const schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "WebSite", "@id": `${origin}/#website`, url: `${origin}/`, name: siteName, description },
+          {
+            "@type": "CollectionPage",
+            "@id": `${canonical}#webpage`,
+            url: canonical,
+            name: title,
+            description,
+            isPartOf: { "@id": `${origin}/#website` },
+            mainEntity: { "@type": "ItemList", numberOfItems: items.length, itemListElement: items }
+          }
+        ]
+      };
+      const body = `<h1>${escapeHtml(isHome ? "Every Colombian restaurant, one table" : "Browse Colombian restaurants")}</h1><p>${escapeHtml(description)}</p><p><a href="/browse">Browse all restaurants</a></p><section class="seo-grid">${rows.map((entry) => visibleListing(entry, origin)).join("")}</section>`;
+      const rendered2 = inject(rawTemplate, { title, description, canonical, robots: "index,follow,max-image-preview:large", body, schema, image: settings?.homepageOgImageUrl ?? void 0 });
+      res.status(rendered2.status).set("Cache-Control", "public, max-age=60, stale-while-revalidate=300").send(rendered2.html);
+      return;
+    }
+    const entryMatch = path.match(/^\/entry\/([^/]+)$/);
+    if (entryMatch) {
+      const key = decodeURIComponent(entryMatch[1]);
+      const numericId = /^\d+$/.test(key) ? Number(key) : null;
+      const [entry] = await db.select().from(entries).where(and(
+        numericId == null ? eq(entries.slug, key) : eq(entries.id, numericId),
+        eq(entries.published, true)
+      )).limit(1);
+      if (!entry) {
+        const rendered3 = inject(rawTemplate, {
+          title: `Restaurant not found | ${siteName}`,
+          description: "This restaurant listing is not available.",
+          canonical: `${origin}${path}`,
+          robots: "noindex,follow",
+          body: `<h1>Restaurant not found</h1><p><a href="/browse">Browse Colombian restaurants</a></p>`,
+          schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Restaurant not found" },
+          status: 404
+        });
+        res.status(404).set("X-Robots-Tag", "noindex, follow").send(rendered3.html);
+        return;
+      }
+      const canonical = `${origin}/entry/${entry.slug || entry.id}`;
+      const location = text2(entry.location);
+      const description = truncate(text2(entry.metaDescription, entry.description || entry.summary || `Restaurant listing for ${entry.title}${location ? ` in ${location}` : ""}.`), 160);
+      const pageTitle = truncate(text2(entry.metaTitle, `${entry.title}${location ? ` in ${location}` : ""} | Colombian Restaurants Near Me`), 60);
+      const safeFields = stripPrivateCustomFields(getCustomFields(entry));
+      const address = addressOf(entry);
+      const restaurant = {
+        "@type": "Restaurant",
+        "@id": `${canonical}#restaurant`,
+        url: canonical,
+        name: entry.title,
+        description: text2(entry.description, entry.summary || void 0),
+        servesCuisine: "Colombian",
+        ...address ? { address } : {},
+        ...entry.contactPhone ? { telephone: entry.contactPhone } : {},
+        ...entry.website && /^https?:\/\//.test(entry.website) ? { sameAs: [entry.website] } : {},
+        ...imageOf(entry) ? { image: imageOf(entry) } : {},
+        ...typeof safeFields.menuUrl === "string" && /^https?:\/\//.test(safeFields.menuUrl) ? { hasMenu: safeFields.menuUrl } : {}
+      };
+      const schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "WebPage", "@id": `${canonical}#webpage`, url: canonical, name: pageTitle, dateModified: entry.updatedAt.toISOString(), mainEntity: { "@id": `${canonical}#restaurant` }, isPartOf: { "@id": `${origin}/#website` } },
+          restaurant,
+          { "@type": "BreadcrumbList", itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${origin}/` },
+            { "@type": "ListItem", position: 2, name: "Browse", item: `${origin}/browse` },
+            { "@type": "ListItem", position: 3, name: entry.title }
+          ] }
+        ]
+      };
+      const body = `<nav aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/browse">Restaurants</a></nav><article><h1>${escapeHtml(entry.title)}</h1>${entry.location ? `<p>${escapeHtml(entry.location)}</p>` : ""}${entry.description || entry.summary ? `<p>${escapeHtml(text2(entry.description, entry.summary || ""))}</p>` : ""}${entry.contactPhone ? `<p><a href="tel:${escapeHtml(entry.contactPhone)}">Call ${escapeHtml(entry.contactPhone)}</a></p>` : ""}${entry.website ? `<p><a href="${escapeHtml(entry.website)}" rel="nofollow noopener">Visit restaurant website</a></p>` : ""}</article>`;
+      const indexable = isIndexableEntry(entry) && Boolean(address);
+      const rendered2 = inject(rawTemplate, { title: pageTitle, description, canonical, robots: indexable ? "index,follow,max-image-preview:large" : "noindex,follow", body, schema, image: imageOf(entry) });
+      if (!indexable) res.set("X-Robots-Tag", "noindex, follow");
+      res.status(200).set("Cache-Control", "public, max-age=60, stale-while-revalidate=300").send(rendered2.html);
+      return;
+    }
+    const rendered = inject(rawTemplate, {
+      title: `Page not found | ${siteName}`,
+      description: "The requested page does not exist.",
+      canonical: `${origin}${path}`,
+      robots: "noindex,follow",
+      body: `<h1>Page not found</h1><p><a href="/browse">Browse Colombian restaurants</a></p>`,
+      schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Page not found" },
+      status: 404
+    });
+    res.status(404).set("X-Robots-Tag", "noindex, follow").send(rendered.html);
+  } catch (err) {
+    req.log.error({ err }, "Failed to render public route");
+    res.status(500).type("text/plain").send("Unable to render this page");
+  }
+});
+var publicSeoRoute_default = router18;
 
 // src/app.ts
-var app = (0, import_express16.default)();
+var app = (0, import_express19.default)();
+app.set("trust proxy", 1);
+app.disable("x-powered-by");
+var allowedOrigins = new Set(
+  [process.env.PUBLIC_ORIGIN, ...(process.env.ALLOWED_ORIGINS || "").split(",")].filter(Boolean).map((value) => new URL(value).origin)
+);
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  hsts: process.env.NODE_ENV === "production" ? { maxAge: 31536e3, includeSubDomains: false } : false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'none'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com"],
+      connectSrc: ["'self'", "https://www.google-analytics.com", "https://*.google-analytics.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+      upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null
+    }
+  },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" }
+}));
+app.use((_req, res, next) => {
+  res.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(self), payment=()");
+  next();
+});
 app.use(
   (0, import_pino_http.default)({
     logger,
     serializers: {
       req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0]
-        };
+        return { id: req.id, method: req.method, url: req.url?.split("?")[0] };
       },
       res(res) {
-        return {
-          statusCode: res.statusCode
-        };
+        return { statusCode: res.statusCode };
       }
     }
   })
 );
-app.use((0, import_cors.default)());
-app.use("/api/import/csv", import_express16.default.json({ limit: "6mb" }));
-app.use(import_express16.default.json({ limit: "1mb" }));
-app.use(import_express16.default.urlencoded({ extended: true, limit: "1mb" }));
+app.use((0, import_cors.default)({
+  credentials: true,
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) callback(null, true);
+    else callback(new Error("Origin is not allowed"));
+  }
+}));
+app.use((0, import_cookie_parser.default)());
+app.use("/api/import/csv", import_express19.default.json({ limit: "6mb" }));
+app.use(import_express19.default.json({ limit: "1mb" }));
+app.use(import_express19.default.urlencoded({ extended: true, limit: "1mb" }));
 app.use(sitemapRoute_default);
-app.use("/api", routes_default);
+app.use("/api", (_req, res, next) => {
+  res.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  next();
+}, routes_default);
+var _staticDir = process.env.STATIC_DIR || resolve2(__dirname, "../../directory-master/dist/public");
+if (existsSync(_staticDir)) {
+  app.use(import_express19.default.static(_staticDir, {
+    index: false,
+    setHeaders(res, filePath) {
+      if (/\.[a-f0-9_-]{8,}\.(?:js|css|woff2?|png|jpe?g|webp|avif|svg)$/i.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      }
+    }
+  }));
+  app.use(publicSeoRoute_default);
+}
 var app_default = app;
 
 // src/index.ts
-var rawPort = process.env["PORT"];
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided."
-  );
-}
+var rawPort = process.env.PORT;
+if (!rawPort) throw new Error("PORT environment variable is required");
 var port = Number(rawPort);
-if (Number.isNaN(port) || port <= 0) {
+if (!Number.isInteger(port) || port <= 0 || port > 65535) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 app_default.listen(port, (err) => {
@@ -61661,12 +63329,8 @@ app_default.listen(port, (err) => {
     process.exit(1);
   }
   logger.info({ port }, "Server listening");
-  const setupToken = getSetupToken();
-  if (setupToken) {
-    logger.warn(
-      { setupToken },
-      "=== SETUP TOKEN (required to complete first-run setup \u2014 keep this secret) ==="
-    );
+  if (getSetupToken()) {
+    logger.warn("First-run setup is available; retrieve the bootstrap token from the approved runtime secret channel");
   }
 });
 /*! Bundled license information:
@@ -61958,5 +63622,13 @@ object-assign/index.js:
   (c) Sindre Sorhus
   @license MIT
   *)
+
+cookie-parser/index.js:
+  (*!
+   * cookie-parser
+   * Copyright(c) 2014 TJ Holowaychuk
+   * Copyright(c) 2015 Douglas Christopher Wilson
+   * MIT Licensed
+   *)
 */
 //# sourceMappingURL=index.mjs.map

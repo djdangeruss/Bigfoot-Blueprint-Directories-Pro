@@ -7,6 +7,141 @@
  */
 import * as zod from "zod";
 /**
+ * @summary Submit a claim listing form
+ */
+export declare const CreateContactBody: zod.ZodObject<{
+    fullName: zod.ZodString;
+    phone: zod.ZodString;
+    email: zod.ZodString;
+}, "strip", zod.ZodTypeAny, {
+    fullName: string;
+    phone: string;
+    email: string;
+}, {
+    fullName: string;
+    phone: string;
+    email: string;
+}>;
+/**
+ * @summary List all contact submissions (admin)
+ */
+export declare const ListContactsResponse: zod.ZodObject<{
+    contacts: zod.ZodArray<zod.ZodObject<{
+        id: zod.ZodNumber;
+        fullName: zod.ZodString;
+        phone: zod.ZodString;
+        email: zod.ZodString;
+        createdAt: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        fullName: string;
+        phone: string;
+        email: string;
+        id: number;
+        createdAt: string;
+    }, {
+        fullName: string;
+        phone: string;
+        email: string;
+        id: number;
+        createdAt: string;
+    }>, "many">;
+}, "strip", zod.ZodTypeAny, {
+    contacts: {
+        fullName: string;
+        phone: string;
+        email: string;
+        id: number;
+        createdAt: string;
+    }[];
+}, {
+    contacts: {
+        fullName: string;
+        phone: string;
+        email: string;
+        id: number;
+        createdAt: string;
+    }[];
+}>;
+/**
+ * @summary Delete a contact submission (admin)
+ */
+export declare const DeleteContactParams: zod.ZodObject<{
+    id: zod.ZodNumber;
+}, "strip", zod.ZodTypeAny, {
+    id: number;
+}, {
+    id: number;
+}>;
+export declare const DeleteContactResponse: zod.ZodObject<{
+    success: zod.ZodBoolean;
+    message: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+}, "strip", zod.ZodTypeAny, {
+    success: boolean;
+    message?: string | null | undefined;
+}, {
+    success: boolean;
+    message?: string | null | undefined;
+}>;
+/**
+ * @summary Request a presigned upload URL
+ */
+export declare const RequestUploadUrlBody: zod.ZodObject<{
+    name: zod.ZodString;
+    size: zod.ZodNumber;
+    contentType: zod.ZodString;
+}, "strip", zod.ZodTypeAny, {
+    name: string;
+    size: number;
+    contentType: string;
+}, {
+    name: string;
+    size: number;
+    contentType: string;
+}>;
+export declare const RequestUploadUrlResponse: zod.ZodObject<{
+    uploadURL: zod.ZodString;
+    objectPath: zod.ZodString;
+    metadata: zod.ZodObject<{
+        name: zod.ZodString;
+        size: zod.ZodNumber;
+        contentType: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        name: string;
+        size: number;
+        contentType: string;
+    }, {
+        name: string;
+        size: number;
+        contentType: string;
+    }>;
+}, "strip", zod.ZodTypeAny, {
+    uploadURL: string;
+    objectPath: string;
+    metadata: {
+        name: string;
+        size: number;
+        contentType: string;
+    };
+}, {
+    uploadURL: string;
+    objectPath: string;
+    metadata: {
+        name: string;
+        size: number;
+        contentType: string;
+    };
+}>;
+/**
+ * @summary Serve a stored object
+ */
+export declare const GetStorageObjectParams: zod.ZodObject<{
+    objectPath: zod.ZodString;
+}, "strip", zod.ZodTypeAny, {
+    objectPath: string;
+}, {
+    objectPath: string;
+}>;
+/**
  * @summary Health check
  */
 export declare const HealthCheckResponse: zod.ZodObject<{
@@ -33,6 +168,7 @@ export declare const GetSetupStatusResponse: zod.ZodObject<{
  * @summary Complete setup wizard
  */
 export declare const CompleteSetupBody: zod.ZodObject<{
+    setupToken: zod.ZodString;
     siteTitle: zod.ZodString;
     adminName: zod.ZodString;
     adminEmail: zod.ZodString;
@@ -41,6 +177,7 @@ export declare const CompleteSetupBody: zod.ZodObject<{
     homepageHeadline: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     homepageDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
+    setupToken: string;
     siteTitle: string;
     adminName: string;
     adminEmail: string;
@@ -49,6 +186,7 @@ export declare const CompleteSetupBody: zod.ZodObject<{
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
 }, {
+    setupToken: string;
     siteTitle: string;
     adminName: string;
     adminEmail: string;
@@ -90,33 +228,33 @@ export declare const LoginResponse: zod.ZodObject<{
     }, "strip", zod.ZodTypeAny, {
         email: string;
         id: number;
+        createdAt: string;
         name: string;
         role: "admin" | "editor" | "viewer";
-        createdAt: string;
     }, {
         email: string;
         id: number;
+        createdAt: string;
         name: string;
         role: "admin" | "editor" | "viewer";
-        createdAt: string;
     }>;
     token: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     user: {
         email: string;
         id: number;
+        createdAt: string;
         name: string;
         role: "admin" | "editor" | "viewer";
-        createdAt: string;
     };
     token: string;
 }, {
     user: {
         email: string;
         id: number;
+        createdAt: string;
         name: string;
         role: "admin" | "editor" | "viewer";
-        createdAt: string;
     };
     token: string;
 }>;
@@ -145,15 +283,15 @@ export declare const GetCurrentUserResponse: zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }>;
 /**
  * @summary List all entries (admin)
@@ -188,8 +326,13 @@ export declare const ListEntriesResponse: zod.ZodObject<{
         contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
         sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         published: zod.ZodBoolean;
         createdAt: zod.ZodString;
@@ -207,8 +350,13 @@ export declare const ListEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }, {
         id: number;
@@ -223,8 +371,13 @@ export declare const ListEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }>, "many">;
     total: zod.ZodNumber;
@@ -244,8 +397,13 @@ export declare const ListEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }[];
     page: number;
@@ -265,8 +423,13 @@ export declare const ListEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }[];
     page: number;
@@ -285,6 +448,10 @@ export declare const CreateEntryBody: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodOptional<zod.ZodNullable<zod.ZodBoolean>>;
@@ -298,6 +465,10 @@ export declare const CreateEntryBody: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
 }, {
@@ -310,6 +481,10 @@ export declare const CreateEntryBody: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
 }>;
@@ -333,8 +508,13 @@ export declare const GetEntryResponse: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -352,8 +532,13 @@ export declare const GetEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -368,8 +553,13 @@ export declare const GetEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 /**
@@ -391,8 +581,13 @@ export declare const UpdateEntryBody: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     published: zod.ZodOptional<zod.ZodNullable<zod.ZodBoolean>>;
 }, "strip", zod.ZodTypeAny, {
     category?: string | null | undefined;
@@ -404,8 +599,13 @@ export declare const UpdateEntryBody: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
 }, {
     category?: string | null | undefined;
     published?: boolean | null | undefined;
@@ -416,8 +616,13 @@ export declare const UpdateEntryBody: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
 }>;
 export declare const UpdateEntryResponse: zod.ZodObject<{
     id: zod.ZodNumber;
@@ -429,8 +634,13 @@ export declare const UpdateEntryResponse: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -448,8 +658,13 @@ export declare const UpdateEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -464,8 +679,13 @@ export declare const UpdateEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 /**
@@ -515,8 +735,13 @@ export declare const ToggleEntryPublishedResponse: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -534,8 +759,13 @@ export declare const ToggleEntryPublishedResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -550,8 +780,13 @@ export declare const ToggleEntryPublishedResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 /**
@@ -566,15 +801,15 @@ export declare const ListCategoriesResponseItem: zod.ZodObject<{
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
 }, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
@@ -588,15 +823,15 @@ export declare const ListCategoriesResponse: zod.ZodArray<zod.ZodObject<{
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
 }, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
@@ -643,15 +878,15 @@ export declare const UpdateCategoryResponse: zod.ZodObject<{
     createdAt: zod.ZodString;
 }, "strip", zod.ZodTypeAny, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
 }, {
     id: number;
-    name: string;
     createdAt: string;
+    name: string;
     slug: string;
     entryCount: number;
     description?: string | null | undefined;
@@ -687,28 +922,46 @@ export declare const GetSettingsResponse: zod.ZodObject<{
     homepageDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     themeColor: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     calloutSections: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    faviconUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaTitle: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageOgImageUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     installed: zod.ZodBoolean;
     updatedAt: zod.ZodString;
+    geminiApiKeySet: zod.ZodOptional<zod.ZodBoolean>;
+    geminiApiKeyHint: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }>;
 /**
  * @summary Update directory settings
@@ -720,6 +973,11 @@ export declare const UpdateSettingsBody: zod.ZodObject<{
     homepageDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     themeColor: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     calloutSections: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    faviconUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaTitle: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageOgImageUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    geminiApiKey: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
     siteTitle?: string | null | undefined;
     themeColor?: string | null | undefined;
@@ -727,6 +985,11 @@ export declare const UpdateSettingsBody: zod.ZodObject<{
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKey?: string | null | undefined;
 }, {
     siteTitle?: string | null | undefined;
     themeColor?: string | null | undefined;
@@ -734,6 +997,11 @@ export declare const UpdateSettingsBody: zod.ZodObject<{
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKey?: string | null | undefined;
 }>;
 export declare const UpdateSettingsResponse: zod.ZodObject<{
     id: zod.ZodNumber;
@@ -743,28 +1011,46 @@ export declare const UpdateSettingsResponse: zod.ZodObject<{
     homepageDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     themeColor: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     calloutSections: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    faviconUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaTitle: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageOgImageUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     installed: zod.ZodBoolean;
     updatedAt: zod.ZodString;
+    geminiApiKeySet: zod.ZodOptional<zod.ZodBoolean>;
+    geminiApiKeyHint: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }>;
 /**
  * @summary List all users
@@ -778,15 +1064,15 @@ export declare const ListUsersResponseItem: zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }>;
 export declare const ListUsersResponse: zod.ZodArray<zod.ZodObject<{
     id: zod.ZodNumber;
@@ -797,15 +1083,15 @@ export declare const ListUsersResponse: zod.ZodArray<zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }>, "many">;
 /**
  * @summary Create a user
@@ -817,13 +1103,13 @@ export declare const CreateUserBody: zod.ZodObject<{
     role: zod.ZodEnum<["admin", "editor", "viewer"]>;
 }, "strip", zod.ZodTypeAny, {
     email: string;
-    password: string;
     name: string;
+    password: string;
     role: "admin" | "editor" | "viewer";
 }, {
     email: string;
-    password: string;
     name: string;
+    password: string;
     role: "admin" | "editor" | "viewer";
 }>;
 /**
@@ -843,13 +1129,13 @@ export declare const UpdateUserBody: zod.ZodObject<{
     role: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
     email?: string | null | undefined;
-    password?: string | null | undefined;
     name?: string | null | undefined;
+    password?: string | null | undefined;
     role?: string | null | undefined;
 }, {
     email?: string | null | undefined;
-    password?: string | null | undefined;
     name?: string | null | undefined;
+    password?: string | null | undefined;
     role?: string | null | undefined;
 }>;
 export declare const UpdateUserResponse: zod.ZodObject<{
@@ -861,15 +1147,15 @@ export declare const UpdateUserResponse: zod.ZodObject<{
 }, "strip", zod.ZodTypeAny, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }, {
     email: string;
     id: number;
+    createdAt: string;
     name: string;
     role: "admin" | "editor" | "viewer";
-    createdAt: string;
 }>;
 /**
  * @summary Delete a user
@@ -892,14 +1178,120 @@ export declare const DeleteUserResponse: zod.ZodObject<{
     message?: string | null | undefined;
 }>;
 /**
- * @summary Import entries from CSV text
+ * @summary Analyze CSV headers and suggest field mappings
+ */
+export declare const AnalyzeImportBody: zod.ZodObject<{
+    headers: zod.ZodArray<zod.ZodString, "many">;
+    sampleRows: zod.ZodArray<zod.ZodArray<zod.ZodString, "many">, "many">;
+}, "strip", zod.ZodTypeAny, {
+    headers: string[];
+    sampleRows: string[][];
+}, {
+    headers: string[];
+    sampleRows: string[][];
+}>;
+export declare const AnalyzeImportResponse: zod.ZodObject<{
+    mappings: zod.ZodArray<zod.ZodObject<{
+        csvColumn: zod.ZodString;
+        targetField: zod.ZodString;
+        sampleValues: zod.ZodArray<zod.ZodString, "many">;
+        confidence: zod.ZodNumber;
+        approved: zod.ZodBoolean;
+    }, "strip", zod.ZodTypeAny, {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }, {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }>, "many">;
+    availableFields: zod.ZodArray<zod.ZodObject<{
+        value: zod.ZodString;
+        label: zod.ZodString;
+        description: zod.ZodString;
+    }, "strip", zod.ZodTypeAny, {
+        value: string;
+        description: string;
+        label: string;
+    }, {
+        value: string;
+        description: string;
+        label: string;
+    }>, "many">;
+}, "strip", zod.ZodTypeAny, {
+    mappings: {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }[];
+    availableFields: {
+        value: string;
+        description: string;
+        label: string;
+    }[];
+}, {
+    mappings: {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }[];
+    availableFields: {
+        value: string;
+        description: string;
+        label: string;
+    }[];
+}>;
+/**
+ * @summary Import entries from CSV text with confirmed field mappings
  */
 export declare const ImportCsvBody: zod.ZodObject<{
     csvContent: zod.ZodString;
+    fieldMappings: zod.ZodArray<zod.ZodObject<{
+        csvColumn: zod.ZodString;
+        targetField: zod.ZodString;
+        sampleValues: zod.ZodArray<zod.ZodString, "many">;
+        confidence: zod.ZodNumber;
+        approved: zod.ZodBoolean;
+    }, "strip", zod.ZodTypeAny, {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }, {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }>, "many">;
 }, "strip", zod.ZodTypeAny, {
     csvContent: string;
+    fieldMappings: {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }[];
 }, {
     csvContent: string;
+    fieldMappings: {
+        csvColumn: string;
+        targetField: string;
+        sampleValues: string[];
+        confidence: number;
+        approved: boolean;
+    }[];
 }>;
 export declare const ImportCsvResponse: zod.ZodObject<{
     jobId: zod.ZodString;
@@ -1006,8 +1398,13 @@ export declare const ListPublicEntriesResponse: zod.ZodObject<{
         contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+        customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
         sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
         published: zod.ZodBoolean;
         createdAt: zod.ZodString;
@@ -1025,8 +1422,13 @@ export declare const ListPublicEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }, {
         id: number;
@@ -1041,8 +1443,13 @@ export declare const ListPublicEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }>, "many">;
     total: zod.ZodNumber;
@@ -1062,8 +1469,13 @@ export declare const ListPublicEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }[];
     page: number;
@@ -1083,8 +1495,13 @@ export declare const ListPublicEntriesResponse: zod.ZodObject<{
         contactPhone?: string | null | undefined;
         website?: string | null | undefined;
         location?: string | null | undefined;
+        venue?: string | null | undefined;
+        eventType?: string | null | undefined;
+        startDate?: string | null | undefined;
+        endDate?: string | null | undefined;
         tags?: string | null | undefined;
         moreDetails?: string | null | undefined;
+        customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
         sourceCsvRow?: string | null | undefined;
     }[];
     page: number;
@@ -1111,8 +1528,13 @@ export declare const GetPublicEntryResponse: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -1130,8 +1552,13 @@ export declare const GetPublicEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -1146,8 +1573,13 @@ export declare const GetPublicEntryResponse: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 /**
@@ -1194,8 +1626,13 @@ export declare const GetFeaturedEntriesResponseItem: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -1213,8 +1650,13 @@ export declare const GetFeaturedEntriesResponseItem: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -1229,8 +1671,13 @@ export declare const GetFeaturedEntriesResponseItem: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 export declare const GetFeaturedEntriesResponse: zod.ZodArray<zod.ZodObject<{
@@ -1243,8 +1690,13 @@ export declare const GetFeaturedEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -1262,8 +1714,13 @@ export declare const GetFeaturedEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -1278,8 +1735,13 @@ export declare const GetFeaturedEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>, "many">;
 /**
@@ -1295,8 +1757,13 @@ export declare const GetRecentEntriesResponseItem: zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -1314,8 +1781,13 @@ export declare const GetRecentEntriesResponseItem: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -1330,8 +1802,13 @@ export declare const GetRecentEntriesResponseItem: zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>;
 export declare const GetRecentEntriesResponse: zod.ZodArray<zod.ZodObject<{
@@ -1344,8 +1821,13 @@ export declare const GetRecentEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     website: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     location: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    venue: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    eventType: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    startDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    endDate: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     tags: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     moreDetails: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    customFields: zod.ZodOptional<zod.ZodNullable<zod.ZodObject<{}, "passthrough", zod.ZodTypeAny, zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough">, zod.objectInputType<{}, zod.ZodTypeAny, "passthrough">>>>;
     sourceCsvRow: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     published: zod.ZodBoolean;
     createdAt: zod.ZodString;
@@ -1363,8 +1845,13 @@ export declare const GetRecentEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectOutputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }, {
     id: number;
@@ -1379,8 +1866,13 @@ export declare const GetRecentEntriesResponse: zod.ZodArray<zod.ZodObject<{
     contactPhone?: string | null | undefined;
     website?: string | null | undefined;
     location?: string | null | undefined;
+    venue?: string | null | undefined;
+    eventType?: string | null | undefined;
+    startDate?: string | null | undefined;
+    endDate?: string | null | undefined;
     tags?: string | null | undefined;
     moreDetails?: string | null | undefined;
+    customFields?: zod.objectInputType<{}, zod.ZodTypeAny, "passthrough"> | null | undefined;
     sourceCsvRow?: string | null | undefined;
 }>, "many">;
 /**
@@ -1394,27 +1886,45 @@ export declare const GetPublicSettingsResponse: zod.ZodObject<{
     homepageDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     themeColor: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     calloutSections: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    faviconUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaTitle: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageMetaDescription: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
+    homepageOgImageUrl: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
     installed: zod.ZodBoolean;
     updatedAt: zod.ZodString;
+    geminiApiKeySet: zod.ZodOptional<zod.ZodBoolean>;
+    geminiApiKeyHint: zod.ZodOptional<zod.ZodNullable<zod.ZodString>>;
 }, "strip", zod.ZodTypeAny, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }, {
+    id: number;
     installed: boolean;
     siteTitle: string;
-    id: number;
     updatedAt: string;
     themeColor?: string | null | undefined;
     homepageHeadline?: string | null | undefined;
     homepageDescription?: string | null | undefined;
     logoUrl?: string | null | undefined;
     calloutSections?: string | null | undefined;
+    faviconUrl?: string | null | undefined;
+    homepageMetaTitle?: string | null | undefined;
+    homepageMetaDescription?: string | null | undefined;
+    homepageOgImageUrl?: string | null | undefined;
+    geminiApiKeySet?: boolean | undefined;
+    geminiApiKeyHint?: string | null | undefined;
 }>;
 //# sourceMappingURL=api.d.ts.map

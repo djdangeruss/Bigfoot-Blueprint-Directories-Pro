@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 export interface CompleteSetupBody {
+    setupToken: string;
     siteTitle: string;
     adminName: string;
     adminEmail: string;

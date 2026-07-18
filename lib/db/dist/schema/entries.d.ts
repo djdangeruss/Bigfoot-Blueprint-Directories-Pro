@@ -449,10 +449,11 @@ export declare const entries: import("drizzle-orm/pg-core").PgTableWithColumns<{
     dialect: "pg";
 }>;
 export declare const insertEntrySchema: z.ZodObject<{
+    slug: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     title: z.ZodString;
     category: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     summary: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     contactEmail: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     contactPhone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     website: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -467,7 +468,6 @@ export declare const insertEntrySchema: z.ZodObject<{
     sourceCsvRow: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     published: z.ZodOptional<z.ZodBoolean>;
     featured: z.ZodOptional<z.ZodBoolean>;
-    slug: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     metaTitle: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     metaDescription: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     ogTitle: z.ZodOptional<z.ZodNullable<z.ZodString>>;

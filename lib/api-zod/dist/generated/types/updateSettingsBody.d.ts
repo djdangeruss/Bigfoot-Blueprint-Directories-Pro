@@ -18,5 +18,15 @@ export interface UpdateSettingsBody {
     themeColor?: string | null;
     /** @nullable */
     calloutSections?: string | null;
+    /** @nullable */
+    faviconUrl?: string | null;
+    /** @nullable */
+    homepageMetaTitle?: string | null;
+    /** @nullable */
+    homepageMetaDescription?: string | null;
+    /** @nullable */
+    homepageOgImageUrl?: string | null;
+    /** @nullable */
+    geminiApiKey?: string | null;
 }
 //# sourceMappingURL=updateSettingsBody.d.ts.map

@@ -24,7 +24,6 @@ function formatEntry(e: typeof entries.$inferSelect) {
     tags: e.tags,
     moreDetails: e.moreDetails,
     customFields: stripPrivateCustomFields(e.customFields),
-    sourceCsvRow: e.sourceCsvRow,
     published: e.published,
     slug: e.slug,
     metaTitle: e.metaTitle,
@@ -38,6 +37,7 @@ function formatEntry(e: typeof entries.$inferSelect) {
 
 router.get("/entries", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
     const limit = Math.min(100, parseInt(req.query.limit as string) || 20);
     const offset = (page - 1) * limit;
@@ -86,6 +86,7 @@ router.get("/entries", async (req, res) => {
 
 router.get("/entries/:idOrSlug", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const param = req.params.idOrSlug;
     const numericId = parseInt(param, 10);
     const isNumeric = !isNaN(numericId) && String(numericId) === param;
@@ -105,6 +106,7 @@ router.get("/entries/:idOrSlug", async (req, res) => {
 
 router.get("/stats", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
     const [totalEntries] = await db.select({ count: count() }).from(entries).where(eq(entries.published, true));
     const breakdown = await db.select({
       category: entries.category,
@@ -134,6 +136,7 @@ router.get("/stats", async (req, res) => {
 
 router.get("/featured", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const rows = await db.select().from(entries)
       .where(and(eq(entries.published, true), eq(entries.featured, true)))
       .orderBy(desc(entries.createdAt))
@@ -147,6 +150,7 @@ router.get("/featured", async (req, res) => {
 
 router.get("/recent", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     const rows = await db.select().from(entries)
       .where(eq(entries.published, true))
       .orderBy(desc(entries.createdAt))
@@ -160,6 +164,7 @@ router.get("/recent", async (req, res) => {
 
 router.get("/settings", async (req, res) => {
   try {
+    res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
     const [settings] = await db.select().from(directorySettings).limit(1);
     if (!settings) {
       res.json({
