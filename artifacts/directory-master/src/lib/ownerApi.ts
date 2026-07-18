@@ -1,16 +1,16 @@
-// Fetch client for the owner-facing API (/api/owner/*). Token kept in
-// localStorage under its own key — completely separate from the admin session.
-
-const TOKEN_KEY = "colrest.ownerToken";
+// Owner credentials stay in an HttpOnly, SameSite cookie. Local storage keeps
+// only a non-sensitive marker so the shell can render the dashboard shortcut.
+const SESSION_MARKER = "colrest.ownerSession";
 
 export function getOwnerToken(): string | null {
-  try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
+  try { return localStorage.getItem(SESSION_MARKER); } catch { return null; }
 }
-export function setOwnerToken(token: string | null) {
+
+export function setOwnerToken(value: string | null) {
   try {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
-  } catch { /* ignore */ }
+    if (value) localStorage.setItem(SESSION_MARKER, "1");
+    else localStorage.removeItem(SESSION_MARKER);
+  } catch { /* storage may be unavailable */ }
 }
 
 export class OwnerApiError extends Error {
@@ -24,24 +24,28 @@ export class OwnerApiError extends Error {
 }
 
 async function call<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = getOwnerToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(`/api/owner${path}`, {
+  const response = await fetch(`/api/owner${path}`, {
     method,
-    headers,
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new OwnerApiError(res.status, data.error || "Request failed", data.upgradeRequired);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new OwnerApiError(response.status, data.error || "Request failed", data.upgradeRequired);
   return data as T;
 }
 
+type SessionResponse = {
+  owner: { id: number; name: string; email: string };
+  authenticated: true;
+  token?: string;
+};
+
 export const ownerApi = {
-  claim: (body: { entryId: number; name: string; email: string; password: string; phone?: string; message?: string }) =>
-    call<{ owner: { id: number; name: string; email: string }; token: string; claim: { id: number; status: string; method: string } }>("POST", "/claim", body),
+  claim: (body: { entryId: number; name: string; email: string; password: string; phone?: string; message?: string; company?: string }) =>
+    call<SessionResponse & { claim: { id: number; status: string; method: string } }>("POST", "/claim", body),
   login: (email: string, password: string) =>
-    call<{ owner: { id: number; name: string; email: string }; token: string }>("POST", "/login", { email, password }),
+    call<SessionResponse>("POST", "/login", { email, password }),
   logout: () => call<{ success: boolean }>("POST", "/logout"),
   me: () => call<{ id: number; name: string; email: string }>("GET", "/me"),
   listing: () => call<{

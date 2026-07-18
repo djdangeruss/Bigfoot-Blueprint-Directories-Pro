@@ -7,7 +7,7 @@ import { useI18n } from "@/i18n";
 
 function Stars({ rating, className = "h-3.5 w-3.5" }: { rating: number; className?: string }) {
   return (
-    <span className="inline-flex items-center gap-px" aria-label={`${rating.toFixed(1)} stars`}>
+    <span className="inline-flex items-center gap-px" role="img" aria-label={`${rating.toFixed(1)} stars`}>
       {[1, 2, 3, 4, 5].map(i => (
         <Star
           key={i}
@@ -123,6 +123,9 @@ export function TrustPanel({ listing }: { listing: ColrestListing }) {
           {listing.replyDelayDays <= 3 ? t.entry.respondsFast : t.entry.responds}
         </div>
       )}
+      <p className="mt-4 border-t border-border pt-3 text-[11px] leading-relaxed text-muted-foreground">
+        {t.entry.ratingMethod}
+      </p>
     </div>
   );
 }

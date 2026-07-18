@@ -61,7 +61,12 @@ export default function ColrestEntry() {
 
   const claimed = listing.claimStatus === "claimed";
   const description = listing.ownerDescription || listing.atmosphere || null;
-  const gallery = [listing.photoUrl, ...listing.photos].filter(Boolean) as string[];
+  // Scraped discovery photos are not publication rights. Only render media an
+  // approved owner has supplied through the owner-controlled gallery.
+  const gallery = claimed ? listing.photos.filter(Boolean) as string[] : [];
+  const directionsUrl = listing.venue
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.venue)}`
+    : null;
 
   return (
     <div>
@@ -77,7 +82,7 @@ export default function ColrestEntry() {
                 {localizedCategory(listing.category, lang)}
               </Link>
             )}
-            {claimed && <span className="seal-verificado">✓ {t.entry.verified}</span>}
+            {claimed && <span className="seal-verificado" title={t.entry.verifiedMeaning}>✓ {t.entry.verified}<span className="sr-only">: {t.entry.verifiedMeaning}</span></span>}
             {entry.updatedAt && (
               <span className="text-xs text-muted-foreground">
                 {t.entry.lastUpdated} {format(new Date(entry.updatedAt), "PP", lang === "es" ? { locale: dfnsEs } : undefined)}
@@ -155,14 +160,6 @@ export default function ColrestEntry() {
               </section>
             )}
 
-            {related.length > 0 && (
-              <section className="pt-4 border-t border-border">
-                <h2 className="font-display text-xl font-semibold mb-5">{t.entry.related}</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {related.map(l => <StandardCard key={l.id} listing={l} />)}
-                </div>
-              </section>
-            )}
           </div>
 
           {/* Sticky sidebar: trust + contact */}
@@ -212,13 +209,40 @@ export default function ColrestEntry() {
                   <Globe className="h-4 w-4" /> {t.entry.website} <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
               )}
+              {directionsUrl && (
+                <a
+                  href={directionsUrl}
+                  target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackEvent("listing_contact_click", { contact_method: "directions", listing_title: listing.title })}
+                  className="flex items-center justify-center gap-2 w-full rounded-full border border-border py-3 text-sm font-semibold hover:border-primary hover:text-primary transition-colors"
+                >
+                  <MapPin className="h-4 w-4" /> {t.entry.directions} <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              )}
               {listing.venue && (
                 <p className="text-xs text-muted-foreground text-center pt-1">{listing.venue}</p>
               )}
             </div>
           </aside>
         </div>
+
+        {related.length > 0 && (
+          <section className="mt-12 border-t border-border pt-8">
+            <h2 className="font-display text-xl font-semibold mb-5">{t.entry.related}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {related.map(l => <StandardCard key={l.id} listing={l} />)}
+            </div>
+          </section>
+        )}
       </div>
+
+      {(listing.contactPhone || listing.menuUrl || listing.website || directionsUrl) && (
+        <nav aria-label="Restaurant actions" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 gap-2 border-t border-border bg-card/95 p-2 pb-[max(.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur lg:hidden">
+          {listing.contactPhone ? <a href={`tel:${listing.contactPhone}`} className="flex min-h-12 items-center justify-center gap-1.5 rounded-full bg-primary px-2 text-xs font-semibold text-primary-foreground"><Phone className="h-4 w-4" />{t.entry.call}</a> : <span />}
+          {listing.menuUrl ? <a href={listing.menuUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center justify-center gap-1.5 rounded-full bg-secondary px-2 text-xs font-semibold text-secondary-foreground"><UtensilsCrossed className="h-4 w-4" />{t.entry.menu}</a> : listing.website ? <a href={listing.website.startsWith("http") ? listing.website : `https://${listing.website}`} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-border px-2 text-xs font-semibold"><Globe className="h-4 w-4" />{t.entry.website}</a> : <span />}
+          {directionsUrl ? <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-border px-2 text-xs font-semibold"><MapPin className="h-4 w-4" />{t.entry.directions}</a> : <span />}
+        </nav>
+      )}
     </div>
   );
 }

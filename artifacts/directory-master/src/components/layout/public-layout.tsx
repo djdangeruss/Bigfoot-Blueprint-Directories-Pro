@@ -15,7 +15,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const { token, logout: clearToken } = useAuth();
   const logoutMutation = useLogout();
   const isLoggedIn = Boolean(token);
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } as any });
   const isAdmin = isLoggedIn && currentUser?.role === "admin";
 
   const handleSignOut = async () => {

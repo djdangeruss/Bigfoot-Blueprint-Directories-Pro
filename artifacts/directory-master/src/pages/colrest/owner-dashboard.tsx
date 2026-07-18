@@ -5,6 +5,7 @@ import { Loader2, Lock, Clock3, BarChart3, Star, Camera, UtensilsCrossed, X, Che
 import { ownerApi, getOwnerToken, setOwnerToken, OwnerApiError } from "@/lib/ownerApi";
 import { useI18n } from "@/i18n";
 import type { Tier } from "@/lib/colrest";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 const TIER_ORDER: Tier[] = ["free", "basic", "pro", "premium"];
 
@@ -277,9 +278,9 @@ export default function OwnerDashboard() {
       </div>
 
       {/* Upgrade request modal */}
-      {upgradeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={() => { setUpgradeOpen(null); setUpgradeSent(false); }}>
-          <div className="w-full max-w-md rounded-lg bg-card border border-card-border overflow-hidden" onClick={e => e.stopPropagation()}>
+      <Dialog open={Boolean(upgradeOpen)} onOpenChange={open => { if (!open) { setUpgradeOpen(null); setUpgradeSent(false); } }}>
+        {upgradeOpen && (
+          <DialogContent className="w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-lg border-card-border bg-card p-0">
             <div className="toldo-stripes" aria-hidden />
             <div className="p-6">
               {upgradeSent ? (
@@ -290,10 +291,10 @@ export default function OwnerDashboard() {
                 </div>
               ) : (
                 <>
-                  <h3 className="font-display text-xl font-semibold">
+                  <DialogTitle className="font-display text-xl font-semibold">
                     {t.owner.upgradeTitle} — {t.tiers[upgradeOpen].name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-2">{t.owner.upgradeBody}</p>
+                  </DialogTitle>
+                  <DialogDescription className="mt-2">{t.owner.upgradeBody}</DialogDescription>
                   <textarea
                     rows={3}
                     value={upgradeMsg}
@@ -312,9 +313,9 @@ export default function OwnerDashboard() {
                 </>
               )}
             </div>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   );
 }

@@ -69,9 +69,11 @@ export default function ColrestBrowse() {
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative">
+            <label htmlFor="browse-directory-search" className="sr-only">{t.browse.searchLabel}</label>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <input
-              type="text"
+              id="browse-directory-search"
+              type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t.nav.searchPlaceholder}
@@ -83,6 +85,7 @@ export default function ColrestBrowse() {
               <button
                 key={o.key}
                 onClick={() => setSort(o.key)}
+                aria-pressed={sort === o.key}
                 className={`px-3 py-2 text-xs font-medium transition-colors ${
                   sort === o.key ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}

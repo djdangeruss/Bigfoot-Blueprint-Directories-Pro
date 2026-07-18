@@ -717,7 +717,7 @@ export default function HomePage() {
   const qc = useQueryClient();
   const { token } = useAuth();
   const isLoggedIn = Boolean(token);
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } as any });
   const isAdmin = isLoggedIn && (currentUser as any)?.role === "admin";
   const updateSettings = useUpdateSettings();
 

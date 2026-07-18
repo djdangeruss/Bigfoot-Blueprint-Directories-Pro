@@ -13,4 +13,6 @@ if (theme === "chn-flag-theme" || theme === "colombianhorsenetwork-tricolor") {
   await import("./themes/colrest-fonda.css");
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+const root = document.getElementById("root")!;
+root.replaceChildren();
+createRoot(root).render(<App />);

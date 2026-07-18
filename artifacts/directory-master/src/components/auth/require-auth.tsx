@@ -8,10 +8,10 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
   const [, setLocation] = useLocation();
   const { data: user, isLoading, error } = useGetCurrentUser({
-    query: {
+    query: ({
       enabled: !!token,
       retry: false,
-    },
+    } as any),
   });
 
   useEffect(() => {

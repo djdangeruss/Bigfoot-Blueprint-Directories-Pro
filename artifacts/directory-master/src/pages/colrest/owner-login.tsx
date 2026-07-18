@@ -17,7 +17,7 @@ export default function OwnerLogin() {
     setError(null);
     try {
       const res = await ownerApi.login(email, password);
-      setOwnerToken(res.token);
+      setOwnerToken(res.token ?? "cookie-session");
       setLocation("/owner");
     } catch (err) {
       setError(err instanceof OwnerApiError ? err.message : t.common.error);
@@ -38,12 +38,12 @@ export default function OwnerLogin() {
 
           <form onSubmit={submit} className="mt-7 space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5">{t.owner.email}</label>
-              <input type="email" required value={email} onChange={e => setEmail(e.target.value)} className={inputCls} />
+              <label htmlFor="owner-email" className="block text-sm font-medium mb-1.5">{t.owner.email}</label>
+              <input id="owner-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">{t.owner.password}</label>
-              <input type="password" required value={password} onChange={e => setPassword(e.target.value)} className={inputCls} />
+              <label htmlFor="owner-password" className="block text-sm font-medium mb-1.5">{t.owner.password}</label>
+              <input id="owner-password" type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} className={inputCls} />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <button

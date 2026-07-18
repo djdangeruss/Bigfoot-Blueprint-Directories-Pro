@@ -16,8 +16,10 @@ export const es: Dict = {
     featured: "Cocinas destacadas",
     browseAll: "Ver todos los restaurantes",
     categories: "Explora por estilo",
+    searchLabel: "Encuentra un restaurante colombiano",
   },
   browse: {
+    searchLabel: "Buscar restaurantes",
     title: "Todos los restaurantes",
     results: "restaurantes encontrados",
     sortBy: "Ordenar por",
@@ -35,6 +37,8 @@ export const es: Dict = {
     ctaCardBody: "Las páginas reclamadas reciben la tarjeta completa: foto, sello de verificado y mejor posición. Busca la tuya abajo y reclámala — gratis.",
   },
   entry: {
+    verifiedMeaning: "Propiedad verificada por nuestro equipo",
+    ratingMethod: "Las calificaciones se muestran por fuente. La puntuaci\u00f3n del directorio es un resumen ponderado por cantidad de rese\u00f1as, no una rese\u00f1a nueva de clientes.",
     reputation: "Reputación",
     reviews: "reseñas",
     positive: "positivo",
@@ -66,7 +70,7 @@ export const es: Dict = {
     businessEmailHint: "Usar un correo con el mismo dominio de tu sitio web agiliza la verificación.",
     phone: "Teléfono",
     password: "Crea una contraseña",
-    passwordHint: "Mínimo 8 caracteres — la usarás para iniciar sesión.",
+    passwordHint: "Mínimo 10 caracteres — la usarás para iniciar sesión.",
     message: "¿Algo que debamos saber? (opcional)",
     submit: "Enviar reclamo",
     submitting: "Enviando…",
@@ -135,6 +139,7 @@ export const es: Dict = {
     empty: "Nada pendiente.",
   },
   common: {
+    skipToContent: "Saltar al contenido principal",
     loading: "Cargando…",
     error: "Algo salió mal",
     language: "Idioma",

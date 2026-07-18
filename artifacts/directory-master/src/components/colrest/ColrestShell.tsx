@@ -68,6 +68,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         bodyScripts={(settings as any)?.bodyScripts}
       />
 
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-card focus:px-4 focus:py-3 focus:shadow-lg">
+        {t.common.skipToContent}
+      </a>
+
       <header className="sticky top-0 z-50 bg-card/95 backdrop-blur border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
@@ -107,7 +111,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
             <div className="flex md:hidden items-center gap-2">
               <LangToggle />
               <ThemeToggle />
-              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2" aria-label="Menu">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-3 -mr-2" aria-label="Menu" aria-expanded={menuOpen} aria-controls="mobile-directory-menu">
                 {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
             </div>
@@ -115,7 +119,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-border bg-card px-4 py-4 space-y-3">
+          <div id="mobile-directory-menu" className="md:hidden border-t border-border bg-card px-4 py-4 space-y-3">
             <form onSubmit={submitSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
@@ -136,7 +140,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
-      <main className="flex-1 flex flex-col">{children}</main>
+      <main id="main-content" className="flex-1 flex flex-col">{children}</main>
 
       <footer className="border-t border-border bg-card mt-auto">
         <div className="toldo" aria-hidden />

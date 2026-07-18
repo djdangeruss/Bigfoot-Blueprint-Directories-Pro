@@ -1,12 +1,15 @@
-import { Link } from "wouter";
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
 import { useListPublicEntries } from "@workspace/api-client-react";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight, Search } from "lucide-react";
 import { parseListing } from "@/lib/colrest";
 import { FeaturedCard, StandardCard } from "@/components/colrest/ListingCard";
 import { useI18n, localizedCategory } from "@/i18n";
 
 export default function ColrestHome() {
   const { t, lang } = useI18n();
+  const [, setLocation] = useLocation();
+  const [query, setQuery] = useState("");
   const { data, isLoading } = useListPublicEntries({ limit: 100 });
 
   const listings = (data?.entries ?? []).map(parseListing);
@@ -17,11 +20,15 @@ export default function ColrestHome() {
     .slice(0, 6);
   const categories = [...new Set(listings.map(l => l.category).filter(Boolean))] as string[];
   const cities = [...new Set(listings.map(l => l.location).filter(Boolean))] as string[];
+  const submitSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (query.trim()) setLocation(`/browse?search=${encodeURIComponent(query.trim())}`);
+  };
 
   return (
     <div>
       {/* Hero — fonda at dusk. CSS-only; imagery can be layered in later. */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(160deg, var(--fonda-cafe) 0%, #3a2418 60%, #4a2c1c 100%)" }}>
+      <section className="relative overflow-hidden bg-cover bg-center" style={{ backgroundImage: "linear-gradient(90deg, rgba(42,25,17,.91), rgba(42,25,17,.72), rgba(42,25,17,.9)), url('/images/colombian-table-editorial-v1.jpg')" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
           <h1 className="font-display font-semibold text-4xl md:text-6xl leading-tight max-w-3xl mx-auto" style={{ color: "var(--fonda-arepa)" }}>
             {t.home.heroTitle}
@@ -29,6 +36,12 @@ export default function ColrestHome() {
           <p className="mt-5 text-base md:text-lg max-w-2xl mx-auto" style={{ color: "color-mix(in srgb, var(--fonda-arepa) 75%, transparent)" }}>
             {t.home.heroSubtitle}
           </p>
+          <form onSubmit={submitSearch} role="search" className="relative max-w-2xl mx-auto mt-7">
+            <label htmlFor="hero-directory-search" className="sr-only">{t.home.searchLabel}</label>
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" aria-hidden />
+            <input id="hero-directory-search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t.nav.searchPlaceholder} className="w-full rounded-full border-2 border-white/20 bg-background py-4 pl-14 pr-36 text-base text-foreground shadow-xl focus:outline-none focus:ring-4 focus:ring-primary/30" />
+            <button type="submit" className="absolute right-2 top-2 bottom-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90">{t.nav.browse}</button>
+          </form>
           <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
             <Link href="/browse" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 text-sm hover:opacity-90 transition-opacity">
               {t.home.browseAll}

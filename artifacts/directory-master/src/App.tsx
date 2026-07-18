@@ -1,5 +1,6 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -12,43 +13,40 @@ import { PublicLayout } from "@/components/layout/public-layout";
 import { AdminLayout } from "@/components/layout/admin-layout";
 
 // Pages
-import NotFound from "@/pages/not-found";
-// We'll import these lazily or directly as we build them
-// Setup
-import SetupPage from "@/pages/setup";
-// Public
-import HomePage from "@/pages/home";
-import BrowsePage from "@/pages/browse";
-import EntryPage from "@/pages/entry";
-// Admin
-import LoginPage from "@/pages/admin/login";
-import DashboardPage from "@/pages/admin/dashboard";
-import AdminEntriesPage from "@/pages/admin/entries";
-import AdminEntryFormPage from "@/pages/admin/entries/form";
-import AdminCategoriesPage from "@/pages/admin/categories";
-import AdminImportPage from "@/pages/admin/import";
-import AdminSettingsPage from "@/pages/admin/settings";
-import AdminUsersPage from "@/pages/admin/users";
-import AdminSeoPage from "@/pages/admin/seo";
-import AdminContactsPage from "@/pages/admin/contacts";
-import AdminClaimsPage from "@/pages/admin/claims";
-import BuilderPage from "@/pages/admin/builder";
+const NotFound = lazy(() => import("@/pages/not-found"));
+const SetupPage = lazy(() => import("@/pages/setup"));
+const HomePage = lazy(() => import("@/pages/home"));
+const BrowsePage = lazy(() => import("@/pages/browse"));
+const EntryPage = lazy(() => import("@/pages/entry"));
+const LoginPage = lazy(() => import("@/pages/admin/login"));
+const DashboardPage = lazy(() => import("@/pages/admin/dashboard"));
+const AdminEntriesPage = lazy(() => import("@/pages/admin/entries"));
+const AdminEntryFormPage = lazy(() => import("@/pages/admin/entries/form"));
+const AdminCategoriesPage = lazy(() => import("@/pages/admin/categories"));
+const AdminImportPage = lazy(() => import("@/pages/admin/import"));
+const AdminSettingsPage = lazy(() => import("@/pages/admin/settings"));
+const AdminUsersPage = lazy(() => import("@/pages/admin/users"));
+const AdminSeoPage = lazy(() => import("@/pages/admin/seo"));
+const AdminContactsPage = lazy(() => import("@/pages/admin/contacts"));
+const AdminClaimsPage = lazy(() => import("@/pages/admin/claims"));
+const BuilderPage = lazy(() => import("@/pages/admin/builder"));
 
 // colrest instance: bespoke public experience, gated at build time so sibling
 // instances' bundles are untouched (dead branches tree-shake out).
 const IS_COLREST = import.meta.env.VITE_THEME === "colrest-fonda";
 import { ColrestShell } from "@/components/colrest/ColrestShell";
-import ColrestHome from "@/pages/colrest/home";
-import ColrestBrowse from "@/pages/colrest/browse";
-import ColrestEntry from "@/pages/colrest/entry";
-import ColrestClaim from "@/pages/colrest/claim";
-import OwnerLogin from "@/pages/colrest/owner-login";
-import OwnerDashboard from "@/pages/colrest/owner-dashboard";
+const ColrestHome = lazy(() => import("@/pages/colrest/home"));
+const ColrestBrowse = lazy(() => import("@/pages/colrest/browse"));
+const ColrestEntry = lazy(() => import("@/pages/colrest/entry"));
+const ColrestClaim = lazy(() => import("@/pages/colrest/claim"));
+const OwnerLogin = lazy(() => import("@/pages/colrest/owner-login"));
+const OwnerDashboard = lazy(() => import("@/pages/colrest/owner-dashboard"));
 
 const queryClient = new QueryClient();
 
 function Router() {
   return (
+    <Suspense fallback={<div className="flex min-h-48 items-center justify-center" role="status">Loading…</div>}>
     <Switch>
       {/* Setup Route */}
       <Route path="/setup" component={SetupPage} />
@@ -199,6 +197,7 @@ function Router() {
 
       <Route component={NotFound} />
     </Switch>
+    </Suspense>
   );
 }
 

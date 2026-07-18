@@ -46,7 +46,7 @@ export default function ColrestClaim() {
         phone: form.phone || undefined,
         message: form.message || undefined,
       });
-      setOwnerToken(res.token);
+      setOwnerToken(res.token ?? "cookie-session");
       trackEvent("claim_form_submit", { listing_id: listing.id, listing_title: listing.title, method: res.claim.method });
       setDone(true);
     } catch (err) {
@@ -106,26 +106,26 @@ export default function ColrestClaim() {
 
       <form onSubmit={submit} className="mt-8 space-y-5">
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t.claim.yourName} *</label>
-          <input type="text" name="claimName" required value={form.name} onChange={set("name")} className={inputCls} />
+          <label htmlFor="claim-name" className="block text-sm font-medium mb-1.5">{t.claim.yourName} *</label>
+          <input id="claim-name" type="text" name="claimName" autoComplete="name" required value={form.name} onChange={set("name")} className={inputCls} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t.claim.businessEmail} *</label>
-          <input type="email" name="claimEmail" required value={form.email} onChange={set("email")} className={inputCls} />
+          <label htmlFor="claim-email" className="block text-sm font-medium mb-1.5">{t.claim.businessEmail} *</label>
+          <input id="claim-email" type="email" name="claimEmail" autoComplete="email" required value={form.email} onChange={set("email")} className={inputCls} />
           <p className="text-xs text-muted-foreground mt-1.5">{t.claim.businessEmailHint}</p>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t.claim.phone}</label>
-          <input type="tel" name="claimPhone" value={form.phone} onChange={set("phone")} className={inputCls} />
+          <label htmlFor="claim-phone" className="block text-sm font-medium mb-1.5">{t.claim.phone}</label>
+          <input id="claim-phone" type="tel" name="claimPhone" autoComplete="tel" value={form.phone} onChange={set("phone")} className={inputCls} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t.claim.password} *</label>
-          <input type="password" name="claimPassword" required minLength={8} value={form.password} onChange={set("password")} className={inputCls} />
+          <label htmlFor="claim-password" className="block text-sm font-medium mb-1.5">{t.claim.password} *</label>
+          <input id="claim-password" type="password" name="claimPassword" autoComplete="new-password" required minLength={10} maxLength={200} value={form.password} onChange={set("password")} className={inputCls} />
           <p className="text-xs text-muted-foreground mt-1.5">{t.claim.passwordHint}</p>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5">{t.claim.message}</label>
-          <textarea name="claimMessage" rows={3} value={form.message} onChange={set("message")} className={inputCls} />
+          <label htmlFor="claim-message" className="block text-sm font-medium mb-1.5">{t.claim.message}</label>
+          <textarea id="claim-message" name="claimMessage" rows={3} value={form.message} onChange={set("message")} className={inputCls} />
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}

@@ -662,7 +662,7 @@ export default function EntryPage() {
 
   const { data: entryById, isLoading: loadingById } = useGetPublicEntry(
     isNumeric ? numericId : 0,
-    { query: { enabled: !isDemo && isNumeric && numericId > 0 } }
+    { query: { enabled: !isDemo && isNumeric && numericId > 0 } as any }
   );
   const { data: entryBySlug, isLoading: loadingBySlug } = useQuery({
     queryKey: ["public-entry-slug", idOrSlug],
@@ -686,7 +686,7 @@ export default function EntryPage() {
   // ── Admin detection ────────────────────────────────────────────────────────
   const { token } = useAuth();
   const isLoggedIn = Boolean(token);
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } as any });
   const isAdmin = isLoggedIn && (currentUser as any)?.role === "admin";
 
   // ── Edit mode state ────────────────────────────────────────────────────────
@@ -853,7 +853,7 @@ export default function EntryPage() {
 
   const { data: relatedData } = useListPublicEntries(
     { category: displayEntry?.category || undefined, limit: 7 },
-    { query: { enabled: !!displayEntry?.category && !isDemo } }
+    { query: { enabled: !!displayEntry?.category && !isDemo } as any }
   );
 
   // ── SEO meta tags ──────────────────────────────────────────────────────────
@@ -959,7 +959,7 @@ export default function EntryPage() {
           <div>
             <div className="flex items-center text-sm font-medium mb-3"><Tag className="h-4 w-4 text-muted-foreground mr-2" /> Tags</div>
             <div className="flex flex-wrap gap-2">
-              {displayEntry.tags.split(",").map((tag, i) => (
+              {String(displayEntry.tags).split(",").map((tag: string, i: number) => (
                 <Badge key={i} variant="secondary" className="font-normal bg-gray-200 dark:bg-gray-700">{tag.trim()}</Badge>
               ))}
             </div>

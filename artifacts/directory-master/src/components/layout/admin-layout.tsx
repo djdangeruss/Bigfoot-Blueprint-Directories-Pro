@@ -23,7 +23,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const { token, logout: clearToken } = useAuth();
   const logoutMutation = useLogout();
   const { data: settings } = useGetPublicSettings();
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: !!token, retry: false } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: !!token, retry: false } as any });
 
   const isAdmin = currentUser?.role === "admin";
 
