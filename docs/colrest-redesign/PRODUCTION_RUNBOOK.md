@@ -3,11 +3,11 @@
 ## Authority and deployed release
 
 - Product source authority: this repository and its reviewed Git history.
-- Deployed application commit: `e988838` (`make production builds portable and reproducible`).
+- Deployed application commit: `f267457` (`redirect Colombian directory www host to canonical apex`).
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
-- Immutable release: `/opt/dirmaster/releases/colrest-e988838`.
+- Immutable release: `/opt/dirmaster/releases/colrest-f267457`.
 - API runtime path: `/opt/dirmaster/artifacts/api-server/dist/index.mjs` (verified byte-identical to the release).
 - Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to the release's `public` directory).
 - Pre-deploy recovery set: `/opt/dirmaster/backups/colrest-20260718-04d432b`.
@@ -18,12 +18,12 @@ The dirty source checkout at `/opt/dirmaster` is preserved. Deployment uses vers
 
 The local release archive is ignored from Git and preserved at:
 
-`E:/Users/USUARIO/Downloads/directory-master/.local-dev/colrest-release-e988838.tar.gz`
+`E:/Users/USUARIO/Downloads/directory-master/.local-dev/colrest-release-f267457.tar.gz`
 
-- Archive SHA-256: `b73cb271d1157da91f9b0d040b6001d54f7449f146cc878ab0158b819907b16c`
-- Archive bytes: `3,836,440`
+- Archive SHA-256: `33eb8ba748b355107134a27e2d5c604250985d9df952dddcbe76f90752b889b4`
+- Archive bytes: `3,836,679`
 - Manifest payload files: `102`
-- Remote manifest: `/opt/dirmaster/releases/colrest-e988838/MANIFEST.sha256`
+- Remote manifest: `/opt/dirmaster/releases/colrest-f267457/MANIFEST.sha256`
 
 Before serving traffic, all manifest entries passed `sha256sum -c`, the Node bundle passed `node --check`, and an isolated candidate on port `3012` passed the production-data smoke suite.
 
@@ -41,6 +41,8 @@ The former static directory is also preserved at:
 `/opt/dirmaster/backups/colrest-20260718-04d432b/public-before-directory`
 
 The API served immediately before the portable-worker correction has an additional recovery set at `/opt/dirmaster/backups/colrest-20260718-e988838-preportable`. Its checksummed API archive and PM2 dump allow rollback of that final, API-only cutover without touching the database.
+
+The API served immediately before the canonical-host correction is separately preserved at `/opt/dirmaster/backups/colrest-20260718-f267457-precanonical` with a checksummed API archive and PM2 dump.
 
 Rollback procedure (run on the production host):
 
@@ -65,6 +67,7 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
 - The live API bundle matched the immutable release byte-for-byte, the static symlink matched the release, PM2 was online, and local health returned `200`.
 - A development-mode candidate exercised the bundled `pino-pretty` worker on Linux with zero restarts, proving that worker resolution is relative to the runtime bundle rather than the Windows build machine.
 - A fresh-clone audit found and repaired stale tracked TypeScript state and generated-output drift. Build state and generated distributions are now ignored, library declarations are force-regenerated, and source is the Git authority.
+- The public `www.colombianrestaurantnear.me` host returns a permanent `308` to the canonical apex while preserving the path and query string; the apex continues to serve `200`.
 
 ## Intentional remaining controls
 
