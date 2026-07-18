@@ -63,8 +63,8 @@ async function buildAll() {
       "@aws-sdk/*",
       "@azure/*",
       "@opentelemetry/*",
-      "@google-cloud/*",
-      "@google/*",
+      // Keep the Google clients in the release bundle. They are JavaScript and
+      // the production host intentionally does not depend on a workspace install.
       "googleapis",
       "firebase-admin",
       "@parcel/watcher",
