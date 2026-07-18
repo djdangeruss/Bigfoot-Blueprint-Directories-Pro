@@ -7,3 +7,4 @@ export * from "./sessions";
 export * from "./conversations";
 export * from "./messages";
 export * from "./contacts";
+export * from "./owners";

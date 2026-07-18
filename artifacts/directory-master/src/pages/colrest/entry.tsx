@@ -1,0 +1,224 @@
+import { useEffect } from "react";
+import { useParams, Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { useListPublicEntries } from "@workspace/api-client-react";
+import { Loader2, ChevronLeft, Phone, Globe, MapPin, Clock, UtensilsCrossed, ArrowUpRight } from "lucide-react";
+import { format } from "date-fns";
+import { es as dfnsEs } from "date-fns/locale";
+import { parseListing } from "@/lib/colrest";
+import { trackEvent } from "@/lib/colrest";
+import { TrustPanel } from "@/components/colrest/TrustSignals";
+import { Toldo, StandardCard } from "@/components/colrest/ListingCard";
+import { useI18n, localizedCategory } from "@/i18n";
+
+async function fetchEntry(idOrSlug: string) {
+  const res = await fetch(`/api/public/entries/${encodeURIComponent(idOrSlug)}`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export default function ColrestEntry() {
+  const { t, lang } = useI18n();
+  const { id: idOrSlug } = useParams();
+
+  const { data: entry, isLoading } = useQuery({
+    queryKey: ["colrest-entry", idOrSlug],
+    queryFn: () => fetchEntry(idOrSlug!),
+    enabled: !!idOrSlug,
+  });
+
+  const listing = entry ? parseListing(entry) : null;
+
+  const { data: relatedData } = useListPublicEntries(
+    { category: listing?.category || undefined, limit: 7 },
+    { query: { enabled: !!listing?.category } } as any,
+  );
+  const related = (relatedData?.entries ?? [])
+    .map(parseListing)
+    .filter(l => l.id !== listing?.id)
+    .slice(0, 3);
+
+  useEffect(() => {
+    if (!listing) return;
+    trackEvent("listing_view", { listing_title: listing.title, listing_category: listing.category ?? undefined, listing_id: listing.id });
+    document.title = `${listing.title} | colombianrestaurantnear.me`;
+  }, [listing?.id]);
+
+  if (isLoading) {
+    return <div className="flex justify-center py-32"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+  }
+  if (!listing) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center">
+        <h1 className="font-display text-2xl font-semibold">{t.entry.notFound}</h1>
+        <p className="text-muted-foreground mt-2">{t.entry.notFoundBody}</p>
+        <Link href="/browse" className="inline-block mt-6 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold">
+          {t.entry.backToBrowse}
+        </Link>
+      </div>
+    );
+  }
+
+  const claimed = listing.claimStatus === "claimed";
+  const description = listing.ownerDescription || listing.atmosphere || null;
+  const gallery = [listing.photoUrl, ...listing.photos].filter(Boolean) as string[];
+
+  return (
+    <div>
+      {/* Header band with toldo edge */}
+      <div className="bg-card border-b border-border relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+          <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5">
+            <ChevronLeft className="h-4 w-4" /> {t.entry.backToBrowse}
+          </Link>
+          <div className="flex flex-wrap items-center gap-2.5 mb-3">
+            {listing.category && (
+              <Link href={`/browse/${encodeURIComponent(listing.category)}`} className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline">
+                {localizedCategory(listing.category, lang)}
+              </Link>
+            )}
+            {claimed && <span className="seal-verificado">✓ {t.entry.verified}</span>}
+            {entry.updatedAt && (
+              <span className="text-xs text-muted-foreground">
+                {t.entry.lastUpdated} {format(new Date(entry.updatedAt), "PP", lang === "es" ? { locale: dfnsEs } : undefined)}
+              </span>
+            )}
+          </div>
+          <h1 className="font-display text-3xl md:text-5xl font-semibold leading-tight">{listing.title}</h1>
+          {(listing.neighborhood || listing.location) && (
+            <p className="text-muted-foreground mt-3 flex items-center gap-1.5">
+              <MapPin className="h-4 w-4" />
+              {[listing.venue, listing.location].filter(Boolean).join(" · ")}
+            </p>
+          )}
+        </div>
+        <div className="absolute -bottom-[14px] left-0 right-0">
+          <Toldo listing={listing} />
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Unclaimed banner — the capture surface */}
+        {!claimed && (
+          <div className="mb-10 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-display font-semibold text-lg">{t.entry.claimBanner}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{t.entry.claimPitch}</p>
+            </div>
+            <Link
+              href={`/claim/${listing.slug || listing.id}`}
+              onClick={() => trackEvent("claim_cta_click", { listing_id: listing.id, listing_title: listing.title })}
+              className="rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold text-center hover:opacity-90 transition-opacity flex-shrink-0"
+            >
+              {t.entry.claimCta}
+            </Link>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Main column */}
+          <div className="lg:col-span-2 space-y-10">
+            {gallery.length > 0 && (
+              <div className={`grid gap-3 ${gallery.length > 1 ? "grid-cols-2 md:grid-cols-3" : "grid-cols-1"}`}>
+                {gallery.slice(0, 6).map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt={`${listing.title} ${i + 1}`}
+                    loading="lazy"
+                    className={`rounded-lg object-cover w-full border border-card-border ${i === 0 && gallery.length > 1 ? "col-span-2 row-span-2 h-full min-h-[16rem]" : "h-40"} ${!claimed ? "grayscale-[35%]" : ""}`}
+                    onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {description && (
+              <section>
+                <h2 className="font-display text-xl font-semibold mb-3">{t.entry.about}</h2>
+                <p className="text-foreground/85 leading-relaxed whitespace-pre-wrap">{description}</p>
+              </section>
+            )}
+
+            {listing.signatureDishes && (
+              <section>
+                <h2 className="font-display text-xl font-semibold mb-3 flex items-center gap-2">
+                  <UtensilsCrossed className="h-5 w-5 text-primary" /> Platos
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {listing.signatureDishes.split(",").map((d, i) => (
+                    <span key={i} className="rounded-full bg-accent/15 text-foreground px-3.5 py-1.5 text-sm">
+                      {d.trim()}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {related.length > 0 && (
+              <section className="pt-4 border-t border-border">
+                <h2 className="font-display text-xl font-semibold mb-5">{t.entry.related}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {related.map(l => <StandardCard key={l.id} listing={l} />)}
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* Sticky sidebar: trust + contact */}
+          <aside className="space-y-6 lg:sticky lg:top-24 self-start">
+            <div className="rounded-lg border border-card-border bg-card p-6">
+              <TrustPanel listing={listing} />
+            </div>
+
+            <div className="rounded-lg border border-card-border bg-card p-6 space-y-4">
+              {listing.hours && (
+                <div className="flex items-start gap-3">
+                  <Clock className="h-4 w-4 mt-1 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <div className="text-sm font-semibold mb-0.5">{t.entry.hours}</div>
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap">{listing.hours}</div>
+                  </div>
+                </div>
+              )}
+              {/* Phone comes from a single data field — swapping to a tracked DNI
+                  number later is a data change, not a UI change. */}
+              {listing.contactPhone && (
+                <a
+                  href={`tel:${listing.contactPhone}`}
+                  onClick={() => trackEvent("listing_contact_click", { contact_method: "phone", listing_title: listing.title })}
+                  className="flex items-center justify-center gap-2 w-full rounded-full bg-primary text-primary-foreground py-3 text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  <Phone className="h-4 w-4" /> {t.entry.call} · <span className="tnum">{listing.contactPhone}</span>
+                </a>
+              )}
+              {listing.menuUrl && (
+                <a
+                  href={listing.menuUrl}
+                  target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackEvent("listing_contact_click", { contact_method: "menu", listing_title: listing.title })}
+                  className="flex items-center justify-center gap-2 w-full rounded-full bg-secondary text-secondary-foreground py-3 text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  <UtensilsCrossed className="h-4 w-4" /> {t.entry.menu}
+                </a>
+              )}
+              {listing.website && (
+                <a
+                  href={listing.website.startsWith("http") ? listing.website : `https://${listing.website}`}
+                  target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackEvent("listing_contact_click", { contact_method: "website", listing_title: listing.title })}
+                  className="flex items-center justify-center gap-2 w-full rounded-full border border-border py-3 text-sm font-semibold hover:border-primary hover:text-primary transition-colors"
+                >
+                  <Globe className="h-4 w-4" /> {t.entry.website} <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              )}
+              {listing.venue && (
+                <p className="text-xs text-muted-foreground text-center pt-1">{listing.venue}</p>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}

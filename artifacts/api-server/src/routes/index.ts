@@ -12,6 +12,8 @@ import seoRouter from "./seoRoute.js";
 import storageRouter from "./storage.js";
 import builderRouter from "./builderRoute.js";
 import contactsRouter from "./contactsRoute.js";
+import ownerRouter from "./ownerRoute.js";
+import claimsRouter from "./claimsRoute.js";
 
 const router: IRouter = Router();
 
@@ -28,5 +30,7 @@ router.use("/seo", seoRouter);
 router.use(storageRouter);
 router.use("/builder", builderRouter);
 router.use("/contacts", contactsRouter);
+router.use("/owner", ownerRouter);
+router.use("/claims", claimsRouter);
 
 export default router;

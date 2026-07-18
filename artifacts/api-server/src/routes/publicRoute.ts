@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { entries, directorySettings, categories } from "@workspace/db";
 import { eq, ilike, and, desc, asc, count, sql, or } from "drizzle-orm";
+import { stripPrivateCustomFields } from "../lib/entryCustomFields.js";
 
 const router = Router();
 
@@ -22,7 +23,7 @@ function formatEntry(e: typeof entries.$inferSelect) {
     endDate: e.endDate,
     tags: e.tags,
     moreDetails: e.moreDetails,
-    customFields: e.customFields,
+    customFields: stripPrivateCustomFields(e.customFields),
     sourceCsvRow: e.sourceCsvRow,
     published: e.published,
     slug: e.slug,

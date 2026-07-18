@@ -1,0 +1,220 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * colombianrestaurantnear.me — "La Fonda" theme
+ * Selected via VITE_THEME=colrest-fonda (see main.tsx). colrest instance only.
+ *
+ * Palette (the food itself, not the flag):
+ *   Café Tostado #241812  ink / dark canvas       Arepa   #F8F1E3  light canvas
+ *   Cazuela      #B84A2E  primary terracotta      Panela  #CE8A3A  amber accent
+ *   Hoja         #35604B  banana-leaf green       Latte   #9C7B5F  muted tan
+ *
+ * Light is default; dark applies via prefers-color-scheme unless the user has
+ * explicitly chosen data-theme="light"; data-theme="dark" always wins.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hanken+Grotesk:ital,wght@0,400..800;1,400..600&display=swap");
+
+:root {
+  /* raw brand tokens */
+  --fonda-cafe: #241812;
+  --fonda-arepa: #f8f1e3;
+  --fonda-cazuela: #b84a2e;
+  --fonda-panela: #ce8a3a;
+  --fonda-hoja: #35604b;
+  --fonda-latte: #9c7b5f;
+
+  /* light mode — the fonda at noon */
+  --background: 42 57% 93%;            /* arepa */
+  --foreground: 20 33% 11%;            /* café tostado */
+  --card: 42 60% 96%;
+  --card-foreground: 20 33% 11%;
+  --card-border: 30 25% 80%;
+  --popover: 42 60% 97%;
+  --popover-foreground: 20 33% 11%;
+  --popover-border: 30 25% 78%;
+  --primary: 12 60% 45%;               /* cazuela */
+  --primary-foreground: 42 57% 96%;
+  --primary-border: hsl(12 60% 45% / 0.25);
+  --secondary: 152 29% 29%;            /* hoja */
+  --secondary-foreground: 42 57% 96%;
+  --secondary-border: hsl(152 29% 29% / 0.3);
+  --muted: 40 35% 87%;
+  --muted-foreground: 27 24% 38%;      /* latte-dark for AA contrast */
+  --muted-border: hsl(30 25% 78% / 0.5);
+  --accent: 33 61% 52%;                /* panela */
+  --accent-foreground: 20 33% 11%;
+  --accent-border: hsl(33 61% 52% / 0.3);
+  --destructive: 4 62% 40%;
+  --destructive-foreground: 42 57% 96%;
+  --destructive-border: hsl(4 62% 40% / 0.25);
+  --border: 30 25% 80%;
+  --input: 30 25% 76%;
+  --ring: 12 60% 45%;
+  --radius: 0.5rem;
+
+  --app-font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --app-font-serif: "Fraunces", Georgia, serif;
+
+  /* motif + status tokens */
+  --toldo-unclaimed: #c9b8a4;
+  --toldo-claimed: var(--fonda-cazuela);
+  --toldo-stripe-a: #b84a2e;
+  --toldo-stripe-b: #ce8a3a;
+  --trust-positive: var(--fonda-hoja);
+  --trust-negative: var(--fonda-cazuela);
+  --seal: var(--fonda-hoja);
+}
+
+/* dark mode — the fonda at night: warmth steps up, never gray.
+ * Applied two ways so it works with and without JS:
+ *   1. system preference, unless the user explicitly picked light
+ *   2. explicit data-theme="dark" (the toggle), which always wins
+ * The ThemeProvider also mirrors the effective mode onto the .dark class so
+ * existing `dark:` utility styles stay in sync. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: 20 33% 10%;
+    --foreground: 42 57% 93%;
+    --card: 21 29% 15%;
+    --card-foreground: 42 57% 93%;
+    --card-border: 22 24% 24%;
+    --popover: 21 29% 14%;
+    --popover-foreground: 42 57% 93%;
+    --popover-border: 22 24% 26%;
+    --primary: 12 65% 54%;
+    --primary-foreground: 42 57% 96%;
+    --primary-border: hsl(12 65% 54% / 0.3);
+    --secondary: 152 25% 41%;
+    --secondary-foreground: 42 57% 96%;
+    --secondary-border: hsl(152 25% 41% / 0.35);
+    --muted: 22 24% 20%;
+    --muted-foreground: 33 25% 68%;
+    --muted-border: hsl(22 24% 26% / 0.6);
+    --accent: 33 70% 60%;
+    --accent-foreground: 20 33% 10%;
+    --accent-border: hsl(33 70% 60% / 0.35);
+    --destructive: 4 66% 55%;
+    --destructive-foreground: 42 57% 96%;
+    --border: 22 24% 24%;
+    --input: 22 24% 28%;
+    --ring: 12 65% 54%;
+    --toldo-unclaimed: #4a3b2f;
+    --trust-positive: #4e8266;
+    --seal: #4e8266;
+  }
+}
+
+[data-theme="dark"] {
+  --background: 20 33% 10%;
+  --foreground: 42 57% 93%;
+  --card: 21 29% 15%;
+  --card-foreground: 42 57% 93%;
+  --card-border: 22 24% 24%;
+  --popover: 21 29% 14%;
+  --popover-foreground: 42 57% 93%;
+  --popover-border: 22 24% 26%;
+  --primary: 12 65% 54%;               /* cazuela brightened */
+  --primary-foreground: 42 57% 96%;
+  --primary-border: hsl(12 65% 54% / 0.3);
+  --secondary: 152 25% 41%;            /* hoja lifted */
+  --secondary-foreground: 42 57% 96%;
+  --secondary-border: hsl(152 25% 41% / 0.35);
+  --muted: 22 24% 20%;
+  --muted-foreground: 33 25% 68%;
+  --muted-border: hsl(22 24% 26% / 0.6);
+  --accent: 33 70% 60%;                /* panela brightened */
+  --accent-foreground: 20 33% 10%;
+  --accent-border: hsl(33 70% 60% / 0.35);
+  --destructive: 4 66% 55%;
+  --destructive-foreground: 42 57% 96%;
+  --border: 22 24% 24%;
+  --input: 22 24% 28%;
+  --ring: 12 65% 54%;
+
+  --toldo-unclaimed: #4a3b2f;
+  --trust-positive: #4e8266;
+  --seal: #4e8266;
+}
+
+/* headings speak Fraunces by default in this theme */
+.font-display,
+h1, h2 {
+  font-family: var(--app-font-serif);
+  font-optical-sizing: auto;
+}
+
+/* tabular figures wherever ratings/counts appear */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* ── Signature motif: the toldo (scalloped awning) ──────────────────────────
+ * CSS-only scallop, built from repeating radial gradients. Three states:
+ *   .toldo            solid Cazuela — claimed
+ *   .toldo-unclaimed  faded latte — unclaimed
+ *   .toldo-stripes    Cazuela/Panela stripes — featured / premium
+ * Apply to a 10px-tall element at the top of a card or bottom of a band. */
+.toldo,
+.toldo-unclaimed,
+.toldo-stripes {
+  height: 10px;
+  width: 100%;
+  --toldo-color: var(--toldo-claimed);
+  background:
+    radial-gradient(circle at 8px -2px, transparent 7px, var(--toldo-color) 7.5px);
+  background-size: 16px 10px;
+  background-repeat: repeat-x;
+}
+.toldo-unclaimed { --toldo-color: var(--toldo-unclaimed); }
+.toldo-stripes {
+  background:
+    radial-gradient(circle at 8px -2px, transparent 7px, #0000 7px),
+    repeating-linear-gradient(90deg,
+      var(--toldo-stripe-a) 0 16px,
+      var(--toldo-stripe-b) 16px 32px);
+  -webkit-mask: radial-gradient(circle at 8px -2px, transparent 7px, #000 7.5px);
+  mask: radial-gradient(circle at 8px -2px, transparent 7px, #000 7.5px);
+  -webkit-mask-size: 16px 10px;
+  mask-size: 16px 10px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* hero band bottom edge — larger scallop hanging down */
+.toldo-hero-edge {
+  height: 14px;
+  background: radial-gradient(circle at 11px -3px, transparent 10px, hsl(var(--card)) 10.5px);
+  background-size: 22px 14px;
+  background-repeat: repeat-x;
+}
+
+/* "Verificado" seal */
+.seal-verificado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: hsl(var(--background));
+  background: var(--seal);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+/* menu-line dotted leader for unclaimed rows (name ⋯⋯⋯ rating) */
+.menu-leader {
+  flex: 1;
+  min-width: 1.5rem;
+  border-bottom: 2px dotted hsl(var(--muted-foreground) / 0.45);
+  margin: 0 0.5rem 0.35em 0.5rem;
+}
+
+/* sentiment bar */
+.sentiment-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: hsl(var(--muted));
+}
+.sentiment-bar > .pos { background: var(--trust-positive); }
+.sentiment-bar > .neg { background: var(--trust-negative); }
+.sentiment-micro { height: 3px; }

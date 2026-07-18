@@ -31,7 +31,19 @@ import AdminSettingsPage from "@/pages/admin/settings";
 import AdminUsersPage from "@/pages/admin/users";
 import AdminSeoPage from "@/pages/admin/seo";
 import AdminContactsPage from "@/pages/admin/contacts";
+import AdminClaimsPage from "@/pages/admin/claims";
 import BuilderPage from "@/pages/admin/builder";
+
+// colrest instance: bespoke public experience, gated at build time so sibling
+// instances' bundles are untouched (dead branches tree-shake out).
+const IS_COLREST = import.meta.env.VITE_THEME === "colrest-fonda";
+import { ColrestShell } from "@/components/colrest/ColrestShell";
+import ColrestHome from "@/pages/colrest/home";
+import ColrestBrowse from "@/pages/colrest/browse";
+import ColrestEntry from "@/pages/colrest/entry";
+import ColrestClaim from "@/pages/colrest/claim";
+import OwnerLogin from "@/pages/colrest/owner-login";
+import OwnerDashboard from "@/pages/colrest/owner-dashboard";
 
 const queryClient = new QueryClient();
 
@@ -114,41 +126,76 @@ function Router() {
           </AdminLayout>
         </RequireAdmin>
       </Route>
+      <Route path="/admin/claims">
+        <RequireAdmin>
+          <AdminLayout>
+            <AdminClaimsPage />
+          </AdminLayout>
+        </RequireAdmin>
+      </Route>
       <Route path="/admin/builder/:page">
         <RequireAuth>
           <BuilderPage />
         </RequireAuth>
       </Route>
 
-      {/* Public Routes */}
-      <Route path="/">
-        <SetupGuard>
-          <PublicLayout>
-            <HomePage />
-          </PublicLayout>
-        </SetupGuard>
-      </Route>
-      <Route path="/browse">
-        <SetupGuard>
-          <PublicLayout>
-            <BrowsePage />
-          </PublicLayout>
-        </SetupGuard>
-      </Route>
-      <Route path="/browse/:category">
-        <SetupGuard>
-          <PublicLayout>
-            <BrowsePage />
-          </PublicLayout>
-        </SetupGuard>
-      </Route>
-      <Route path="/entry/:id">
-        <SetupGuard>
-          <PublicLayout>
-            <EntryPage />
-          </PublicLayout>
-        </SetupGuard>
-      </Route>
+      {/* Public Routes — colrest builds get the bespoke fonda experience */}
+      {IS_COLREST ? (
+        <>
+          <Route path="/">
+            <SetupGuard><ColrestShell><ColrestHome /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/browse">
+            <SetupGuard><ColrestShell><ColrestBrowse /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/browse/:category">
+            <SetupGuard><ColrestShell><ColrestBrowse /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/entry/:id">
+            <SetupGuard><ColrestShell><ColrestEntry /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/claim/:id">
+            <SetupGuard><ColrestShell><ColrestClaim /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/owner/login">
+            <SetupGuard><ColrestShell><OwnerLogin /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/owner">
+            <SetupGuard><ColrestShell><OwnerDashboard /></ColrestShell></SetupGuard>
+          </Route>
+        </>
+      ) : (
+        <>
+          <Route path="/">
+            <SetupGuard>
+              <PublicLayout>
+                <HomePage />
+              </PublicLayout>
+            </SetupGuard>
+          </Route>
+          <Route path="/browse">
+            <SetupGuard>
+              <PublicLayout>
+                <BrowsePage />
+              </PublicLayout>
+            </SetupGuard>
+          </Route>
+          <Route path="/browse/:category">
+            <SetupGuard>
+              <PublicLayout>
+                <BrowsePage />
+              </PublicLayout>
+            </SetupGuard>
+          </Route>
+          <Route path="/entry/:id">
+            <SetupGuard>
+              <PublicLayout>
+                <EntryPage />
+              </PublicLayout>
+            </SetupGuard>
+          </Route>
+        </>
+      )}
 
       <Route component={NotFound} />
     </Switch>

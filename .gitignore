@@ -1,0 +1,31 @@
+# Dependencies and build caches
+node_modules/
+**/node_modules/
+.pnpm-store/
+*.tsbuildinfo
+
+# Local and generated builds
+**/dist/
+static-builds/
+.seo-cache/
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local development databases, logs, and browser artifacts
+.local-dev/
+*.log
+*.pid
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Vercel local linkage
+.vercel/

@@ -724,6 +724,9 @@ export default function HomePage() {
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (heroSearch.trim()) {
+      if (typeof window !== "undefined" && (window as any).dataLayer) {
+        (window as any).dataLayer.push({ event: "directory_search", search_term: heroSearch.trim() });
+      }
       setLocation(`/browse?search=${encodeURIComponent(heroSearch.trim())}`);
     }
   };
