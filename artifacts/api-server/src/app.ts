@@ -14,6 +14,19 @@ const app: Express = express();
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
+const canonicalOrigin = process.env.PUBLIC_ORIGIN ? new URL(process.env.PUBLIC_ORIGIN) : null;
+app.use((req, res, next) => {
+  if (
+    process.env.NODE_ENV === "production" &&
+    canonicalOrigin &&
+    req.hostname.toLowerCase() === `www.${canonicalOrigin.hostname.toLowerCase()}`
+  ) {
+    res.redirect(308, `${canonicalOrigin.origin}${req.originalUrl}`);
+    return;
+  }
+  next();
+});
+
 const allowedOrigins = new Set(
   [process.env.PUBLIC_ORIGIN, ...(process.env.ALLOWED_ORIGINS || "").split(",")]
     .filter(Boolean)
