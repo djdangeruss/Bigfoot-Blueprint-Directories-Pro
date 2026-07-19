@@ -220,3 +220,15 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   outer square canvas has been removed from all favicon, PWA, and Apple-touch
   derivatives. The resulting RGBA assets render the intended rounded tile on
   browser surfaces instead of an obsolete sharp white square.
+- Source commit `9451dab` is live as immutable static release
+  `/opt/dirmaster/releases/colrest-9451dab/public`. Archive SHA-256 is
+  `a5d2426f50d039a9082f7cd8a18e9465cc7c4a74c13fcd5b59a54ddaf97eab03`
+  for 5,899,455 bytes. Live readback proved RGBA mode, exact dimensions, and a
+  fully transparent corner for all four icon sizes; brand-state and full
+  production smoke suites also passed.
+- Checksummed pre-cutover backup
+  `/opt/dirmaster/backups/colrest-20260719-9451dab-pre-rounded-favicon` and
+  recovery proof
+  `/opt/dirmaster/recovery-proofs/colrest-20260719-9451dab-rounded-favicon`
+  preserve release `ca2e3c2`, exact targets and hashes, and a non-empty restore
+  catalog. The API remains byte-identical and no data or secret changed.
