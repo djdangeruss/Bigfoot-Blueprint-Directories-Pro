@@ -213,3 +213,10 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   `/opt/dirmaster/recovery-proofs/colrest-20260719-ca2e3c2-dark-primary`
   records before/after targets, archive and asset hashes, backup checksums, and
   a non-empty restore catalog.
+
+### Rounded favicon follow-up
+
+- The owner's rounded favicon artwork remains unchanged, while the opaque
+  outer square canvas has been removed from all favicon, PWA, and Apple-touch
+  derivatives. The resulting RGBA assets render the intended rounded tile on
+  browser surfaces instead of an obsolete sharp white square.

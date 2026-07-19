@@ -13,7 +13,8 @@ Status: production candidate
   footer and larger dark-surface placements.
 - `brand-avatar-256.png`: compact mobile-navigation identity.
 - `favicon-32.png`, `favicon-192.png`, `favicon-512.png`, and
-  `apple-touch-icon.png`: browser and installed-app identity.
+  `apple-touch-icon.png`: transparent-corner browser and installed-app identity
+  that preserves the owner's rounded cream tile.
 - `social-avatar-1080.png`: square social/profile and default share identity.
 
 The supplied source exports are preserved unchanged under `source/`. They are
