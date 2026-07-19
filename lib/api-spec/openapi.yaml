@@ -1225,6 +1225,10 @@ components:
           type: string
         email:
           type: string
+        subject:
+          type: [string, "null"]
+        message:
+          type: [string, "null"]
         createdAt:
           type: string
       required: [id, fullName, phone, email, createdAt]

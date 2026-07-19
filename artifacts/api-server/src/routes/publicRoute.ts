@@ -1,10 +1,52 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { entries, directorySettings, categories } from "@workspace/db";
+import { entries, directorySettings, categories, contacts } from "@workspace/db";
+import { rateLimit } from "express-rate-limit";
 import { eq, ilike, and, desc, asc, count, sql, or } from "drizzle-orm";
 import { stripPrivateCustomFields } from "../lib/entryCustomFields.js";
 
 const router = Router();
+
+const correctionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 8,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many requests. Please try again later." },
+});
+
+router.post("/corrections", correctionLimiter, async (req, res) => {
+  try {
+    const input = req.body as Record<string, unknown>;
+    // Honeypot: bots that fill hidden website fields receive a neutral success
+    // without creating operational noise.
+    if (String(input.website ?? "").trim()) {
+      res.status(202).json({ accepted: true });
+      return;
+    }
+    const requestType = String(input.requestType ?? "Correction").trim().slice(0, 80);
+    const listingUrl = String(input.listingUrl ?? "").trim().slice(0, 500);
+    const fullName = String(input.fullName ?? "").trim().slice(0, 120);
+    const email = String(input.email ?? "").trim().toLowerCase().slice(0, 200);
+    const phone = String(input.phone ?? "").trim().slice(0, 60) || "Not provided";
+    const message = String(input.message ?? "").trim().slice(0, 3000);
+    if (!fullName || !/^\S+@\S+\.\S+$/.test(email) || !/^https:\/\//i.test(listingUrl) || message.length < 20) {
+      res.status(400).json({ error: "Name, valid email, HTTPS page URL, and a detailed message are required." });
+      return;
+    }
+    const [record] = await db.insert(contacts).values({
+      fullName,
+      email,
+      phone,
+      subject: `[${requestType}] ${listingUrl}`,
+      message,
+    }).returning({ id: contacts.id });
+    res.status(201).json({ accepted: true, id: record.id });
+  } catch (err) {
+    req.log.error({ err }, "Failed to submit correction request");
+    res.status(500).json({ error: "Failed to submit request" });
+  }
+});
 
 function formatEntry(e: typeof entries.$inferSelect) {
   return {

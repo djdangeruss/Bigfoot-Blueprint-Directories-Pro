@@ -11,6 +11,8 @@ function formatContact(c: typeof contacts.$inferSelect) {
     fullName: c.fullName,
     phone: c.phone,
     email: c.email,
+    subject: c.subject,
+    message: c.message,
     createdAt: c.createdAt.toISOString(),
   };
 }

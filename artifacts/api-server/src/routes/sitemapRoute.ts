@@ -52,6 +52,13 @@ router.get("/sitemap.xml", async (req, res) => {
     const pages: Array<{ loc: string; lastmod?: string }> = [
       { loc: "/" },
       { loc: "/browse" },
+      { loc: "/about" },
+      { loc: "/methodology" },
+      { loc: "/privacy" },
+      { loc: "/terms" },
+      { loc: "/owner-terms" },
+      { loc: "/accessibility" },
+      { loc: "/corrections" },
       ...rows
         .filter(isIndexableEntry)
         .map((entry) => ({

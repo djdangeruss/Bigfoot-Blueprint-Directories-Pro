@@ -379,6 +379,10 @@ export interface Contact {
   fullName: string;
   phone: string;
   email: string;
+  /** @nullable */
+  subject?: string | null;
+  /** @nullable */
+  message?: string | null;
   createdAt: string;
 }
 

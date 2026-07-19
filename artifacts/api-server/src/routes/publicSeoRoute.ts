@@ -8,6 +8,16 @@ import { isIndexableEntry, publicOrigin } from "./sitemapRoute.js";
 
 const router = Router();
 
+const infoPages: Record<string, { title: string; description: string; heading: string; type?: string }> = {
+  "/about": { title: "About Colombian Restaurant Near Me", description: "Learn how this independent bilingual Colombian restaurant directory builds useful, grounded listings for diners and legitimate owners.", heading: "A better way to find Colombian food", type: "AboutPage" },
+  "/methodology": { title: "Rating and Discovery Methodology", description: "See how source-attributed restaurant ratings, review volume, verification, freshness and featured placement work in this directory.", heading: "How ratings and discovery work" },
+  "/privacy": { title: "Privacy Policy", description: "Understand what information Colombian Restaurant Near Me receives, why it is used and the choices available to visitors and owners.", heading: "Privacy policy" },
+  "/terms": { title: "Terms of Use", description: "Terms governing public use of Colombian Restaurant Near Me, listings, attributed reputation signals and third-party destinations.", heading: "Terms of use" },
+  "/owner-terms": { title: "Restaurant Owner Claim Terms", description: "Terms for claiming, verifying, editing and upgrading a restaurant listing on Colombian Restaurant Near Me.", heading: "Owner claim and listing terms" },
+  "/accessibility": { title: "Accessibility Statement", description: "Read the directory's accessibility approach, current controls, known limitations and request process.", heading: "Accessibility statement" },
+  "/corrections": { title: "Corrections and Takedown Requests", description: "Report a listing error, rights concern, privacy request or accessibility barrier for review.", heading: "Help us keep the directory accurate" },
+};
+
 type Entry = typeof entries.$inferSelect;
 
 function escapeHtml(value: unknown): string {
@@ -157,9 +167,27 @@ router.get("/{*splat}", async (req, res) => {
           },
         ],
       };
-      const body = `<h1>${escapeHtml(isHome ? "Every Colombian restaurant, one table" : "Browse Colombian restaurants")}</h1><p>${escapeHtml(description)}</p><p><a href="/browse">Browse all restaurants</a></p><section class="seo-grid">${rows.map((entry) => visibleListing(entry, origin)).join("")}</section>`;
+      const body = `<h1>${escapeHtml(isHome ? "Find your next Colombian table" : "Browse Colombian restaurants")}</h1><p>${escapeHtml(description)}</p><p><a href="/browse">Browse all restaurants</a></p><section class="seo-grid">${rows.map((entry) => visibleListing(entry, origin)).join("")}</section>`;
       const rendered = inject(rawTemplate, { title, description, canonical, robots: "index,follow,max-image-preview:large", body, schema, image: settings?.homepageOgImageUrl ?? undefined });
       res.status(rendered.status).set("Cache-Control", "public, max-age=60, stale-while-revalidate=300").send(rendered.html);
+      return;
+    }
+
+    if (infoPages[path]) {
+      const page = infoPages[path];
+      const canonical = `${origin}${path}`;
+      const schema = {
+        "@context": "https://schema.org",
+        "@type": page.type || "WebPage",
+        "@id": `${canonical}#webpage`,
+        url: canonical,
+        name: page.title,
+        description: page.description,
+        isPartOf: { "@id": `${origin}/#website` },
+      };
+      const body = `<article><h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.description)}</p><p><a href="/">Return to the directory</a></p></article>`;
+      const rendered = inject(rawTemplate, { title: `${page.title} | ${siteName}`, description: page.description, canonical, robots: "index,follow", body, schema });
+      res.status(200).set("Cache-Control", "public, max-age=300, stale-while-revalidate=600").send(rendered.html);
       return;
     }
 
