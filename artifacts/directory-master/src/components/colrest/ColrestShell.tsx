@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, Menu, X, Sun, Moon, UtensilsCrossed } from "lucide-react";
+import { Search, Menu, X, Sun, Moon } from "lucide-react";
 import { useGetPublicSettings } from "@workspace/api-client-react";
 import { ScriptInjector } from "@/components/layout/ScriptInjector";
 import { I18nProvider, useI18n } from "@/i18n";
@@ -41,6 +41,29 @@ function ThemeToggle() {
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </button>
+  );
+}
+
+function HeaderBrand() {
+  return (
+    <>
+      <span className="sm:hidden">
+        <img src="/brand/brand-avatar-256.png" alt="Colombian Restaurant Near Me" className="h-10 w-10 rounded-xl object-cover shadow-sm" width="40" height="40" />
+      </span>
+      <span className="hidden min-w-0 sm:block">
+        <img src="/brand/logo-header-light.png" alt="Colombian Restaurant Near Me" className="h-auto w-[210px] object-contain dark:hidden lg:w-[315px]" width="1600" height="180" />
+        <img src="/brand/logo-header-dark.png" alt="Colombian Restaurant Near Me" className="hidden h-auto w-[210px] object-contain dark:block lg:w-[315px]" width="1600" height="176" />
+      </span>
+    </>
+  );
+}
+
+function FooterBrand() {
+  return (
+    <>
+      <img src="/brand/logo-primary-light.png" alt="Colombian Restaurant Near Me" className="h-auto w-full max-w-[310px] object-contain dark:hidden" width="1200" height="485" loading="lazy" />
+      <img src="/brand/logo-header-dark.png" alt="Colombian Restaurant Near Me" className="hidden h-auto w-full max-w-[360px] object-contain dark:block" width="1600" height="176" loading="lazy" />
+    </>
   );
 }
 
@@ -87,13 +110,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 border-b border-border/75 bg-card/88 shadow-[0_10px_40px_-34px_rgba(36,24,18,.75)] backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
-            <Link href="/" className="flex items-center gap-2 min-w-0 flex-shrink">
-              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                <UtensilsCrossed className="h-4 w-4" />
-              </span>
-              <span className="font-display text-base font-semibold leading-none tracking-[-.02em] md:text-lg">
-                Colombian Restaurant<span className="text-primary"> Near Me</span>
-              </span>
+            <Link href="/" className="flex min-w-0 flex-shrink items-center" aria-label="Colombian Restaurant Near Me home">
+              <HeaderBrand />
             </Link>
 
             <form onSubmit={submitSearch} className="relative hidden md:block flex-1 max-w-sm">
@@ -174,9 +192,8 @@ function ShellInner({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
             <div>
-              <Link href="/" className="inline-flex items-center gap-2">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><UtensilsCrossed className="h-5 w-5" /></span>
-                <span className="font-display text-xl font-semibold">Colombian Restaurant <span className="text-primary">Near Me</span></span>
+              <Link href="/" className="inline-flex" aria-label="Colombian Restaurant Near Me home">
+                <FooterBrand />
               </Link>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">{t.footer.independent}</p>
             </div>
