@@ -15,6 +15,14 @@ const correctionLimiter = rateLimit({
   message: { error: "Too many requests. Please try again later." },
 });
 
+const placePhotoLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 240,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many photo requests. Please try again later." },
+});
+
 router.post("/corrections", correctionLimiter, async (req, res) => {
   try {
     const input = req.body as Record<string, unknown>;
@@ -49,6 +57,10 @@ router.post("/corrections", correctionLimiter, async (req, res) => {
 });
 
 function formatEntry(e: typeof entries.$inferSelect) {
+  const publicCustomFields = stripPrivateCustomFields(e.customFields) as Record<string, unknown> | null;
+  if (publicCustomFields?.googlePlaceId && publicCustomFields.claimStatus !== "claimed") {
+    delete publicCustomFields.photoUrl;
+  }
   return {
     id: e.id,
     title: e.title,
@@ -65,7 +77,7 @@ function formatEntry(e: typeof entries.$inferSelect) {
     endDate: e.endDate,
     tags: e.tags,
     moreDetails: e.moreDetails,
-    customFields: stripPrivateCustomFields(e.customFields),
+    customFields: publicCustomFields,
     published: e.published,
     slug: e.slug,
     metaTitle: e.metaTitle,
@@ -129,7 +141,7 @@ router.get("/entries", async (req, res) => {
 router.get("/entries/:idOrSlug", async (req, res) => {
   try {
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
-    const param = req.params.idOrSlug;
+    const param = String(req.params.idOrSlug);
     const numericId = parseInt(param, 10);
     const isNumeric = !isNaN(numericId) && String(numericId) === param;
 
@@ -143,6 +155,93 @@ router.get("/entries/:idOrSlug", async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Failed to get entry" });
+  }
+});
+
+router.get("/entries/:idOrSlug/photo", placePhotoLimiter, async (req, res) => {
+  res.set("Cache-Control", "private, no-store, max-age=0");
+  try {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      res.status(503).json({ error: "Restaurant photos are not configured" });
+      return;
+    }
+
+    const param = String(req.params.idOrSlug);
+    const numericId = parseInt(param, 10);
+    const isNumeric = !Number.isNaN(numericId) && String(numericId) === param;
+    const where = isNumeric
+      ? and(eq(entries.id, numericId), eq(entries.published, true))
+      : and(eq(entries.slug, param), eq(entries.published, true));
+    const [entry] = await db.select({ customFields: entries.customFields }).from(entries).where(where).limit(1);
+    if (!entry) {
+      res.status(404).json({ error: "Entry not found" });
+      return;
+    }
+
+    const customFields = entry.customFields && typeof entry.customFields === "object"
+      ? entry.customFields as Record<string, unknown>
+      : {};
+    const placeId = typeof customFields.googlePlaceId === "string" ? customFields.googlePlaceId.trim() : "";
+    if (!/^ChI[A-Za-z0-9_-]+$/.test(placeId)) {
+      res.status(404).json({ error: "No source photo is available" });
+      return;
+    }
+
+    const placeResponse = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, {
+      headers: {
+        "X-Goog-Api-Key": apiKey,
+        "X-Goog-FieldMask": "photos",
+      },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!placeResponse.ok) {
+      req.log.warn({ status: placeResponse.status, entry: param }, "Google Places photo lookup failed");
+      res.status(502).json({ error: "Restaurant photo is temporarily unavailable" });
+      return;
+    }
+
+    const place = await placeResponse.json() as {
+      photos?: Array<{
+        name?: string;
+        googleMapsUri?: string;
+        flagContentUri?: string;
+        authorAttributions?: Array<{ displayName?: string; uri?: string; photoUri?: string }>;
+      }>;
+    };
+    const photo = place.photos?.find(item => item.name && item.googleMapsUri);
+    if (!photo?.name || !photo.googleMapsUri) {
+      res.status(404).json({ error: "No source photo is available" });
+      return;
+    }
+
+    const mediaResponse = await fetch(`https://places.googleapis.com/v1/${photo.name}/media?maxWidthPx=1200&maxHeightPx=900&skipHttpRedirect=true`, {
+      headers: { "X-Goog-Api-Key": apiKey },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!mediaResponse.ok) {
+      res.status(502).json({ error: "Restaurant photo is temporarily unavailable" });
+      return;
+    }
+    const media = await mediaResponse.json() as { photoUri?: string };
+    if (!media.photoUri || !/^https:\/\//i.test(media.photoUri)) {
+      res.status(502).json({ error: "Restaurant photo is temporarily unavailable" });
+      return;
+    }
+
+    res.json({
+      imageUrl: media.photoUri,
+      sourceUrl: photo.googleMapsUri,
+      flagContentUrl: photo.flagContentUri ?? null,
+      authorAttributions: (photo.authorAttributions ?? []).map(author => ({
+        displayName: author.displayName ?? null,
+        uri: author.uri ?? null,
+        photoUri: author.photoUri ?? null,
+      })),
+    });
+  } catch (err) {
+    req.log.warn({ err, entry: req.params.idOrSlug }, "Failed to resolve Google Places photo");
+    res.status(502).json({ error: "Restaurant photo is temporarily unavailable" });
   }
 });
 

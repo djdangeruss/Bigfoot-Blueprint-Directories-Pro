@@ -98,7 +98,7 @@ export default function ColrestHome() {
 
           <div className="relative mx-auto w-full max-w-2xl lg:ml-auto">
             <div className="hero-image-shell">
-              <img src="/images/colombian-table-editorial-v1.jpg" alt="A shared Colombian meal in a warm, editorial setting" className="h-[28rem] w-full object-cover sm:h-[34rem]" />
+              <img src="/images/colombian-table-editorial-v1.jpg" alt="A shared Colombian meal in a warm, editorial setting" className="h-[30rem] w-full scale-[1.1] object-cover object-[center_70%] sm:h-[38rem]" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-white/5" aria-hidden />
               <div className="absolute bottom-5 left-5 right-5 rounded-[1.2rem] border border-white/20 bg-black/25 p-4 text-white backdrop-blur-xl">
                 <p className="text-xs font-bold uppercase tracking-[.16em] text-white/70">{t.home.madeForDiscovery}</p>
