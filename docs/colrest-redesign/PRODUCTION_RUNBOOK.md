@@ -3,14 +3,14 @@
 ## Authority and deployed release
 
 - Product source authority: this repository and its reviewed Git history.
-- Deployed static application commit: `d7823f5` (`document and automate redesign release gates`), including experience commit `7bf3a72` and trust/operations commit `66b1677`.
-- Deployed API source: `44410f6` in sanitizer-only mode; Place Photos remains disabled and returns fail-closed `503` until its release gates pass.
+- Deployed static application and API source: `44410f6` (`add policy-compliant restaurant imagery`), including the `d7823f5` redesign foundation.
+- Google Place Photos are live for the 31 published restaurants through a production-IP- and Places-API-restricted runtime key. Public responses are `no-store` and display Google Maps plus photographer attribution; owner-supplied media retains precedence.
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
-- Immutable release: `/opt/dirmaster/releases/colrest-d7823f5`.
+- Immutable release: `/opt/dirmaster/releases/colrest-44410f6`.
 - API runtime path: `/opt/dirmaster/artifacts/api-server/dist/index.mjs` (verified byte-identical to the release).
-- Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to the release's `public` directory).
+- Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to `/opt/dirmaster/releases/colrest-44410f6/public`).
 - Pre-redesign recovery set: `/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign-retry1`.
 
 The dirty source checkout at `/opt/dirmaster` is preserved. Deployment uses versioned release artifacts and does not reset, pull over, or commit that unfinished host work.
@@ -84,14 +84,11 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
 
 ## Intentional remaining controls
 
-- Listing-media source commit `44410f6` is pushed and preserved at immutable
-  candidate release `/opt/dirmaster/releases/colrest-44410f6`; it is not live.
-  Production Place IDs were applied only after checksummed recovery set
-  `/opt/dirmaster/backups/colrest-20260718-44410f6-pre-photo` passed. The
-  production-scoped Places key is restricted to `104.236.237.145/32` and
-  `places.googleapis.com`, but Google project `sblo-analytics-api` has no linked
-  billing account. Link authorized billing, rerun photo coverage plus the full
-  browser smoke, and promote atomically only if those gates pass.
+- Listing-media source commit `44410f6` is pushed, live, and preserved at
+  immutable release `/opt/dirmaster/releases/colrest-44410f6`. Google project
+  `sblo-analytics-api` has active Free Trial billing through 2026-10-18. Monitor
+  Places usage and configure billing alerts in the Google console; trial credit
+  is not evidence of a permanent zero-cost service.
 - The legacy Google Maps key exposed by the failed first candidate-launch
   wrapper was removed locally and never promoted. Revoke it in its original
   Google project; the QGS service account does not have authority there.
@@ -117,3 +114,25 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   prior API files and 95 prior static files and validated the PostgreSQL dump
   catalog. The live sanitizer bundle is byte-identical to the immutable
   `44410f6` API payload.
+
+## Place Photo visual promotion proof captured on 2026-07-19
+
+- Google Cloud Billing API read-back confirmed project `sblo-analytics-api`
+  linked to billing account `0110FA-43D98D-4BFDA4`; the console showed the
+  $300 Free Trial credit with 90 days remaining and end date 2026-10-18.
+- The isolated candidate resolved 31/31 published listings with HTTPS media,
+  Google Maps source links, reporting links, and non-empty photographer
+  attribution arrays. Every API response remained `private, no-store`.
+- Real desktop and mobile browser checks proved venue images and visible source
+  attribution, 31 cards, nine public/trust routes, no horizontal overflow, no
+  browser errors, and no serious/critical WCAG findings.
+- Fresh pre-cutover recovery set
+  `/opt/dirmaster/backups/colrest-20260719-44410f6-pre-visual-promotion`
+  checksums the prior API, static target, PostgreSQL dump, and PM2 state.
+- The static symlink now resolves to the immutable `44410f6` release, its
+  manifest passes, the restricted key is present in runtime without appearing
+  in source or documentation, and PM2 is online with zero unstable restarts.
+- Non-mutating recovery proof
+  `/opt/dirmaster/recovery-proofs/colrest-20260719-44410f6-visual-promotion`
+  reverified checksums, extracted 10 API and 95 static files, and validated the
+  137-line PostgreSQL restore catalog.
