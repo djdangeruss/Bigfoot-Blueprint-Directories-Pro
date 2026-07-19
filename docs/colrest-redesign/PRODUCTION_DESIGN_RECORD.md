@@ -15,8 +15,10 @@ visible Google Maps/photographer attribution, 31 exact Place IDs, public queue
 photo leakage protection, and a food-forward desktop hero crop. The code and
 immutable candidate built successfully, but the replacement production-scoped
 Google project has no linked billing account and returned no usable photo
-inventory. The candidate was stopped and the live `d7823f5` release was left
-unchanged. Promotion requires authorized billing, a fresh candidate run, and
+inventory. The candidate was stopped and the live `d7823f5` static release was
+left unchanged. The `44410f6` API sanitizer alone is live without a Google key
+so queue photo URLs are no longer public; its photo endpoint fails closed.
+Visual promotion requires authorized billing, a fresh candidate run, and
 every gate below; the implementation must not fall back to scraped queue URLs.
 
 ## Product decisions

@@ -3,7 +3,8 @@
 ## Authority and deployed release
 
 - Product source authority: this repository and its reviewed Git history.
-- Deployed application commit: `d7823f5` (`document and automate redesign release gates`), including experience commit `7bf3a72` and trust/operations commit `66b1677`.
+- Deployed static application commit: `d7823f5` (`document and automate redesign release gates`), including experience commit `7bf3a72` and trust/operations commit `66b1677`.
+- Deployed API source: `44410f6` in sanitizer-only mode; Place Photos remains disabled and returns fail-closed `503` until its release gates pass.
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
@@ -99,3 +100,20 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
 - Venue images may be published only when owner-supplied or otherwise explicitly licensed. The public directory currently uses the generated editorial hero and owner-controlled listing media.
 - Rotate the legacy GitHub personal access token that was previously embedded in a local remote URL. It was removed locally, but provider-side revocation requires account authority.
 - Upstream repository write access is not available to the authenticated GitHub identity. The verified branch is therefore pushed to the QGS fork and proposed through an upstream pull request.
+
+## Sanitizer-only API promotion proof captured on 2026-07-18
+
+- The live API was promoted to the `44410f6` bundle without a Google key so
+  unclaimed public entry JSON no longer exposes direct queue research-photo
+  URLs. The Place Photo endpoint fails closed with no-store `503`; no visual
+  photo feature is represented as live.
+- The frontend symlink remains exactly
+  `/opt/dirmaster/releases/colrest-d7823f5/public`. Live durable smoke passed
+  health, robots, sitemap, nine public routes, 31 listings, privacy filtering,
+  disabled-photo behavior, consent withdrawal, bilingual UI, mobile overflow,
+  and serious/critical WCAG checks.
+- The checksummed pre-photo recovery set passed again. Non-mutating recovery
+  proof `/opt/dirmaster/recovery-proofs/colrest-44410f6-pre-photo` extracted 10
+  prior API files and 95 prior static files and validated the PostgreSQL dump
+  catalog. The live sanitizer bundle is byte-identical to the immutable
+  `44410f6` API payload.

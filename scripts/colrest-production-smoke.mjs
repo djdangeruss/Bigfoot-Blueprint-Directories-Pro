@@ -4,6 +4,7 @@ import { chromium } from "playwright";
 const baseUrl = (process.env.COLREST_BASE_URL || "https://colombianrestaurantnear.me").replace(/\/$/, "");
 const canonicalOrigin = (process.env.COLREST_CANONICAL_ORIGIN || baseUrl).replace(/\/$/, "");
 const expectedListings = Number(process.env.COLREST_EXPECTED_LISTINGS || 31);
+const expectPhotos = process.env.COLREST_EXPECT_PHOTOS !== "0";
 const routes = [
   "/",
   "/browse",
@@ -46,22 +47,28 @@ try {
   assert(!JSON.stringify(entries).includes("lh3.googleusercontent.com"), "unattributed queue photo URL leaked through the public API");
 
   let photoEntry = null;
-  let photoResponse = null;
-  for (const entry of entries) {
-    if (!entry.slug) continue;
-    const response = await context.request.get(`${baseUrl}/api/public/entries/${entry.slug}/photo`);
-    if (response.status() === 200) {
-      photoEntry = entry;
-      photoResponse = response;
-      break;
+  if (expectPhotos) {
+    let photoResponse = null;
+    for (const entry of entries) {
+      if (!entry.slug) continue;
+      const response = await context.request.get(`${baseUrl}/api/public/entries/${entry.slug}/photo`);
+      if (response.status() === 200) {
+        photoEntry = entry;
+        photoResponse = response;
+        break;
+      }
+      assert(response.status() === 404, `${entry.slug}/photo: expected 200 or 404, received ${response.status()}`);
     }
-    assert(response.status() === 404, `${entry.slug}/photo: expected 200 or 404, received ${response.status()}`);
+    assert(photoEntry && photoResponse, "no published listing returned a compliant source photo");
+    assert((photoResponse.headers()["cache-control"] || "").includes("no-store"), "place photo response is cacheable");
+    const photoBody = await photoResponse.json();
+    assert(/^https:\/\//.test(photoBody.imageUrl || ""), "place photo media URL is missing");
+    assert(/^https:\/\//.test(photoBody.sourceUrl || ""), "place photo source URL is missing");
+  } else {
+    const unavailable = await context.request.get(`${baseUrl}/api/public/entries/${entries[0].slug}/photo`);
+    assert(unavailable.status() === 503, `disabled photo endpoint: expected 503, received ${unavailable.status()}`);
+    assert((unavailable.headers()["cache-control"] || "").includes("no-store"), "disabled photo response is cacheable");
   }
-  assert(photoEntry && photoResponse, "no published listing returned a compliant source photo");
-  assert((photoResponse.headers()["cache-control"] || "").includes("no-store"), "place photo response is cacheable");
-  const photoBody = await photoResponse.json();
-  assert(/^https:\/\//.test(photoBody.imageUrl || ""), "place photo media URL is missing");
-  assert(/^https:\/\//.test(photoBody.sourceUrl || ""), "place photo source URL is missing");
 
   for (const route of routes) {
     const response = await page.goto(`${baseUrl}${route}`, { waitUntil: "networkidle" });
@@ -80,17 +87,21 @@ try {
   await page.waitForTimeout(500);
   assert((await page.locator("[data-dm-head], [data-dm-body]").count()) > 0, "optional scripts did not load after consent");
   await page.getByRole("button", { name: /Cookie preferences/i }).click();
-  await page.getByRole("button", { name: /Essential only/i }).click();
-  await page.waitForLoadState("domcontentloaded");
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+    page.getByRole("button", { name: /Essential only/i }).click(),
+  ]);
   assert((await page.locator("[data-dm-head], [data-dm-body]").count()) === 0, "optional scripts remained after consent withdrawal");
-  await page.getByRole("button", { name: /ES/ }).click();
+  await page.getByRole("button", { name: /^es$/i }).click();
   assert((await page.locator("h1").first().textContent())?.includes("mesa colombiana"), "Spanish locale did not activate");
 
   await page.goto(`${baseUrl}/browse`, { waitUntil: "networkidle" });
   assert((await page.locator("article").count()) === expectedListings, "browse card count does not match the public dataset");
-  const photoCard = page.locator(`article:has(a[href="/entry/${photoEntry.slug}"])`).first();
-  await photoCard.scrollIntoViewIfNeeded();
-  await photoCard.locator('a[aria-label*="Google Maps"]').waitFor({ state: "visible" });
+  if (expectPhotos && photoEntry) {
+    const photoCard = page.locator(`article:has(a[href="/entry/${photoEntry.slug}"])`).first();
+    await photoCard.scrollIntoViewIfNeeded();
+    await photoCard.locator('a[aria-label*="Google Maps"]').waitFor({ state: "visible" });
+  }
 
   console.log(`PASS ${baseUrl}: ${routes.length} routes, ${entries.length} listings, mobile WCAG smoke, bilingual UI`);
 } finally {
