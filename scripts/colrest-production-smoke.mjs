@@ -45,9 +45,19 @@ try {
   assert(!JSON.stringify(entries).includes('"_ownerId"'), "private owner data leaked through the public API");
   assert(!JSON.stringify(entries).includes("lh3.googleusercontent.com"), "unattributed queue photo URL leaked through the public API");
 
-  const photoEntry = entries.find(entry => entry.slug);
-  assert(photoEntry, "no listing slug is available for the photo proof");
-  const photoResponse = await expectResponse(context.request, `/api/public/entries/${photoEntry.slug}/photo`);
+  let photoEntry = null;
+  let photoResponse = null;
+  for (const entry of entries) {
+    if (!entry.slug) continue;
+    const response = await context.request.get(`${baseUrl}/api/public/entries/${entry.slug}/photo`);
+    if (response.status() === 200) {
+      photoEntry = entry;
+      photoResponse = response;
+      break;
+    }
+    assert(response.status() === 404, `${entry.slug}/photo: expected 200 or 404, received ${response.status()}`);
+  }
+  assert(photoEntry && photoResponse, "no published listing returned a compliant source photo");
   assert((photoResponse.headers()["cache-control"] || "").includes("no-store"), "place photo response is cacheable");
   const photoBody = await photoResponse.json();
   assert(/^https:\/\//.test(photoBody.imageUrl || ""), "place photo media URL is missing");
@@ -78,7 +88,9 @@ try {
 
   await page.goto(`${baseUrl}/browse`, { waitUntil: "networkidle" });
   assert((await page.locator("article").count()) === expectedListings, "browse card count does not match the public dataset");
-  await page.locator('a[aria-label*="Google Maps"]').first().waitFor({ state: "visible" });
+  const photoCard = page.locator(`article:has(a[href="/entry/${photoEntry.slug}"])`).first();
+  await photoCard.scrollIntoViewIfNeeded();
+  await photoCard.locator('a[aria-label*="Google Maps"]').waitFor({ state: "visible" });
 
   console.log(`PASS ${baseUrl}: ${routes.length} routes, ${entries.length} listings, mobile WCAG smoke, bilingual UI`);
 } finally {

@@ -83,6 +83,18 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
 
 ## Intentional remaining controls
 
+- Listing-media source commit `44410f6` is pushed and preserved at immutable
+  candidate release `/opt/dirmaster/releases/colrest-44410f6`; it is not live.
+  Production Place IDs were applied only after checksummed recovery set
+  `/opt/dirmaster/backups/colrest-20260718-44410f6-pre-photo` passed. The
+  production-scoped Places key is restricted to `104.236.237.145/32` and
+  `places.googleapis.com`, but Google project `sblo-analytics-api` has no linked
+  billing account. Link authorized billing, rerun photo coverage plus the full
+  browser smoke, and promote atomically only if those gates pass.
+- The legacy Google Maps key exposed by the failed first candidate-launch
+  wrapper was removed locally and never promoted. Revoke it in its original
+  Google project; the QGS service account does not have authority there.
+
 - The publication queue at `queue.colombianrestaurantnear.me` remains authenticated and separate from the public directory. Its scraped research is not a publication-rights grant.
 - Venue images may be published only when owner-supplied or otherwise explicitly licensed. The public directory currently uses the generated editorial hero and owner-controlled listing media.
 - Rotate the legacy GitHub personal access token that was previously embedded in a local remote URL. It was removed locally, but provider-side revocation requires account authority.
