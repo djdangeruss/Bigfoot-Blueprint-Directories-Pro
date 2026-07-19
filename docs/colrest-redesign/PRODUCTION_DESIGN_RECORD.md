@@ -41,3 +41,5 @@ Run the durable browser proof with:
 $env:COLREST_BASE_URL = "https://colombianrestaurantnear.me"
 node scripts/colrest-production-smoke.mjs
 ```
+
+For an isolated candidate, set `COLREST_BASE_URL` to the tunnel URL and `COLREST_CANONICAL_ORIGIN` to the public canonical origin.

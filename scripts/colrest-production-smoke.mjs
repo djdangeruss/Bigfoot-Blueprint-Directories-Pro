@@ -2,6 +2,7 @@ import { AxeBuilder } from "@axe-core/playwright";
 import { chromium } from "playwright";
 
 const baseUrl = (process.env.COLREST_BASE_URL || "https://colombianrestaurantnear.me").replace(/\/$/, "");
+const canonicalOrigin = (process.env.COLREST_CANONICAL_ORIGIN || baseUrl).replace(/\/$/, "");
 const expectedListings = Number(process.env.COLREST_EXPECTED_LISTINGS || 31);
 const routes = [
   "/",
@@ -34,7 +35,7 @@ try {
   await expectResponse(context.request, "/robots.txt");
   const sitemap = await expectResponse(context.request, "/sitemap.xml");
   const sitemapBody = await sitemap.text();
-  for (const path of routes) assert(sitemapBody.includes(`${baseUrl}${path === "/" ? "" : path}`), `sitemap missing ${path}`);
+  for (const path of routes) assert(sitemapBody.includes(`${canonicalOrigin}${path === "/" ? "" : path}`), `sitemap missing ${path}`);
 
   const publicEntries = await expectResponse(context.request, "/api/public/entries?limit=100");
   const entriesBody = await publicEntries.json();
@@ -55,6 +56,14 @@ try {
 
   await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
   assert((await page.locator("h1").first().textContent())?.includes("Colombian table"), "new discovery hero is not active");
+  assert((await page.locator("[data-dm-head], [data-dm-body]").count()) === 0, "optional scripts loaded before consent");
+  await page.getByRole("button", { name: /Accept analytics/i }).click();
+  await page.waitForTimeout(500);
+  assert((await page.locator("[data-dm-head], [data-dm-body]").count()) > 0, "optional scripts did not load after consent");
+  await page.getByRole("button", { name: /Cookie preferences/i }).click();
+  await page.getByRole("button", { name: /Essential only/i }).click();
+  await page.waitForLoadState("domcontentloaded");
+  assert((await page.locator("[data-dm-head], [data-dm-body]").count()) === 0, "optional scripts remained after consent withdrawal");
   await page.getByRole("button", { name: /ES/ }).click();
   assert((await page.locator("h1").first().textContent())?.includes("mesa colombiana"), "Spanish locale did not activate");
 

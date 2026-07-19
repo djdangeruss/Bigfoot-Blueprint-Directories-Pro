@@ -3,14 +3,14 @@
 ## Authority and deployed release
 
 - Product source authority: this repository and its reviewed Git history.
-- Deployed application commit: `f267457` (`redirect Colombian directory www host to canonical apex`).
+- Deployed application commit: `d7823f5` (`document and automate redesign release gates`), including experience commit `7bf3a72` and trust/operations commit `66b1677`.
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
-- Immutable release: `/opt/dirmaster/releases/colrest-f267457`.
+- Immutable release: `/opt/dirmaster/releases/colrest-d7823f5`.
 - API runtime path: `/opt/dirmaster/artifacts/api-server/dist/index.mjs` (verified byte-identical to the release).
 - Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to the release's `public` directory).
-- Pre-deploy recovery set: `/opt/dirmaster/backups/colrest-20260718-04d432b`.
+- Pre-redesign recovery set: `/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign-retry1`.
 
 The dirty source checkout at `/opt/dirmaster` is preserved. Deployment uses versioned release artifacts and does not reset, pull over, or commit that unfinished host work.
 
@@ -18,12 +18,12 @@ The dirty source checkout at `/opt/dirmaster` is preserved. Deployment uses vers
 
 The local release archive is ignored from Git and preserved at:
 
-`E:/Users/USUARIO/Downloads/directory-master/.local-dev/colrest-release-f267457.tar.gz`
+`E:/Users/USUARIO/Downloads/directory-master/.local-dev/colrest-release-d7823f5-retry1.tar.gz`
 
-- Archive SHA-256: `33eb8ba748b355107134a27e2d5c604250985d9df952dddcbe76f90752b889b4`
-- Archive bytes: `3,836,679`
-- Manifest payload files: `102`
-- Remote manifest: `/opt/dirmaster/releases/colrest-f267457/MANIFEST.sha256`
+- Archive SHA-256: `ddeb2325ae42e8d8bbf22a50fe64d348660456e8ba93f8f895150910b3e37d93`
+- Archive bytes: `3,861,397`
+- Manifest payload files: `106`
+- Remote manifest: `/opt/dirmaster/releases/colrest-d7823f5/MANIFEST.sha256`
 
 Before serving traffic, all manifest entries passed `sha256sum -c`, the Node bundle passed `node --check`, and an isolated candidate on port `3012` passed the production-data smoke suite.
 
@@ -36,9 +36,11 @@ The recovery set is mode `0700`; its files are mode `0600`. `SHA256SUMS` verifie
 - `database-before.dump`
 - `pm2-dump-before.json`
 
-The former static directory is also preserved at:
+The former API directory is also preserved at:
 
-`/opt/dirmaster/backups/colrest-20260718-04d432b/public-before-directory`
+`/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign-retry1/api-dist-before-directory`
+
+The first backup attempt created `/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign` with only an empty database placeholder before aborting safely on connection parsing. It was preserved for auditability and is not a recovery set. Only the checksummed `retry1` directory is authoritative for this release.
 
 The API served immediately before the portable-worker correction has an additional recovery set at `/opt/dirmaster/backups/colrest-20260718-e988838-preportable`. Its checksummed API archive and PM2 dump allow rollback of that final, API-only cutover without touching the database.
 
@@ -47,16 +49,26 @@ The API served immediately before the canonical-host correction is separately pr
 Rollback procedure (run on the production host):
 
 1. Resolve the current `dirmaster-colrest` PID and read `DATABASE_URL` from `/proc/<pid>/environ` into the shell without printing it.
-2. Extract `api-dist-before.tar.gz` into `/opt/dirmaster/artifacts/api-server`.
-3. Remove only the exact static symlink `/opt/dirmaster/static-builds/colrest/public` after confirming it is a symlink to the deployed release.
-4. Move `public-before-directory` back to `/opt/dirmaster/static-builds/colrest/public`.
+2. Confirm `/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign-retry1/api-dist-before-directory` exists and the current active API directory matches the deployed release.
+3. Move the current active API directory to a new, explicit quarantine path inside the recovery set, then move `api-dist-before-directory` back to `/opt/dirmaster/artifacts/api-server/dist`. Do not remove either tree.
+4. Repoint the exact static symlink `/opt/dirmaster/static-builds/colrest/public` to `/opt/dirmaster/releases/colrest-f267457/public`. If that immutable release is unavailable, extract `static-before.tar.gz` into a new recovery directory and point the symlink there.
 5. Export `PORT=3011`, `NODE_ENV=production`, `STATIC_DIR=/opt/dirmaster/static-builds/colrest/public`, `PUBLIC_ORIGIN=https://colombianrestaurantnear.me`, and `ALLOWED_ORIGINS=https://colombianrestaurantnear.me` while preserving the recovered `DATABASE_URL`.
 6. Run `pm2 restart dirmaster-colrest --update-env`, verify `/api/healthz`, `/`, `/browse`, one listing, `robots.txt`, and `sitemap.xml`, then run `pm2 save`.
 7. Restore `database-before.dump` only if a database rollback is actually required; inspect it first with `pg_restore --list` and choose an explicit target database.
 
 Do not run broad recursive removal commands, reset the host checkout, or print process secrets.
 
-## Deployment proof captured on 2026-07-18
+## Redesign deployment proof captured on 2026-07-18
+
+- The production database, prior API, prior static build, and PM2 dump are preserved in the checksummed `retry1` recovery set with directory mode `0700` and file mode `0600`.
+- The additive contacts migration added nullable `subject` and `message` fields; the directory retained `61` total entries and `31` published entries.
+- An isolated production-data candidate on port `3012` passed health, SSR, all public routes, 26 sitemap URLs, 31 browse cards, bilingual UI, mobile overflow, consent gating, public-field privacy, and serious/critical WCAG smoke checks.
+- The corrections endpoint stored a synthetic proof request, its exact database row was verified, and that row alone was removed immediately. No synthetic contact remains.
+- The live apex returns `200`, the seven trust/legal routes return `200`, the canonical `www` redirect remains `308` with path and query preserved, and the public API exposes no `_ownerId` field.
+- The live API directory is byte-identical to the immutable release, the static symlink resolves to the release, PM2 is online with no post-cutover restart loop, and the release manifest passes.
+- Recovery rehearsal proof is preserved at `/opt/dirmaster/recovery-proofs/colrest-d7823f5-redesign`; it extracted both prior artifact archives and validated the PostgreSQL dump catalog without changing production.
+
+## Foundation deployment proof captured on 2026-07-18
 
 - Additive owner/claim migration completed against the backed-up production database.
 - Production retained `61` entries; no owner, claim, or audit records were fabricated.
