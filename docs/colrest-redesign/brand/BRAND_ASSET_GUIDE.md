@@ -6,10 +6,11 @@ Status: production candidate
 ## Asset roles
 
 - `logo-header-light.png`: transparent horizontal wordmark for light navigation.
-- `logo-header-dark.png`: transparent horizontal wordmark for dark navigation
-  and dark-mode footer use.
+- `logo-header-dark.png`: transparent horizontal wordmark for dark navigation.
 - `logo-primary-light.png`: transparent stacked primary lockup for the light
   footer and larger brand placements.
+- `logo-primary-dark.png`: transparent stacked primary lockup for the dark
+  footer and larger dark-surface placements.
 - `brand-avatar-256.png`: compact mobile-navigation identity.
 - `favicon-32.png`, `favicon-192.png`, `favicon-512.png`, and
   `apple-touch-icon.png`: browser and installed-app identity.
@@ -25,9 +26,8 @@ only the baked background and excess canvas were removed.
 
 The full horizontal light/dark lockups switch with the existing theme control.
 Mobile uses the square avatar so language, theme, and menu controls retain safe
-touch targets. The light footer uses the primary stacked lockup. Because no
-stacked dark primary was supplied, dark mode uses the approved horizontal dark
-lockup rather than recoloring or inventing a new logo.
+touch targets. The footer switches between the owner-supplied light and dark
+stacked primary lockups.
 
 ## Source authority
 

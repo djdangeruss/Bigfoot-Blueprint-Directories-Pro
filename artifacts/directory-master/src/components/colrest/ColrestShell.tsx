@@ -62,7 +62,7 @@ function FooterBrand() {
   return (
     <>
       <img src="/brand/logo-primary-light.png" alt="Colombian Restaurant Near Me" className="h-auto w-full max-w-[310px] object-contain dark:hidden" width="1200" height="485" loading="lazy" />
-      <img src="/brand/logo-header-dark.png" alt="Colombian Restaurant Near Me" className="hidden h-auto w-full max-w-[360px] object-contain dark:block" width="1600" height="176" loading="lazy" />
+      <img src="/brand/logo-primary-dark.png" alt="Colombian Restaurant Near Me" className="hidden h-auto w-full max-w-[310px] object-contain dark:block" width="1200" height="492" loading="lazy" />
     </>
   );
 }

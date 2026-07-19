@@ -168,12 +168,12 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
 
 - Owner-supplied logo masters are preserved unchanged under
   `docs/colrest-redesign/brand/source/`. Web derivatives use transparent,
-  tightly cropped light/dark wordmarks, the stacked light primary mark, square
-  mobile avatar, favicon/app sizes, manifest, and social avatar.
+  tightly cropped light/dark wordmarks, stacked light/dark primary marks,
+  square mobile avatar, favicon/app sizes, manifest, and social avatar.
 - Desktop navigation switches between the approved light and dark horizontal
   lockups. Mobile uses the square avatar to preserve controls and touch targets.
-  The light footer uses the stacked primary mark; the dark footer uses the
-  approved dark horizontal mark because no stacked dark primary was supplied.
+  The footer switches between the owner-supplied stacked light and dark primary
+  marks.
 - Local production build, full workspace typecheck, metadata assertions, asset
   loading, and light/dark desktop/mobile browser checks passed with no
   horizontal overflow. The live domain passed the same four visual states plus

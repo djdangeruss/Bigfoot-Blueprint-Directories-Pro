@@ -25,8 +25,8 @@ listing resolves compliant media without falling back to scraped queue URLs.
 
 The owner-supplied Colombian Restaurant Near Me logo system is now the public
 brand authority. Responsive navigation uses transparent light/dark horizontal
-lockups, mobile uses the square avatar, the light footer uses the stacked
-primary mark, and the dark footer uses the approved dark horizontal lockup.
+lockups, mobile uses the square avatar, and the footer switches between the
+owner-supplied stacked light and dark primary marks.
 Favicon, Apple touch, installable-app manifest, and default social-avatar assets
 share the same `CR`/location identity. Original opaque masters are preserved;
 production derivatives remove only backgrounds and excess canvas.
