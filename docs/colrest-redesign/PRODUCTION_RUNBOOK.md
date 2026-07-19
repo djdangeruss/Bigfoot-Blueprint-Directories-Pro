@@ -192,3 +192,24 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   `/opt/dirmaster/recovery-proofs/colrest-20260719-9119e4c-brand` preserves the
   backup checksums, before/after targets, archive digest, and non-empty static
   restore catalog.
+
+### Stacked dark-primary follow-up
+
+- Owner supplied the missing stacked dark primary master later on 2026-07-19.
+  Source commit `ca2e3c2` preserves the master, adds the transparent production
+  derivative, and switches only the dark footer from the temporary horizontal
+  lockup to the matching stacked lockup.
+- Immutable static release `/opt/dirmaster/releases/colrest-ca2e3c2/public` is
+  live. Archive SHA-256 is
+  `debc4873af2351297f285e8f23e4c91ab8a67a2acaa7cd2d62709b6e17c4378d`
+  for 5,868,068 bytes. The API bundle remains byte-identical to production;
+  no database, secret, Google Places, or publication-state change occurred.
+- The isolated candidate, exact dark-logo hash, release manifest, live
+  desktop/mobile light/dark browser states, nine-route/48-listing bilingual
+  WCAG smoke, and production health all passed.
+- Checksummed pre-cutover backup
+  `/opt/dirmaster/backups/colrest-20260719-ca2e3c2-pre-dark-primary` preserves
+  release `9119e4c`. Recovery proof
+  `/opt/dirmaster/recovery-proofs/colrest-20260719-ca2e3c2-dark-primary`
+  records before/after targets, archive and asset hashes, backup checksums, and
+  a non-empty restore catalog.
