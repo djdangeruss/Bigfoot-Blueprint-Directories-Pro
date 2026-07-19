@@ -21,6 +21,16 @@ while 13 operational Cuban, Venezuelan, Puerto Rican, or Argentine businesses
 remain preserved but unpublished. All 61 retain exact Place IDs; every public
 listing resolves compliant media without falling back to scraped queue URLs.
 
+## Owner-supplied brand identity (2026-07-19)
+
+The owner-supplied Colombian Restaurant Near Me logo system is now the public
+brand authority. Responsive navigation uses transparent light/dark horizontal
+lockups, mobile uses the square avatar, the light footer uses the stacked
+primary mark, and the dark footer uses the approved dark horizontal lockup.
+Favicon, Apple touch, installable-app manifest, and default social-avatar assets
+share the same `CR`/location identity. Original opaque masters are preserved;
+production derivatives remove only backgrounds and excess canvas.
+
 ## Product decisions
 
 - The directory serves diners first. Search, city discovery, useful listing details, contact actions, directions, and correction paths precede owner conversion.

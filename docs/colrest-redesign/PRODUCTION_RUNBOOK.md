@@ -3,14 +3,17 @@
 ## Authority and deployed release
 
 - Product source authority: this repository and its reviewed Git history.
-- Deployed static application and API source: `44410f6` (`add policy-compliant restaurant imagery`), including the `d7823f5` redesign foundation.
+- Deployed static application source: `9119e4c` (`integrate Colombian restaurant
+  brand system`), including the `44410f6` Place Photo and `d7823f5` redesign
+  foundations. The API bundle remains byte-identical to `44410f6`.
 - Google Place Photos are live for 48 cuisine-qualified published businesses through a production-IP- and Places-API-restricted runtime key. Public responses are `no-store` and display Google Maps plus photographer attribution; owner-supplied media retains precedence.
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
-- Immutable release: `/opt/dirmaster/releases/colrest-44410f6`.
+- Immutable branded release: `/opt/dirmaster/releases/colrest-9119e4c`.
 - API runtime path: `/opt/dirmaster/artifacts/api-server/dist/index.mjs` (verified byte-identical to the release).
-- Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to `/opt/dirmaster/releases/colrest-44410f6/public`).
+- Static runtime path: `/opt/dirmaster/static-builds/colrest/public` (symlink to
+  `/opt/dirmaster/releases/colrest-9119e4c/public`).
 - Pre-redesign recovery set: `/opt/dirmaster/backups/colrest-20260718-d7823f5-pre-redesign-retry1`.
 
 The dirty source checkout at `/opt/dirmaster` is preserved. Deployment uses versioned release artifacts and does not reset, pull over, or commit that unfinished host work.
@@ -160,3 +163,32 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   controls. Mobile and desktop smoke passed 48 cards, bilingual behavior,
   consent controls, no horizontal overflow, and no serious/critical WCAG
   findings.
+
+## Owner-supplied brand-system promotion on 2026-07-19
+
+- Owner-supplied logo masters are preserved unchanged under
+  `docs/colrest-redesign/brand/source/`. Web derivatives use transparent,
+  tightly cropped light/dark wordmarks, the stacked light primary mark, square
+  mobile avatar, favicon/app sizes, manifest, and social avatar.
+- Desktop navigation switches between the approved light and dark horizontal
+  lockups. Mobile uses the square avatar to preserve controls and touch targets.
+  The light footer uses the stacked primary mark; the dark footer uses the
+  approved dark horizontal mark because no stacked dark primary was supplied.
+- Local production build, full workspace typecheck, metadata assertions, asset
+  loading, and light/dark desktop/mobile browser checks passed with no
+  horizontal overflow. The live domain passed the same four visual states plus
+  the existing nine-route, 48-listing, bilingual mobile/WCAG smoke suite.
+- Static/API release archive SHA-256 is
+  `829c3232b2c560284e9095882f47aaa192b224f3013b6fe85f71e9cdc2811b28`
+  for 5,554,840 bytes. The API bundle is byte-identical to the prior live API;
+  no database, Places key, or publication-state mutation occurred.
+- The isolated port-3012 candidate passed after a slower cold start. The first
+  promotion script stopped before backup or symlink mutation while it waited;
+  live production remained unchanged. Candidate health and exact assets were
+  then read back before the guarded static-only promotion.
+- Checksummed backup
+  `/opt/dirmaster/backups/colrest-20260719-9119e4c-pre-brand` preserves the
+  previous static bundle, PM2 state, and old symlink target. Recovery proof
+  `/opt/dirmaster/recovery-proofs/colrest-20260719-9119e4c-brand` preserves the
+  backup checksums, before/after targets, archive digest, and non-empty static
+  restore catalog.
