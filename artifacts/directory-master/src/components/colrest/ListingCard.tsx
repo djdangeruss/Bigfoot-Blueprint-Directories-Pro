@@ -1,13 +1,8 @@
 import { Link } from "wouter";
-import { MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin, ShieldCheck, Sparkles, UtensilsCrossed } from "lucide-react";
 import type { ColrestListing } from "@/lib/colrest";
 import { TrustCompact } from "./TrustSignals";
 import { useI18n, localizedCategory } from "@/i18n";
-
-// Three listing presentations, distinguished by claim state and tier:
-//   featured (premium)  — 2-col card, striped toldo, photo hero
-//   claimed             — standard card, solid toldo, Verificado seal
-//   unclaimed           — quiet menu-line row with dotted leader
 
 export function Toldo({ listing }: { listing: ColrestListing }) {
   if (listing.featured) return <div className="toldo-stripes" aria-hidden />;
@@ -19,97 +14,112 @@ function href(listing: ColrestListing) {
   return `/entry/${listing.slug || listing.id}`;
 }
 
-export function FeaturedCard({ listing }: { listing: ColrestListing }) {
-  const { t, lang } = useI18n();
+function primaryPhoto(listing: ColrestListing) {
+  if (listing.claimStatus !== "claimed") return null;
+  return listing.photos.find(Boolean) || listing.photoUrl || null;
+}
+
+function ListingVisual({ listing, featured = false }: { listing: ColrestListing; featured?: boolean }) {
+  const photo = primaryPhoto(listing);
+  const place = listing.neighborhood || listing.location?.split(",")[0] || "South Florida";
   return (
-    <Link href={href(listing)} className="group block md:col-span-2">
-      <article className="rounded-lg overflow-hidden border border-card-border bg-card transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:shadow-lg h-full flex flex-col">
-        <Toldo listing={listing} />
-        {listing.photoUrl && (
-          <div className="h-44 overflow-hidden">
-            <img
-              src={listing.photoUrl}
-              alt={listing.title}
-              loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = "none"; }}
-            />
+    <div className={`listing-card-visual ${featured ? "min-h-48" : "min-h-36"}`}>
+      {photo ? (
+        <img
+          src={photo}
+          alt={`${listing.title} — owner-supplied restaurant photo`}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+          onError={event => { (event.currentTarget as HTMLImageElement).style.display = "none"; }}
+        />
+      ) : (
+        <div className="listing-card-pattern absolute inset-0" aria-hidden />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/5" aria-hidden />
+      <div className="relative z-10 flex h-full min-h-inherit flex-col justify-between p-4 text-white">
+        <div className="flex items-start justify-between gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-black/20 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md">
+            <MapPin className="h-3 w-3" /> {place}
+          </span>
+          {listing.featured && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-stone-900">
+              <Sparkles className="h-3 w-3 text-primary" /> Featured
+            </span>
+          )}
+        </div>
+        {!photo && (
+          <div className="flex items-end justify-between gap-3 pt-8">
+            <UtensilsCrossed className="h-8 w-8 text-white/85" strokeWidth={1.4} />
+            <span className="max-w-44 text-right text-xs font-medium leading-snug text-white/80">
+              Colombian restaurant discovery
+            </span>
           </div>
         )}
-        <div className="p-5 flex-1 flex flex-col gap-3">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display text-xl font-semibold leading-snug">{listing.title}</h3>
-            <span className="seal-verificado flex-shrink-0">✓ {t.entry.verified}</span>
-          </div>
-          <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-            {listing.neighborhood || listing.location}
-            {listing.atmosphere ? ` · ${listing.atmosphere}` : ""}
-          </p>
-          {listing.signatureDishes && (
-            <p className="text-sm line-clamp-1 text-foreground/80 italic">{listing.signatureDishes}</p>
-          )}
-          <div className="mt-auto pt-2">
-            <TrustCompact listing={listing} />
-          </div>
-          <span className="text-xs uppercase tracking-wide text-muted-foreground">
-            {localizedCategory(listing.category, lang)}
-          </span>
-        </div>
-      </article>
-    </Link>
+      </div>
+    </div>
   );
 }
 
-export function StandardCard({ listing }: { listing: ColrestListing }) {
+function DirectoryCard({ listing, featured = false, decorative = false }: { listing: ColrestListing; featured?: boolean; decorative?: boolean }) {
   const { t, lang } = useI18n();
   const claimed = listing.claimStatus === "claimed";
   return (
-    <Link href={href(listing)} className="group block">
-      <article className="rounded-lg overflow-hidden border border-card-border bg-card transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md h-full flex flex-col">
-        <Toldo listing={listing} />
-        <div className="p-4 flex-1 flex flex-col gap-2.5">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-lg font-semibold leading-snug">{listing.title}</h3>
-            {claimed && <span className="seal-verificado flex-shrink-0">✓</span>}
+    <Link href={href(listing)} tabIndex={decorative ? -1 : undefined} className={`group block h-full ${featured ? "md:col-span-2" : ""}`}>
+      <article data-spotlight-card className="directory-card h-full overflow-hidden rounded-[1.35rem] border border-card-border/80 bg-card">
+        <ListingVisual listing={listing} featured={featured} />
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+                {localizedCategory(listing.category, lang)}
+              </p>
+              <h3 className={`${featured ? "text-2xl" : "text-xl"} font-display font-semibold leading-tight text-foreground group-hover:text-primary transition-colors`}>
+                {listing.title}
+              </h3>
+            </div>
+            {claimed && (
+              <span className="inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-secondary/12 px-2.5 py-1 text-[11px] font-bold text-secondary" title={t.entry.verifiedMeaning}>
+                <ShieldCheck className="h-3.5 w-3.5" /> {t.entry.verified}
+              </span>
+            )}
           </div>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <MapPin className="h-3 w-3 flex-shrink-0" />
-            <span className="line-clamp-1">{listing.neighborhood || listing.location}</span>
+
+          <p className="flex items-start gap-1.5 text-sm text-muted-foreground">
+            <MapPin className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+            <span className="line-clamp-2">{[listing.venue, listing.location].filter(Boolean).join(" · ")}</span>
           </p>
-          <div className="mt-auto pt-1">
+
+          {listing.signatureDishes && (
+            <p className="line-clamp-1 text-sm text-foreground/72">{listing.signatureDishes}</p>
+          )}
+
+          <div className="mt-auto border-t border-border/70 pt-3">
             <TrustCompact listing={listing} />
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="text-xs text-muted-foreground">
+                {listing.platforms.length} {t.browse.reputationSources}
+              </span>
+              <span className="inline-flex items-center gap-1 text-sm font-bold text-primary">
+                {t.browse.viewDetails} <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </div>
           </div>
-          <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
-            {localizedCategory(listing.category, lang)}
-          </span>
         </div>
       </article>
     </Link>
   );
 }
 
-// Unclaimed: a single menu line — name ⋯⋯⋯ rating. Deliberately quieter than
-// any claimed card; the visual gap IS the claim incentive.
+export function FeaturedCard({ listing }: { listing: ColrestListing }) {
+  return <DirectoryCard listing={listing} featured />;
+}
+
+export function StandardCard({ listing, decorative = false }: { listing: ColrestListing; decorative?: boolean }) {
+  return <DirectoryCard listing={listing} decorative={decorative} />;
+}
+
+// Kept as a compatibility export for older instance code. Colombian Restaurant
+// builds now give every published venue the same useful card baseline.
 export function MenuLineItem({ listing }: { listing: ColrestListing }) {
-  const { t } = useI18n();
-  return (
-    <Link href={href(listing)} className="group flex items-baseline px-1 py-2.5 rounded-md hover:bg-muted/50 transition-colors">
-      <span className="font-display text-[15px] text-foreground/85 group-hover:text-foreground">
-        {listing.title}
-      </span>
-      <span className="menu-leader" aria-hidden />
-      {listing.aggRating != null ? (
-        <span className="tnum text-sm text-muted-foreground flex-shrink-0">
-          ★ {listing.aggRating.toFixed(1)}
-          <span className="hidden sm:inline"> · {listing.aggReviewCount.toLocaleString()}</span>
-        </span>
-      ) : (
-        <span className="text-xs text-muted-foreground flex-shrink-0">—</span>
-      )}
-      <span className="ml-3 flex-shrink-0 text-[11px] font-medium rounded-full border border-border px-2 py-0.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hidden md:inline">
-        {t.entry.claimBanner}
-      </span>
-    </Link>
-  );
+  return <StandardCard listing={listing} />;
 }

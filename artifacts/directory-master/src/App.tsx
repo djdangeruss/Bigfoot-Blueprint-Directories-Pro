@@ -41,6 +41,7 @@ const ColrestEntry = lazy(() => import("@/pages/colrest/entry"));
 const ColrestClaim = lazy(() => import("@/pages/colrest/claim"));
 const OwnerLogin = lazy(() => import("@/pages/colrest/owner-login"));
 const OwnerDashboard = lazy(() => import("@/pages/colrest/owner-dashboard"));
+const ColrestInfoPage = lazy(() => import("@/pages/colrest/info"));
 
 const queryClient = new QueryClient();
 
@@ -160,6 +161,27 @@ function Router() {
           </Route>
           <Route path="/owner">
             <SetupGuard><ColrestShell><OwnerDashboard /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/about">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="about" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/methodology">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="methodology" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/privacy">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="privacy" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/terms">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="terms" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/owner-terms">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="owner-terms" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/accessibility">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="accessibility" /></ColrestShell></SetupGuard>
+          </Route>
+          <Route path="/corrections">
+            <SetupGuard><ColrestShell><ColrestInfoPage page="corrections" /></ColrestShell></SetupGuard>
           </Route>
         </>
       ) : (

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useListPublicEntries } from "@workspace/api-client-react";
-import { Loader2, ChevronLeft, Phone, Globe, MapPin, Clock, UtensilsCrossed, ArrowUpRight } from "lucide-react";
+import { Loader2, ChevronLeft, Phone, Globe, MapPin, Clock, UtensilsCrossed, ArrowUpRight, Navigation, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 import { es as dfnsEs } from "date-fns/locale";
 import { parseListing } from "@/lib/colrest";
@@ -71,7 +71,7 @@ export default function ColrestEntry() {
   return (
     <div>
       {/* Header band with toldo edge */}
-      <div className="bg-card border-b border-border relative">
+      <div className="listing-detail-hero relative border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           <Link href="/browse" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5">
             <ChevronLeft className="h-4 w-4" /> {t.entry.backToBrowse}
@@ -89,7 +89,7 @@ export default function ColrestEntry() {
               </span>
             )}
           </div>
-          <h1 className="font-display text-3xl md:text-5xl font-semibold leading-tight">{listing.title}</h1>
+          <h1 className="max-w-5xl font-display text-4xl font-semibold leading-[1.02] tracking-[-.035em] md:text-6xl">{listing.title}</h1>
           {(listing.neighborhood || listing.location) && (
             <p className="text-muted-foreground mt-3 flex items-center gap-1.5">
               <MapPin className="h-4 w-4" />
@@ -103,22 +103,13 @@ export default function ColrestEntry() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Unclaimed banner — the capture surface */}
-        {!claimed && (
-          <div className="mb-10 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <p className="font-display font-semibold text-lg">{t.entry.claimBanner}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">{t.entry.claimPitch}</p>
-            </div>
-            <Link
-              href={`/claim/${listing.slug || listing.id}`}
-              onClick={() => trackEvent("claim_cta_click", { listing_id: listing.id, listing_title: listing.title })}
-              className="rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold text-center hover:opacity-90 transition-opacity flex-shrink-0"
-            >
-              {t.entry.claimCta}
-            </Link>
-          </div>
-        )}
+        <nav aria-label={t.entry.consumerActions} className="mb-10 grid grid-cols-2 gap-3 rounded-[1.35rem] border border-card-border bg-card p-3 shadow-[0_20px_60px_-45px_rgba(36,24,18,.7)] sm:flex sm:flex-wrap">
+          {listing.contactPhone && <a href={`tel:${listing.contactPhone}`} onClick={() => trackEvent("listing_contact_click", { contact_method: "phone", listing_title: listing.title })} className="listing-action"><Phone className="h-4 w-4" />{t.entry.call}</a>}
+          {directionsUrl && <a href={directionsUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("listing_contact_click", { contact_method: "directions", listing_title: listing.title })} className="listing-action"><Navigation className="h-4 w-4" />{t.entry.directions}</a>}
+          {listing.website && <a href={listing.website.startsWith("http") ? listing.website : `https://${listing.website}`} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("listing_contact_click", { contact_method: "website", listing_title: listing.title })} className="listing-action"><Globe className="h-4 w-4" />{t.entry.website}</a>}
+          {listing.menuUrl && <a href={listing.menuUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("listing_contact_click", { contact_method: "menu", listing_title: listing.title })} className="listing-action"><UtensilsCrossed className="h-4 w-4" />{t.entry.menu}</a>}
+          <Link href={`/corrections?listing=${encodeURIComponent(window.location.href)}`} className="listing-action sm:ml-auto">{t.entry.suggestCorrection} <ArrowUpRight className="h-3.5 w-3.5" /></Link>
+        </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Main column */}
@@ -145,6 +136,18 @@ export default function ColrestEntry() {
               </section>
             )}
 
+            {!claimed && (
+              <section className="rounded-[1.25rem] border border-secondary/20 bg-secondary/7 p-5">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
+                  <div>
+                    <h2 className="font-display text-lg font-semibold">{t.entry.knownDetails}</h2>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t.entry.unclaimedNote}</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
             {listing.signatureDishes && (
               <section>
                 <h2 className="font-display text-xl font-semibold mb-3 flex items-center gap-2">
@@ -166,6 +169,7 @@ export default function ColrestEntry() {
           <aside className="space-y-6 lg:sticky lg:top-24 self-start">
             <div className="rounded-lg border border-card-border bg-card p-6">
               <TrustPanel listing={listing} />
+              <Link href="/methodology" className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-secondary">{t.entry.sourceDetails} <ArrowUpRight className="h-3.5 w-3.5" /></Link>
             </div>
 
             <div className="rounded-lg border border-card-border bg-card p-6 space-y-4">
@@ -225,6 +229,25 @@ export default function ColrestEntry() {
             </div>
           </aside>
         </div>
+
+        {!claimed && (
+          <section className="mt-12 overflow-hidden rounded-[1.5rem] bg-primary text-primary-foreground">
+            <div className="grid gap-5 px-6 py-8 sm:grid-cols-[1fr_auto] sm:items-center md:px-9">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[.14em] text-white">{t.entry.ownerEyebrow}</p>
+                <h2 className="mt-2 font-display text-2xl font-semibold">{t.entry.claimBanner}</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white">{t.entry.claimPitch}</p>
+              </div>
+              <Link
+                href={`/claim/${listing.slug || listing.id}`}
+                onClick={() => trackEvent("claim_cta_click", { listing_id: listing.id, listing_title: listing.title })}
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-bold text-stone-900 transition hover:-translate-y-0.5 hover:shadow-xl"
+              >
+                {t.entry.claimCta}
+              </Link>
+            </div>
+          </section>
+        )}
 
         {related.length > 0 && (
           <section className="mt-12 border-t border-border pt-8">
