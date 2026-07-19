@@ -3,8 +3,9 @@ import { chromium } from "playwright";
 
 const baseUrl = (process.env.COLREST_BASE_URL || "https://colombianrestaurantnear.me").replace(/\/$/, "");
 const canonicalOrigin = (process.env.COLREST_CANONICAL_ORIGIN || baseUrl).replace(/\/$/, "");
-const expectedListings = Number(process.env.COLREST_EXPECTED_LISTINGS || 31);
+const expectedListings = Number(process.env.COLREST_EXPECTED_LISTINGS || 48);
 const expectPhotos = process.env.COLREST_EXPECT_PHOTOS !== "0";
+const verifyAllPhotos = process.env.COLREST_VERIFY_ALL_PHOTOS === "1";
 const routes = [
   "/",
   "/browse",
@@ -48,22 +49,20 @@ try {
 
   let photoEntry = null;
   if (expectPhotos) {
-    let photoResponse = null;
-    for (const entry of entries) {
-      if (!entry.slug) continue;
+    let verifiedPhotos = 0;
+    const photoTargets = entries.filter(entry => entry.slug).slice(0, verifyAllPhotos ? undefined : 1);
+    for (const entry of photoTargets) {
       const response = await context.request.get(`${baseUrl}/api/public/entries/${entry.slug}/photo`);
-      if (response.status() === 200) {
-        photoEntry = entry;
-        photoResponse = response;
-        break;
-      }
-      assert(response.status() === 404, `${entry.slug}/photo: expected 200 or 404, received ${response.status()}`);
+      assert(response.status() === 200, `${entry.slug}/photo: expected 200, received ${response.status()}`);
+      assert((response.headers()["cache-control"] || "").includes("no-store"), `${entry.slug}/photo: response is cacheable`);
+      const photoBody = await response.json();
+      assert(/^https:\/\//.test(photoBody.imageUrl || ""), `${entry.slug}/photo: media URL is missing`);
+      assert(/^https:\/\//.test(photoBody.sourceUrl || ""), `${entry.slug}/photo: source URL is missing`);
+      assert(Array.isArray(photoBody.authorAttributions) && photoBody.authorAttributions.length > 0, `${entry.slug}/photo: photographer attribution is missing`);
+      photoEntry ||= entry;
+      verifiedPhotos += 1;
     }
-    assert(photoEntry && photoResponse, "no published listing returned a compliant source photo");
-    assert((photoResponse.headers()["cache-control"] || "").includes("no-store"), "place photo response is cacheable");
-    const photoBody = await photoResponse.json();
-    assert(/^https:\/\//.test(photoBody.imageUrl || ""), "place photo media URL is missing");
-    assert(/^https:\/\//.test(photoBody.sourceUrl || ""), "place photo source URL is missing");
+    assert(photoEntry && verifiedPhotos === photoTargets.length, `expected ${photoTargets.length} compliant listing photos, verified ${verifiedPhotos}`);
   } else {
     const unavailable = await context.request.get(`${baseUrl}/api/public/entries/${entries[0].slug}/photo`);
     assert(unavailable.status() === 503, `disabled photo endpoint: expected 503, received ${unavailable.status()}`);

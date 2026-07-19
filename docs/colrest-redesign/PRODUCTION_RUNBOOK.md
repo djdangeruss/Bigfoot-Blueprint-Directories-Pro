@@ -4,7 +4,7 @@
 
 - Product source authority: this repository and its reviewed Git history.
 - Deployed static application and API source: `44410f6` (`add policy-compliant restaurant imagery`), including the `d7823f5` redesign foundation.
-- Google Place Photos are live for the 31 published restaurants through a production-IP- and Places-API-restricted runtime key. Public responses are `no-store` and display Google Maps plus photographer attribution; owner-supplied media retains precedence.
+- Google Place Photos are live for 48 cuisine-qualified published businesses through a production-IP- and Places-API-restricted runtime key. Public responses are `no-store` and display Google Maps plus photographer attribution; owner-supplied media retains precedence.
 - Production origin: `https://colombianrestaurantnear.me`.
 - Production host: `104.236.237.145`.
 - PM2 service: `dirmaster-colrest`, port `3011`.
@@ -136,3 +136,27 @@ Do not run broad recursive removal commands, reset the host checkout, or print p
   `/opt/dirmaster/recovery-proofs/colrest-20260719-44410f6-visual-promotion`
   reverified checksums, extracted 10 API and 95 static files, and validated the
   137-line PostgreSQL restore catalog.
+
+## Cuisine-scoped publication reconciliation on 2026-07-19
+
+- Exact Google Places name/address matching confirmed all 61 researched records
+  as `OPERATIONAL` and retained a Place ID for every record.
+- Cuisine identity is an independent hard gate. The public directory now serves
+  48 Colombian restaurants, bakeries, and food-focused cafes. Thirteen verified
+  but non-Colombian businesses remain preserved and unpublished: seven
+  Venezuelan, four Cuban, one Puerto Rican, and one Argentine.
+- Migration `0002_verified_publication_scope.sql` requires 61 exact database
+  ID/title matches and fails closed unless the final state is exactly 61 total,
+  48 published, 61 Place IDs, and 13 explicit cuisine exclusions.
+- Checksummed pre-change recovery set
+  `/opt/dirmaster/backups/colrest-20260719-publication-scope-pre48` contains the
+  database dump, PM2 state, and prior `61|31|31` entry-state proof. Its checksum
+  verification and PostgreSQL catalog validation passed before migration.
+- The transaction rehearsal updated all 61 rows and rolled back, leaving the
+  prior counts unchanged. The guarded apply then committed `61|48|61|13`.
+- Live public API read-back returned 48 listings and leaked no private
+  cuisine-decision fields. All 48 photo endpoints returned HTTPS media, Google
+  Maps source URLs, non-empty photographer attribution, and `no-store` cache
+  controls. Mobile and desktop smoke passed 48 cards, bilingual behavior,
+  consent controls, no horizontal overflow, and no serious/critical WCAG
+  findings.

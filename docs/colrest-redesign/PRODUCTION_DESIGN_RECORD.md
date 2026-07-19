@@ -4,22 +4,22 @@
 
 **Scope:** public discovery, restaurant detail, trust/legal surfaces, correction intake, and owner conversion
 
-**Status:** redesign live; listing-media follow-up candidate `44410f6` is blocked pending Google billing
+**Status:** redesign and compliant listing media live; cuisine-scoped publication reconciliation completed 2026-07-19
 
 This record supersedes the local-only presentation and unclaimed menu-line treatment in `DESIGN_SPEC.md`. The original document remains preserved as design history.
 
 ## Listing-media follow-up (2026-07-18)
 
 Source commit `44410f6` adds runtime-only Google Places photo resolution,
-visible Google Maps/photographer attribution, 31 exact Place IDs, public queue
-photo leakage protection, and a food-forward desktop hero crop. The code and
-immutable candidate built successfully, but the replacement production-scoped
-Google project has no linked billing account and returned no usable photo
-inventory. The candidate was stopped and the live `d7823f5` static release was
-left unchanged. The `44410f6` API sanitizer alone is live without a Google key
-so queue photo URLs are no longer public; its photo endpoint fails closed.
-Visual promotion requires authorized billing, a fresh candidate run, and
-every gate below; the implementation must not fall back to scraped queue URLs.
+visible Google Maps/photographer attribution, public queue photo leakage
+protection, and a food-forward desktop hero crop. Authorized billing was linked
+on 2026-07-19 and the immutable release was promoted with a production-IP- and
+Places-API-restricted key. Migration `0002_verified_publication_scope.sql`
+subsequently reconciled all 61 researched records against exact Places
+identities and cuisine scope: 48 operational Colombian businesses are public,
+while 13 operational Cuban, Venezuelan, Puerto Rican, or Argentine businesses
+remain preserved but unpublished. All 61 retain exact Place IDs; every public
+listing resolves compliant media without falling back to scraped queue URLs.
 
 ## Product decisions
 
@@ -30,6 +30,7 @@ every gate below; the implementation must not fall back to scraped queue URLs.
 - Motion is limited to two opposing discovery rails. It pauses for hover/focus, becomes manual scrolling on small screens, and is disabled for reduced-motion users.
 - Ratings remain source-attributed and the methodology is public. The interface does not imply a proprietary customer-review system.
 - Owner claim and upgrade paths remain prominent but follow the consumer experience. Verified badges represent completed directory ownership review, not an endorsement of food quality.
+- Operating status alone does not establish directory eligibility. Public listings must also have a defensible Colombian cuisine or Colombian food identity; adjacent Latin cuisines remain outside this orbit.
 
 ## Trust and legal baseline
 
@@ -52,7 +53,11 @@ Run the durable browser proof with:
 
 ```powershell
 $env:COLREST_BASE_URL = "https://colombianrestaurantnear.me"
+$env:COLREST_EXPECTED_LISTINGS = "48"
 node scripts/colrest-production-smoke.mjs
 ```
+
+Set `COLREST_VERIFY_ALL_PHOTOS=1` for a deliberate all-listing media audit. The
+default smoke samples media to avoid unnecessary billable Places requests.
 
 For an isolated candidate, set `COLREST_BASE_URL` to the tunnel URL and `COLREST_CANONICAL_ORIGIN` to the public canonical origin.
