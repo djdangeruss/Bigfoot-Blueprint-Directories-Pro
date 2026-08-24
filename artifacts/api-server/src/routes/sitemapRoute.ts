@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db, entries } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { directoryProfile } from "../lib/directoryProfile.js";
 
 const router = Router();
 
@@ -14,7 +15,10 @@ function escapeXml(value: string): string {
 }
 
 export function publicOrigin(): string {
-  const url = new URL(process.env.PUBLIC_ORIGIN || "https://colombianrestaurantnear.me");
+  if (process.env.NODE_ENV === "production" && !process.env.PUBLIC_ORIGIN) {
+    throw new Error("PUBLIC_ORIGIN is required in production");
+  }
+  const url = new URL(process.env.PUBLIC_ORIGIN || "http://localhost:3000");
   if (process.env.NODE_ENV === "production" && url.protocol !== "https:") {
     throw new Error("PUBLIC_ORIGIN must use HTTPS in production");
   }
@@ -44,21 +48,19 @@ router.get("/robots.txt", (_req, res) => {
 router.get("/sitemap.xml", async (req, res) => {
   try {
     const origin = publicOrigin();
+    const profile = directoryProfile(origin);
     const rows = await db
       .select({ slug: entries.slug, summary: entries.summary, description: entries.description, updatedAt: entries.updatedAt })
       .from(entries)
       .where(eq(entries.published, true));
 
+    const editorialPages = profile.hasEditorialInfoPages
+      ? ["/about", "/methodology", "/privacy", "/terms", "/owner-terms", "/accessibility", "/corrections"]
+      : [];
     const pages: Array<{ loc: string; lastmod?: string }> = [
       { loc: "/" },
       { loc: "/browse" },
-      { loc: "/about" },
-      { loc: "/methodology" },
-      { loc: "/privacy" },
-      { loc: "/terms" },
-      { loc: "/owner-terms" },
-      { loc: "/accessibility" },
-      { loc: "/corrections" },
+      ...editorialPages.map((loc) => ({ loc })),
       ...rows
         .filter(isIndexableEntry)
         .map((entry) => ({

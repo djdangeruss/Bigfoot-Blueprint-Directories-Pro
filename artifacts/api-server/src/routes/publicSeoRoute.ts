@@ -5,6 +5,7 @@ import { db, directorySettings, entries } from "@workspace/db";
 import { and, asc, eq } from "drizzle-orm";
 import { getCustomFields, stripPrivateCustomFields } from "../lib/entryCustomFields.js";
 import { isIndexableEntry, publicOrigin } from "./sitemapRoute.js";
+import { directoryProfile } from "../lib/directoryProfile.js";
 
 const router = Router();
 
@@ -90,6 +91,7 @@ function inject(template: string, input: {
   schema: unknown;
   image?: string;
   status?: number;
+  language?: string;
 }): { html: string; status: number } {
   const metadata = [
     `<title>${escapeHtml(input.title)}</title>`,
@@ -108,7 +110,7 @@ function inject(template: string, input: {
   let html = template
     .replace(/<title>[\s\S]*?<\/title>/i, metadata)
     .replace('<div id="root"></div>', `<div id="root"><main class="seo-first-paint">${input.body}</main></div>`)
-    .replace('lang="en"', 'lang="en-US"');
+    .replace(/lang="[^"]*"/, `lang="${escapeHtml(input.language || "en")}"`);
   return { html, status: input.status ?? 200 };
 }
 
@@ -120,19 +122,21 @@ async function template(): Promise<string> {
 router.get("/{*splat}", async (req, res) => {
   try {
     const origin = publicOrigin();
+    const profile = directoryProfile(origin);
     const rawTemplate = await template();
     const path = req.path.replace(/\/+$/, "") || "/";
     const [settings] = await db.select().from(directorySettings).limit(1);
-    const siteName = text(settings?.siteTitle, "Colombian Restaurants Near Me");
+    const siteName = text(settings?.siteTitle, profile.defaultSiteName);
 
     if (path.startsWith("/admin") || path.startsWith("/owner") || path === "/setup" || path.startsWith("/claim/")) {
       const rendered = inject(rawTemplate, {
-        title: `${path.startsWith("/owner") ? "Restaurant Owner" : "Account"} | ${siteName}`,
+        title: `${path.startsWith("/owner") ? `${profile.singularLabel} owner` : "Account"} | ${siteName}`,
         description: "Secure directory account area.",
         canonical: `${origin}${path}`,
         robots: "noindex,nofollow,noarchive",
         body: "<h1>Secure account area</h1>",
         schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Secure account area" },
+        language: profile.language,
       });
       res.status(rendered.status).set("X-Robots-Tag", "noindex, nofollow, noarchive").send(rendered.html);
       return;
@@ -142,10 +146,12 @@ router.get("/{*splat}", async (req, res) => {
       const rows = await db.select().from(entries).where(eq(entries.published, true)).orderBy(asc(entries.title));
       const canonical = `${origin}${path}`;
       const isHome = path === "/";
-      const title = isHome ? "Colombian Restaurants Near Me | Miami & South Florida" : "Browse Colombian Restaurants in South Florida";
+      const title = isHome
+        ? text(settings?.homepageMetaTitle, profile.homeTitle)
+        : profile.browseTitle;
       const description = isHome
-        ? "Discover Colombian restaurants in Miami, Doral, Hialeah and Miami Beach with useful restaurant details and independently attributed reputation signals."
-        : `Compare ${rows.length} Colombian restaurants across Miami and South Florida by location, cuisine and verified public details.`;
+        ? text(settings?.homepageMetaDescription, text(settings?.homepageDescription, profile.homeDescription))
+        : `${rows.length} ${profile.pluralLabel} available to browse by location and published directory details.`;
       const items = rows.map((entry, index) => ({
         "@type": "ListItem",
         position: index + 1,
@@ -167,13 +173,14 @@ router.get("/{*splat}", async (req, res) => {
           },
         ],
       };
-      const body = `<h1>${escapeHtml(isHome ? "Find your next Colombian table" : "Browse Colombian restaurants")}</h1><p>${escapeHtml(description)}</p><p><a href="/browse">Browse all restaurants</a></p><section class="seo-grid">${rows.map((entry) => visibleListing(entry, origin)).join("")}</section>`;
-      const rendered = inject(rawTemplate, { title, description, canonical, robots: "index,follow,max-image-preview:large", body, schema, image: settings?.homepageOgImageUrl ?? undefined });
+      const heading = isHome ? text(settings?.homepageHeadline, profile.homeHeading) : profile.browseHeading;
+      const body = `<h1>${escapeHtml(heading)}</h1><p>${escapeHtml(description)}</p><p><a href="/browse">${escapeHtml(profile.browseHeading)}</a></p><section class="seo-grid">${rows.map((entry) => visibleListing(entry, origin)).join("")}</section>`;
+      const rendered = inject(rawTemplate, { title, description, canonical, robots: "index,follow,max-image-preview:large", body, schema, image: settings?.homepageOgImageUrl ?? undefined, language: profile.language });
       res.status(rendered.status).set("Cache-Control", "public, max-age=60, stale-while-revalidate=300").send(rendered.html);
       return;
     }
 
-    if (infoPages[path]) {
+    if (profile.hasEditorialInfoPages && infoPages[path]) {
       const page = infoPages[path];
       const canonical = `${origin}${path}`;
       const schema = {
@@ -186,7 +193,7 @@ router.get("/{*splat}", async (req, res) => {
         isPartOf: { "@id": `${origin}/#website` },
       };
       const body = `<article><h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.description)}</p><p><a href="/">Return to the directory</a></p></article>`;
-      const rendered = inject(rawTemplate, { title: `${page.title} | ${siteName}`, description: page.description, canonical, robots: "index,follow", body, schema });
+      const rendered = inject(rawTemplate, { title: `${page.title} | ${siteName}`, description: page.description, canonical, robots: "index,follow", body, schema, language: profile.language });
       res.status(200).set("Cache-Control", "public, max-age=300, stale-while-revalidate=600").send(rendered.html);
       return;
     }
@@ -201,13 +208,14 @@ router.get("/{*splat}", async (req, res) => {
       )).limit(1);
       if (!entry) {
         const rendered = inject(rawTemplate, {
-          title: `Restaurant not found | ${siteName}`,
-          description: "This restaurant listing is not available.",
+          title: `${profile.singularLabel} not found | ${siteName}`,
+          description: `This ${profile.singularLabel} listing is not available.`,
           canonical: `${origin}${path}`,
           robots: "noindex,follow",
-          body: `<h1>Restaurant not found</h1><p><a href="/browse">Browse Colombian restaurants</a></p>`,
-          schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Restaurant not found" },
+          body: `<h1>${escapeHtml(profile.singularLabel)} not found</h1><p><a href="/browse">${escapeHtml(profile.browseHeading)}</a></p>`,
+          schema: { "@context": "https://schema.org", "@type": "WebPage", name: `${profile.singularLabel} not found` },
           status: 404,
+          language: profile.language,
         });
         res.status(404).set("X-Robots-Tag", "noindex, follow").send(rendered.html);
         return;
@@ -215,17 +223,17 @@ router.get("/{*splat}", async (req, res) => {
 
       const canonical = `${origin}/entry/${entry.slug || entry.id}`;
       const location = text(entry.location);
-      const description = truncate(text(entry.metaDescription, entry.description || entry.summary || `Restaurant listing for ${entry.title}${location ? ` in ${location}` : ""}.`), 160);
-      const pageTitle = truncate(text(entry.metaTitle, `${entry.title}${location ? ` in ${location}` : ""} | Colombian Restaurants Near Me`), 60);
+      const description = truncate(text(entry.metaDescription, entry.description || entry.summary || `${siteName} listing for ${entry.title}${location ? ` in ${location}` : ""}.`), 160);
+      const pageTitle = truncate(text(entry.metaTitle, `${entry.title}${location ? ` in ${location}` : ""} | ${siteName}`), 60);
       const safeFields = stripPrivateCustomFields(getCustomFields(entry)) as Record<string, unknown>;
       const address = addressOf(entry);
-      const restaurant: Record<string, unknown> = {
-        "@type": "Restaurant",
-        "@id": `${canonical}#restaurant`,
+      const listing: Record<string, unknown> = {
+        "@type": profile.entrySchemaType,
+        "@id": `${canonical}#listing`,
         url: canonical,
         name: entry.title,
         description: text(entry.description, entry.summary || undefined),
-        servesCuisine: "Colombian",
+        ...(profile.id === "colrest" ? { servesCuisine: "Colombian" } : {}),
         ...(address ? { address } : {}),
         ...(entry.contactPhone ? { telephone: entry.contactPhone } : {}),
         ...(entry.website && /^https?:\/\//.test(entry.website) ? { sameAs: [entry.website] } : {}),
@@ -235,8 +243,8 @@ router.get("/{*splat}", async (req, res) => {
       const schema = {
         "@context": "https://schema.org",
         "@graph": [
-          { "@type": "WebPage", "@id": `${canonical}#webpage`, url: canonical, name: pageTitle, dateModified: entry.updatedAt.toISOString(), mainEntity: { "@id": `${canonical}#restaurant` }, isPartOf: { "@id": `${origin}/#website` } },
-          restaurant,
+          { "@type": "WebPage", "@id": `${canonical}#webpage`, url: canonical, name: pageTitle, dateModified: entry.updatedAt.toISOString(), mainEntity: { "@id": `${canonical}#listing` }, isPartOf: { "@id": `${origin}/#website` } },
+          listing,
           { "@type": "BreadcrumbList", itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: `${origin}/` },
             { "@type": "ListItem", position: 2, name: "Browse", item: `${origin}/browse` },
@@ -244,9 +252,9 @@ router.get("/{*splat}", async (req, res) => {
           ] },
         ],
       };
-      const body = `<nav aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/browse">Restaurants</a></nav><article><h1>${escapeHtml(entry.title)}</h1>${entry.location ? `<p>${escapeHtml(entry.location)}</p>` : ""}${entry.description || entry.summary ? `<p>${escapeHtml(text(entry.description, entry.summary || ""))}</p>` : ""}${entry.contactPhone ? `<p><a href="tel:${escapeHtml(entry.contactPhone)}">Call ${escapeHtml(entry.contactPhone)}</a></p>` : ""}${entry.website ? `<p><a href="${escapeHtml(entry.website)}" rel="nofollow noopener">Visit restaurant website</a></p>` : ""}</article>`;
+      const body = `<nav aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/browse">${escapeHtml(profile.pluralLabel)}</a></nav><article><h1>${escapeHtml(entry.title)}</h1>${entry.location ? `<p>${escapeHtml(entry.location)}</p>` : ""}${entry.description || entry.summary ? `<p>${escapeHtml(text(entry.description, entry.summary || ""))}</p>` : ""}${entry.contactPhone ? `<p><a href="tel:${escapeHtml(entry.contactPhone)}">Call ${escapeHtml(entry.contactPhone)}</a></p>` : ""}${entry.website ? `<p><a href="${escapeHtml(entry.website)}" rel="nofollow noopener">Visit official website</a></p>` : ""}</article>`;
       const indexable = isIndexableEntry(entry) && Boolean(address);
-      const rendered = inject(rawTemplate, { title: pageTitle, description, canonical, robots: indexable ? "index,follow,max-image-preview:large" : "noindex,follow", body, schema, image: imageOf(entry) });
+      const rendered = inject(rawTemplate, { title: pageTitle, description, canonical, robots: indexable ? "index,follow,max-image-preview:large" : "noindex,follow", body, schema, image: imageOf(entry), language: profile.language });
       if (!indexable) res.set("X-Robots-Tag", "noindex, follow");
       res.status(200).set("Cache-Control", "public, max-age=60, stale-while-revalidate=300").send(rendered.html);
       return;
@@ -257,9 +265,10 @@ router.get("/{*splat}", async (req, res) => {
       description: "The requested page does not exist.",
       canonical: `${origin}${path}`,
       robots: "noindex,follow",
-      body: `<h1>Page not found</h1><p><a href="/browse">Browse Colombian restaurants</a></p>`,
+      body: `<h1>Page not found</h1><p><a href="/browse">${escapeHtml(profile.browseHeading)}</a></p>`,
       schema: { "@context": "https://schema.org", "@type": "WebPage", name: "Page not found" },
       status: 404,
+      language: profile.language,
     });
     res.status(404).set("X-Robots-Tag", "noindex, follow").send(rendered.html);
   } catch (err) {
