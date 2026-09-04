@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
-import { rm } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -63,8 +63,8 @@ async function buildAll() {
       "@aws-sdk/*",
       "@azure/*",
       "@opentelemetry/*",
-      "@google-cloud/*",
-      "@google/*",
+      // Keep the Google clients in the release bundle. They are JavaScript and
+      // the production host intentionally does not depend on a workspace install.
       "googleapis",
       "firebase-admin",
       "@parcel/watcher",
@@ -118,6 +118,23 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     `,
     },
   });
+
+  // esbuild-plugin-pino embeds the machine-specific absolute outdir in the
+  // bundle. Releases are built on Windows and run on Linux, so make worker
+  // resolution relative to the bundle itself and fail if the plugin changes
+  // shape instead of silently shipping a non-portable path.
+  const entryBundle = path.join(distDir, "index.mjs");
+  const bundleSource = await readFile(entryBundle, "utf8");
+  const pinoOutdirPattern = /const outputDir = "(?:[^"\\]|\\.)*";/g;
+  const pinoOutdirMatches = bundleSource.match(pinoOutdirPattern) ?? [];
+  if (pinoOutdirMatches.length !== 1) {
+    throw new Error(`Expected one Pino output directory, found ${pinoOutdirMatches.length}`);
+  }
+  await writeFile(
+    entryBundle,
+    bundleSource.replace(pinoOutdirPattern, "const outputDir = globalThis.__dirname;"),
+    "utf8",
+  );
 }
 
 buildAll().catch((err) => {

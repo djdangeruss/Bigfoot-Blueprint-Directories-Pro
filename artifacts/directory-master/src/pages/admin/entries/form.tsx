@@ -61,7 +61,7 @@ export default function AdminEntryFormPage() {
   const { data: categories } = useListCategories();
   
   const { data: entry, isLoading: isLoadingEntry } = useGetEntry(entryId, {
-    query: { enabled: isEditing }
+    query: { enabled: isEditing } as any
   });
 
   const createMutation = useCreateEntry();

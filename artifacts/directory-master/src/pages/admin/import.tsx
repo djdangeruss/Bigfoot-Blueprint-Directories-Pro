@@ -113,13 +113,13 @@ export default function AdminImportPage() {
   const importMutation = useImportCsv();
 
   const { data: statusData } = useGetImportStatus(jobId as string, {
-    query: {
+    query: ({
       enabled: !!jobId,
-      refetchInterval: (query) => {
+      refetchInterval: (query: any) => {
         const status = query.state.data?.status;
         return status === "complete" || status === "error" ? false : 2000;
       },
-    },
+    } as any),
   });
 
   useEffect(() => {

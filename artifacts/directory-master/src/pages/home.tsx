@@ -717,13 +717,16 @@ export default function HomePage() {
   const qc = useQueryClient();
   const { token } = useAuth();
   const isLoggedIn = Boolean(token);
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } as any });
   const isAdmin = isLoggedIn && (currentUser as any)?.role === "admin";
   const updateSettings = useUpdateSettings();
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (heroSearch.trim()) {
+      if (typeof window !== "undefined" && (window as any).dataLayer) {
+        (window as any).dataLayer.push({ event: "directory_search", search_term: heroSearch.trim() });
+      }
       setLocation(`/browse?search=${encodeURIComponent(heroSearch.trim())}`);
     }
   };

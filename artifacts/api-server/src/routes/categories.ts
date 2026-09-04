@@ -60,7 +60,7 @@ router.post("/", requireAdmin, async (req, res) => {
 
 router.patch("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { name, description, imageUrl } = req.body;
     const updates: Record<string, unknown> = {};
     if (name !== undefined) { updates.name = name; updates.slug = slugify(name); }
@@ -77,7 +77,7 @@ router.patch("/:id", requireAdmin, async (req, res) => {
 
 router.delete("/:id", requireAdmin, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     await db.delete(categories).where(eq(categories.id, id));
     res.json({ success: true, message: null });
   } catch (err) {

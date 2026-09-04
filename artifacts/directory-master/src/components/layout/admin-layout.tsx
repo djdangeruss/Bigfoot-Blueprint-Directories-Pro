@@ -23,7 +23,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const { token, logout: clearToken } = useAuth();
   const logoutMutation = useLogout();
   const { data: settings } = useGetPublicSettings();
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: !!token, retry: false } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: !!token, retry: false } as any });
 
   const isAdmin = currentUser?.role === "admin";
 
@@ -57,6 +57,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     { href: "/admin/import", label: "Import CSV", icon: Upload },
     { href: "/admin/seo", label: "SEO", icon: Search },
     ...(isAdmin ? [{ href: "/admin/contacts", label: "Contacts", icon: ClipboardCheck }] : []),
+    ...(isAdmin ? [{ href: "/admin/claims", label: "Claims", icon: ClipboardCheck }] : []),
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];

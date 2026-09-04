@@ -106,6 +106,7 @@ export default function AdminContactsPage() {
                 <tr className="bg-muted/50 border-b">
                   <th className="text-left px-5 py-3 font-semibold text-muted-foreground">#</th>
                   <th className="text-left px-5 py-3 font-semibold text-muted-foreground">Full Name</th>
+                  <th className="text-left px-5 py-3 font-semibold text-muted-foreground">Request context</th>
                   <th className="text-left px-5 py-3 font-semibold text-muted-foreground">
                     <span className="flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> Phone</span>
                   </th>
@@ -126,6 +127,10 @@ export default function AdminContactsPage() {
                   >
                     <td className="px-5 py-3.5 text-muted-foreground font-mono text-xs">{i + 1}</td>
                     <td className="px-5 py-3.5 font-medium">{c.fullName}</td>
+                    <td className="max-w-sm px-5 py-3.5">
+                      <div className="text-xs font-semibold text-foreground">{(c as any).subject || "General contact"}</div>
+                      {(c as any).message && <div className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">{(c as any).message}</div>}
+                    </td>
                     <td className="px-5 py-3.5">
                       <a href={`tel:${c.phone}`} className="text-primary hover:underline">
                         {c.phone}

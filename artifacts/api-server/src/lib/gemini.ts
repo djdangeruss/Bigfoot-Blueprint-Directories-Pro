@@ -21,5 +21,8 @@ export async function getGeminiClient(): Promise<GoogleGenAI> {
   } catch {
     // Fall through to default
   }
+  if (!defaultAi) {
+    throw new Error("Gemini integration is not configured");
+  }
   return defaultAi;
 }

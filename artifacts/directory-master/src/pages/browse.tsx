@@ -185,6 +185,9 @@ export default function BrowsePage() {
       newUrl.searchParams.delete("search");
     }
     window.history.pushState({}, "", newUrl);
+    if (typeof window !== "undefined" && (window as any).dataLayer) {
+      (window as any).dataLayer.push({ event: "directory_search", search_term: searchInput || undefined });
+    }
   };
 
   const clearFilters = () => {

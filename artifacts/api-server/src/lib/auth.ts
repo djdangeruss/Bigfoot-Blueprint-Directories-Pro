@@ -11,8 +11,9 @@ export function hashPassword(password: string): string {
 
 export function verifyPassword(password: string, stored: string): boolean {
   const [salt, hash] = stored.split(":");
+  if (!salt || !hash || !/^[a-f0-9]{128}$/i.test(hash)) return false;
   const inputHash = crypto.scryptSync(password, salt, 64).toString("hex");
-  return hash === inputHash;
+  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(inputHash, "hex"));
 }
 
 export function generateToken(): string {

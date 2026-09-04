@@ -1,0 +1,191 @@
+/*
+ * CHN Horse Orbit theme -- Colombian flag palette (yellow #f7d116 / blue #143fb0 / red #c72127),
+ * La Abuela V2 dark canvas inspiration, Instrument Serif + Outfit + JetBrains Mono.
+ *
+ * Scope: this theme belongs to colombianhorsenetwork.com specifically (the Colombian-identity
+ * CHN domain per directives/CHN_MASTER_STRATEGY.md), NOT caballosenventa.co (the international/
+ * neutral mothership) and NOT startupbusinessloans.online or colombianrestaurantnear.me.
+ * It was previously living directly in the shared index.css, which meant every instance built
+ * from this source inherited it regardless of brand. Moved here 2026-07-17 so it only applies
+ * to the instance that opts in via VITE_THEME=chn-flag-theme at build time (see main.tsx).
+ *
+ * Not yet wired to a live instance -- colombianhorsenetwork.com is still "pending" in the
+ * Directory Master port map. Apply this file's VITE_THEME flag when that domain is built.
+ */
+
+/* CHN Horse Orbit - La Abuela V2 Dark Canvas Theme */
+/* Colombian flag: Yellow #f7d116 - Blue #143fb0 - Red #c72127 */
+
+:root {
+  --background: 40 27% 2%;
+  --foreground: 46 30% 88%;
+  --card: 40 20% 4%;
+  --card-foreground: 46 30% 88%;
+  --card-border: 40 20% 12%;
+  --popover: 40 20% 5%;
+  --popover-foreground: 46 30% 88%;
+  --popover-border: 40 20% 12%;
+  --primary: 50 94% 53%;
+  --primary-foreground: 40 27% 5%;
+  --primary-border: hsl(50 94% 53% / 0.25);
+  --secondary: 224 80% 38%;
+  --secondary-foreground: 0 0% 98%;
+  --secondary-border: hsl(224 80% 38% / 0.25);
+  --muted: 40 15% 7%;
+  --muted-foreground: 40 5% 52%;
+  --muted-border: hsl(40 15% 14% / 0.5);
+  --accent: 358 72% 45%;
+  --accent-foreground: 0 0% 98%;
+  --accent-border: hsl(358 72% 45% / 0.25);
+  --destructive: 358 72% 45%;
+  --destructive-foreground: 0 0% 98%;
+  --destructive-border: hsl(358 72% 45% / 0.25);
+  --border: 40 15% 13%;
+  --input: 40 15% 7%;
+  --ring: 50 94% 53%;
+  --radius: 0.75rem;
+  --chart-1: 50 94% 53%;
+  --chart-2: 224 80% 55%;
+  --chart-3: 358 72% 55%;
+  --chart-4: 160 60% 45%;
+  --chart-5: 30 80% 55%;
+  --sidebar: 40 20% 3%;
+  --sidebar-foreground: 46 30% 85%;
+  --sidebar-border: 40 15% 10%;
+  --sidebar-primary: 50 94% 53%;
+  --sidebar-primary-foreground: 40 27% 5%;
+  --sidebar-primary-border: hsl(50 94% 53% / 0.25);
+  --sidebar-accent: 40 15% 7%;
+  --sidebar-accent-foreground: 46 30% 85%;
+  --sidebar-accent-border: hsl(40 15% 14% / 0.5);
+  --sidebar-ring: 50 94% 53%;
+  --app-font-sans: Outfit, system-ui, sans-serif;
+  --app-font-serif: Instrument Serif, Georgia, serif;
+  --app-font-mono: JetBrains Mono, Menlo, monospace;
+}
+
+.dark {
+  --background: 40 27% 2%;
+  --foreground: 46 30% 88%;
+  --card: 40 20% 4%;
+  --card-foreground: 46 30% 88%;
+  --card-border: 40 20% 12%;
+  --popover: 40 20% 5%;
+  --popover-foreground: 46 30% 88%;
+  --popover-border: 40 20% 12%;
+  --primary: 50 94% 53%;
+  --primary-foreground: 40 27% 5%;
+  --primary-border: hsl(50 94% 53% / 0.25);
+  --secondary: 224 80% 38%;
+  --secondary-foreground: 0 0% 98%;
+  --secondary-border: hsl(224 80% 38% / 0.25);
+  --muted: 40 15% 7%;
+  --muted-foreground: 40 5% 52%;
+  --muted-border: hsl(40 15% 14% / 0.5);
+  --accent: 358 72% 45%;
+  --accent-foreground: 0 0% 98%;
+  --accent-border: hsl(358 72% 45% / 0.25);
+  --destructive: 358 72% 45%;
+  --destructive-foreground: 0 0% 98%;
+  --destructive-border: hsl(358 72% 45% / 0.25);
+  --border: 40 15% 13%;
+  --input: 40 15% 7%;
+  --ring: 50 94% 53%;
+  --chart-1: 50 94% 53%;
+  --chart-2: 224 80% 55%;
+  --chart-3: 358 72% 55%;
+  --chart-4: 160 60% 45%;
+  --chart-5: 30 80% 55%;
+  --sidebar: 40 20% 3%;
+  --sidebar-foreground: 46 30% 85%;
+  --sidebar-border: 40 15% 10%;
+  --sidebar-primary: 50 94% 53%;
+  --sidebar-primary-foreground: 40 27% 5%;
+  --sidebar-primary-border: hsl(50 94% 53% / 0.25);
+  --sidebar-accent: 40 15% 7%;
+  --sidebar-accent-foreground: 46 30% 85%;
+  --sidebar-accent-border: hsl(40 15% 14% / 0.5);
+  --sidebar-ring: 50 94% 53%;
+}
+
+/* Colombian flag stripe at top of every page */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    #f7d116 0%, #f7d116 25%,
+    #143fb0 25%, #143fb0 62.5%,
+    #c72127 62.5%, #c72127 100%
+  );
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Ambient flag color radial glow on background */
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(247, 209, 22, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(20, 63, 176, 0.05) 0%, transparent 70%);
+  background-attachment: fixed;
+}
+
+/* Glassmorphism card treatment */
+.card {
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(247, 209, 22, 0.07) !important;
+  background: rgba(12, 10, 7, 0.75) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.card:hover {
+  border-color: rgba(247, 209, 22, 0.2) !important;
+  box-shadow: 0 0 32px rgba(247, 209, 22, 0.06), 0 4px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Section dividers with flag accent */
+section.border-b {
+  border-bottom-color: rgba(247, 209, 22, 0.1) !important;
+}
+
+/* Instrument Serif for hero H1 */
+h1 {
+  font-family: Instrument Serif, Georgia, serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* Nav glass */
+header, nav {
+  background: rgba(7, 6, 4, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(247, 209, 22, 0.08) !important;
+}
+
+/* Link color */
+a {
+  color: hsl(50 94% 53%);
+}
+a:hover {
+  color: hsl(50 94% 70%);
+}
+
+/* Form inputs */
+input, textarea, select {
+  background: rgba(20, 18, 12, 0.8) !important;
+  border-color: rgba(247, 209, 22, 0.12) !important;
+  color: hsl(46 30% 88%) !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(247, 209, 22, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(247, 209, 22, 0.08) !important;
+  outline: none !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(40 27% 2%); }
+::-webkit-scrollbar-thumb { background: rgba(247, 209, 22, 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(247, 209, 22, 0.35); }

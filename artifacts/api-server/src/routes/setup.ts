@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { directorySettings, users } from "@workspace/db";
 import { hashPassword } from "../lib/auth.js";
-import { getSetupToken, consumeSetupToken } from "../lib/setupToken.js";
+import { consumeSetupToken, verifySetupToken } from "../lib/setupToken.js";
 import { eq } from "drizzle-orm";
 
 const router = Router();
@@ -25,9 +25,8 @@ router.post("/complete", async (req, res) => {
   try {
     const { siteTitle, adminName, adminEmail, adminPassword, themeColor, homepageHeadline, homepageDescription, setupToken } = req.body;
 
-    const expectedToken = getSetupToken();
-    if (!expectedToken || setupToken !== expectedToken) {
-      res.status(403).json({ error: "Invalid or missing setup token. Check your server logs for the token." });
+    if (!verifySetupToken(setupToken)) {
+      res.status(403).json({ error: "Invalid or missing setup token." });
       return;
     }
 

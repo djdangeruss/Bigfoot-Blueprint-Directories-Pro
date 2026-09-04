@@ -1,0 +1,136 @@
+/*
+ * CHN Brand Book -- obsidian/gold/leather premium equestrian theme.
+ * Source of truth: e:\Users\USUARIO\Downloads\quantum-growth-systems\outputs\brand_books\CHN_BRAND_BOOK.html
+ * Fonts: Cormorant Garamond (display), Playfair Display (headline), Inter (body), JetBrains Mono (mono).
+ *
+ * Scope: caballosenventa.co (international mothership) and colombianhorsemarketplace.co
+ * (marketplace + cinematic hero). NOT colombianhorsenetwork.co -- that domain uses the
+ * Colombian tricolor theme instead (see colombianhorsenetwork-tricolor.css). Hex values
+ * transcribed exactly from the brand book, converted to HSL for this app's token system.
+ * Ported 2026-07-17.
+ */
+
+:root {
+  --background: 0 0% 6%;
+  --foreground: 43 51% 92%;
+  --card: 40 7% 8%;
+  --card-foreground: 43 51% 92%;
+  --card-border: hsl(44 54% 54% / 0.12);
+  --popover: 40 7% 8%;
+  --popover-foreground: 43 51% 92%;
+  --popover-border: hsl(44 54% 54% / 0.12);
+  --primary: 44 54% 54%;
+  --primary-foreground: 30 15% 8%;
+  --primary-border: hsl(44 54% 54% / 0.25);
+  --secondary: 40 61% 30%;
+  --secondary-foreground: 43 51% 92%;
+  --secondary-border: hsl(40 61% 30% / 0.3);
+  --muted: 240 3% 11%;
+  --muted-foreground: 40 20% 58%;
+  --muted-border: hsl(240 3% 11% / 0.5);
+  --accent: 43 11% 12%;
+  --accent-foreground: 44 54% 54%;
+  --accent-border: hsl(44 54% 54% / 0.16);
+  --destructive: 9 53% 40%;
+  --destructive-foreground: 43 51% 92%;
+  --destructive-border: hsl(9 53% 40% / 0.3);
+  --border: 240 3% 11%;
+  --input: 240 3% 11%;
+  --ring: 44 54% 54%;
+  --radius: 0.5rem;
+  --chart-1: 44 54% 54%;
+  --chart-2: 9 53% 40%;
+  --chart-3: 149 27% 61%;
+  --chart-4: 40 61% 30%;
+  --chart-5: 40 20% 58%;
+  --sidebar: 0 0% 6%;
+  --sidebar-foreground: 43 51% 92%;
+  --sidebar-border: 240 3% 11%;
+  --sidebar-primary: 44 54% 54%;
+  --sidebar-primary-foreground: 30 15% 8%;
+  --sidebar-primary-border: hsl(44 54% 54% / 0.25);
+  --sidebar-accent: 43 11% 12%;
+  --sidebar-accent-foreground: 44 54% 54%;
+  --sidebar-accent-border: hsl(44 54% 54% / 0.16);
+  --sidebar-ring: 44 54% 54%;
+  --app-font-sans: Inter, system-ui, sans-serif;
+  --app-font-serif: Playfair Display, Georgia, serif;
+  --app-font-mono: JetBrains Mono, Menlo, monospace;
+}
+
+.dark {
+  --background: 0 0% 6%;
+  --foreground: 43 51% 92%;
+  --card: 40 7% 8%;
+  --card-foreground: 43 51% 92%;
+  --card-border: hsl(44 54% 54% / 0.12);
+  --popover: 40 7% 8%;
+  --popover-foreground: 43 51% 92%;
+  --popover-border: hsl(44 54% 54% / 0.12);
+  --primary: 44 54% 54%;
+  --primary-foreground: 30 15% 8%;
+  --primary-border: hsl(44 54% 54% / 0.25);
+  --secondary: 40 61% 30%;
+  --secondary-foreground: 43 51% 92%;
+  --secondary-border: hsl(40 61% 30% / 0.3);
+  --muted: 240 3% 11%;
+  --muted-foreground: 40 20% 58%;
+  --muted-border: hsl(240 3% 11% / 0.5);
+  --accent: 43 11% 12%;
+  --accent-foreground: 44 54% 54%;
+  --accent-border: hsl(44 54% 54% / 0.16);
+  --destructive: 9 53% 40%;
+  --destructive-foreground: 43 51% 92%;
+  --destructive-border: hsl(9 53% 40% / 0.3);
+  --border: 240 3% 11%;
+  --input: 240 3% 11%;
+  --ring: 44 54% 54%;
+  --chart-1: 44 54% 54%;
+  --chart-2: 9 53% 40%;
+  --chart-3: 149 27% 61%;
+  --chart-4: 40 61% 30%;
+  --chart-5: 40 20% 58%;
+  --sidebar: 0 0% 6%;
+  --sidebar-foreground: 43 51% 92%;
+  --sidebar-border: 240 3% 11%;
+  --sidebar-primary: 44 54% 54%;
+  --sidebar-primary-foreground: 30 15% 8%;
+  --sidebar-primary-border: hsl(44 54% 54% / 0.25);
+  --sidebar-accent: 43 11% 12%;
+  --sidebar-accent-foreground: 44 54% 54%;
+  --sidebar-accent-border: hsl(44 54% 54% / 0.16);
+  --sidebar-ring: 44 54% 54%;
+}
+
+h1, h2, h3 {
+  font-family: Playfair Display, Georgia, serif !important;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  border: 1px solid hsl(44 54% 54% / 0.1) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.card:hover {
+  border-color: hsl(44 54% 54% / 0.3) !important;
+  box-shadow: 0 0 32px hsl(44 54% 54% / 0.06), 0 4px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+header, nav {
+  background: hsl(0 0% 6% / 0.9) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid hsl(44 54% 54% / 0.1) !important;
+}
+
+a {
+  color: hsl(44 54% 54%);
+}
+a:hover {
+  color: hsl(44 54% 64%);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(0 0% 6%); }
+::-webkit-scrollbar-thumb { background: hsl(44 54% 54% / 0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(44 54% 54% / 0.4); }

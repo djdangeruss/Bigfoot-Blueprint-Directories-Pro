@@ -7,6 +7,7 @@
     "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
+    "test": "node ../../scripts/node_modules/tsx/dist/cli.mjs src/lib/directoryProfile.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "express": "^5",
     "express-rate-limit": "^8.5.2",
     "google-auth-library": "^10.6.2",
+    "helmet": "^8.3.0",
     "pino": "^9",
     "pino-http": "^10"
   },

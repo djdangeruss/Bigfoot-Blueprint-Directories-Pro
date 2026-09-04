@@ -26,6 +26,8 @@ export const ListContactsResponse = zod.object({
       fullName: zod.string(),
       phone: zod.string(),
       email: zod.string(),
+      subject: zod.string().nullish(),
+      message: zod.string().nullish(),
       createdAt: zod.string(),
     }),
   ),

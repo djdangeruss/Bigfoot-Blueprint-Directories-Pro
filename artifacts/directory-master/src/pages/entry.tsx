@@ -84,6 +84,9 @@ function EntryClaimFormBlock({ section }: { section: SectionConfig }) {
     try {
       await createContact.mutateAsync({ data: { fullName, phone, email } });
       setSubmitted(true);
+      if (typeof window !== "undefined" && (window as any).dataLayer) {
+        (window as any).dataLayer.push({ event: "claim_form_submit", form_name: "entry_claim" });
+      }
     } catch {
       setErrorMsg("Something went wrong. Please try again.");
     }
@@ -659,7 +662,7 @@ export default function EntryPage() {
 
   const { data: entryById, isLoading: loadingById } = useGetPublicEntry(
     isNumeric ? numericId : 0,
-    { query: { enabled: !isDemo && isNumeric && numericId > 0 } }
+    { query: { enabled: !isDemo && isNumeric && numericId > 0 } as any }
   );
   const { data: entryBySlug, isLoading: loadingBySlug } = useQuery({
     queryKey: ["public-entry-slug", idOrSlug],
@@ -683,7 +686,7 @@ export default function EntryPage() {
   // ── Admin detection ────────────────────────────────────────────────────────
   const { token } = useAuth();
   const isLoggedIn = Boolean(token);
-  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } });
+  const { data: currentUser } = useGetCurrentUser({ query: { enabled: isLoggedIn } as any });
   const isAdmin = isLoggedIn && (currentUser as any)?.role === "admin";
 
   // ── Edit mode state ────────────────────────────────────────────────────────
@@ -850,13 +853,21 @@ export default function EntryPage() {
 
   const { data: relatedData } = useListPublicEntries(
     { category: displayEntry?.category || undefined, limit: 7 },
-    { query: { enabled: !!displayEntry?.category && !isDemo } }
+    { query: { enabled: !!displayEntry?.category && !isDemo } as any }
   );
 
   // ── SEO meta tags ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!displayEntry) return;
     const e = displayEntry as any;
+    if (typeof window !== "undefined" && (window as any).dataLayer) {
+      (window as any).dataLayer.push({
+        event: "listing_view",
+        listing_title: e.title || undefined,
+        listing_category: e.category || undefined,
+        listing_id: e.id || undefined,
+      });
+    }
     document.title = e.metaTitle || `${e.title} | ${siteTitle}`;
     const setMeta = (attr: string, value: string, content: string) => {
       let el = document.querySelector(`meta[${attr}="${value}"]`) as HTMLMetaElement | null;
@@ -921,7 +932,7 @@ export default function EntryPage() {
           <Globe className="h-5 w-5 text-muted-foreground mr-3 mt-0.5 flex-shrink-0" />
           <div className="overflow-hidden">
             <div className="text-sm font-medium mb-1">Website</div>
-            <a href={displayEntry.website.startsWith("http") ? displayEntry.website : `https://${displayEntry.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm truncate block">
+            <a href={displayEntry.website.startsWith("http") ? displayEntry.website : `https://${displayEntry.website}`} target="_blank" rel="noopener noreferrer" onClick={() => { if (typeof window !== "undefined" && (window as any).dataLayer) { (window as any).dataLayer.push({ event: "listing_contact_click", contact_method: "website", listing_title: (displayEntry as any).title }); } }} className="text-primary hover:underline text-sm truncate block">
               {displayEntry.website.replace(/^https?:\/\//, "")}
             </a>
           </div>
@@ -932,14 +943,14 @@ export default function EntryPage() {
           <Mail className="h-5 w-5 text-muted-foreground mr-3 mt-0.5 flex-shrink-0" />
           <div className="overflow-hidden">
             <div className="text-sm font-medium mb-1">Email</div>
-            <a href={`mailto:${displayEntry.contactEmail}`} className="text-primary hover:underline text-sm truncate block">{displayEntry.contactEmail}</a>
+            <a href={`mailto:${displayEntry.contactEmail}`} onClick={() => { if (typeof window !== "undefined" && (window as any).dataLayer) { (window as any).dataLayer.push({ event: "listing_contact_click", contact_method: "email", listing_title: (displayEntry as any).title }); } }} className="text-primary hover:underline text-sm truncate block">{displayEntry.contactEmail}</a>
           </div>
         </div>
       ) : null;
       case "contactPhone": return displayEntry.contactPhone ? (
         <div key="contactPhone" className="flex items-start">
           <Phone className="h-5 w-5 text-muted-foreground mr-3 mt-0.5 flex-shrink-0" />
-          <div><div className="text-sm font-medium mb-1">Phone</div><div className="text-sm text-gray-600 dark:text-gray-300">{displayEntry.contactPhone}</div></div>
+          <div><div className="text-sm font-medium mb-1">Phone</div><a href={`tel:${displayEntry.contactPhone}`} onClick={() => { if (typeof window !== "undefined" && (window as any).dataLayer) { (window as any).dataLayer.push({ event: "listing_contact_click", contact_method: "phone", listing_title: (displayEntry as any).title }); } }} className="text-sm text-primary hover:underline block">{displayEntry.contactPhone}</a></div>
         </div>
       ) : null;
       case "tags": return displayEntry.tags ? (
@@ -948,7 +959,7 @@ export default function EntryPage() {
           <div>
             <div className="flex items-center text-sm font-medium mb-3"><Tag className="h-4 w-4 text-muted-foreground mr-2" /> Tags</div>
             <div className="flex flex-wrap gap-2">
-              {displayEntry.tags.split(",").map((tag, i) => (
+              {String(displayEntry.tags).split(",").map((tag: string, i: number) => (
                 <Badge key={i} variant="secondary" className="font-normal bg-gray-200 dark:bg-gray-700">{tag.trim()}</Badge>
               ))}
             </div>

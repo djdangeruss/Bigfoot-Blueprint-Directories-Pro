@@ -73,7 +73,7 @@ router.post("/", requireEditor, async (req, res) => {
 
 router.get("/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const [entry] = await db.select().from(entries).where(eq(entries.id, id)).limit(1);
     if (!entry) { res.status(404).json({ error: "Entry not found" }); return; }
     res.json(formatEntry(entry));
@@ -85,7 +85,7 @@ router.get("/:id", requireAuth, async (req, res) => {
 
 router.patch("/:id", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const [entry] = await db.update(entries).set({ ...req.body, updatedAt: new Date() })
       .where(eq(entries.id, id)).returning();
     if (!entry) { res.status(404).json({ error: "Entry not found" }); return; }
@@ -98,7 +98,7 @@ router.patch("/:id", requireEditor, async (req, res) => {
 
 router.delete("/:id", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     await db.delete(entries).where(eq(entries.id, id));
     res.json({ success: true, message: null });
   } catch (err) {
@@ -109,7 +109,7 @@ router.delete("/:id", requireEditor, async (req, res) => {
 
 router.patch("/:id/publish", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { published } = req.body;
     const [entry] = await db.update(entries).set({ published, updatedAt: new Date() })
       .where(eq(entries.id, id)).returning();
@@ -123,7 +123,7 @@ router.patch("/:id/publish", requireEditor, async (req, res) => {
 
 router.patch("/:id/featured", requireEditor, async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(String(req.params.id));
     const { featured } = req.body;
     const [entry] = await db.update(entries).set({ featured, updatedAt: new Date() })
       .where(eq(entries.id, id)).returning();
